@@ -1,0 +1,271 @@
+# 维护与发布手册
+
+> 面向接手的人（包括三个月后的自己）。读完这一篇就能改数据、跑门禁、发版、回滚。
+> 相关文档：`README.md`（站内结构与概念）、`CONTRIBUTING.md`（外部贡献者视角）、
+> `SECURITY.md`（报告通道）、`docs/PRODUCT-v6.md`（为什么做这些）、`docs/ACCEPTANCE-v7.md`（验收记录）。
+
+---
+
+## 0. 一句话
+
+这个站不靠「写得勤」活着，靠**三层分离 + 四道门禁 + 两条自动化**：
+改数据不用碰代码，改代码不用碰数据，发布前机器替你检查，每周一自动抓一次、每次推送自动部署一次。
+
+---
+
+## 1. 为什么它不会烂掉
+
+| 设计 | 解决的问题 | 在哪 |
+|---|---|---|
+| **数据 / 模板 / 构建 三层分离** | 改价格不用读 JS，改样式不用翻 JSON | `data/*.json` + `src/*` + `build.js` |
+| **站内数字全部运行时算** | 加了条目忘了改文案，页面不会自相矛盾 | `src/app.js`；模板里没有硬编码计数 |
+| **构建期数据校验** | 坏数据进不了页面，而不是上线后才发现 | `build.js`：字段、来源等级、夺冠率、过期优惠 |
+| **数据新鲜度自曝** | 数据旧了自己说，不等用户发现 | `meta.lastVerified` + `staleAfterDays` → 页面标黄 + `#health` |
+| **脱敏扫描** | 本机路径、会话 ID、密钥进不了公开仓库 | `scripts/check-pii.js`（含自检） |
+| **四道门禁一条命令** | 交接给下一个人时不用口头描述「要测什么」 | `npm run check` |
+| **每周一自动抓取 + 每次推送自动部署** | 没人管也会动；动了也不会发坏版本 | `.github/workflows/data-refresh.yml`、`pages.yml` |
+
+**这个项目最容易坏的地方不是代码，是数据信任。** 所以维护的重心永远在：一条价格错了，多久能被发现、被谁发现。
+
+---
+
+## 2. 三层结构：改哪一层
+
+```
+data/*.json      ← 内容。价格、额度、新闻、角色、评测用例、来源
+src/*            ← 模板。index.html 骨架 + 6 层 CSS + app.js 渲染逻辑
+build.js         ← 构建。读 data、校验、把 CSS+数据+JS 内联进根目录 index.html
+```
+
+改动的辐射范围：
+
+| 你改了什么 | 要做什么 | 会不会影响别的页面 |
+|---|---|---|
+| `data/plans.json` 的某个价格 | 改 `price`、`verified` → `node build.js` | 会自动反映到套餐页、组合页、诊断报告、导出文件 |
+| 加一款工具 | `data/tools.json` 追加 → 见 `README.md` 的必填字段表 | 工具库、矩阵、PK、诊断、导出全都会多一条 |
+| 加一条新闻 | `data/news.json` 追加，**必须写「对测试的影响」** | 只影响 AI 大事页 |
+| 改样式 | `src/v7.css`（或对应层）→ `node build.js` | 全站，必须重跑对比度审计 |
+| 加一个功能页 | `data/modules.json` 挂到某个模块 + `src/app.js` 注册视图 + `build.js` 的 `FEATURE_VIEW_IDS` | 导航、地图、404 页、验收断言都要同步 |
+
+**数字不要写死在文案里。** 模板里凡是「29 款工具」这类数字都应当来自数据；历史上的
+「33 条免费额度」文案错了一轮，就是因为写死了。
+
+---
+
+## 3. 日常更新（四种场景，照着做）
+
+### 3.1 核一条价格（最高频）
+
+```bash
+# 1) 打开官网定价页确认当前价格
+# 2) 改 data/plans.json：price / quota / 限制，并把 verified 改成今天
+# 3) 重建
+node build.js
+# 4) 四道门禁
+npm run check
+# 5) 提交
+git add data/ index.html exports/
+git commit -m "data: 火山方舟 Lite 40 → 50（2026-11-02 核验）"
+```
+
+价格历史顺手记进该条的 `history` 数组（页面上的走势图会用到）：
+
+```json
+"history": [
+  { "date": "2026-07-31", "price": 118, "note": "涨价 140.8%" },
+  { "date": "2026-11-02", "price": 128, "note": "再涨 8.5%" }
+]
+```
+
+### 3.2 加一条新闻
+
+`data/news.json` 追加一条，字段照现有条目写。**人工条目必须写「对测试的影响」**——
+只有标题没有影响的，等于没有信息。自动抓取的条目永远单独放在 `news-auto.json`，
+默认不显示，不要手工往里搬。
+
+### 3.3 加一条评测用例
+
+`data/evalset.json` 追加，`build.js` 会校验：6 类每类 ≥4 条、id 唯一、`severity ∈ {P0,P1,P2}`、
+字段（input / expected / oracle / tags）齐全。类别要新增的话，同时改构建期的类别白名单与页面筛选条。
+
+### 3.4 改文案与样式
+
+- 文案：动 `src/index.html` 或 `src/app.js` 里的字符串；**不要动根目录 `index.html`**，它是产物，会被覆盖。
+- 样式：动 `src/v7.css`。规矩只有一条——写 `color` 用 `-t` 结尾或 `--cN` 变量，
+  写 `background` / `border` / `gradient` 用不带后缀的主色。违反就会在浅色主题下糊成一片，
+  `a11y-audit.js` 会拦下来。
+
+---
+
+## 4. 数据会不会过期，谁来说
+
+三层可靠性依次下降，所以分开报告——这比「一个总成功率」有用：
+
+| 层 | 检查什么 | 可靠性 | 会不会自动改数 |
+|---|---|---|---|
+| L1 新鲜度 | 每个数据集最后核验日、距今天数、是否 >30 天 | 100% | 否 |
+| L2 新闻 RSS | 12 个源，去重 + 标题过滤 + 标题党过滤 | 高 | 只写 `news-auto.json` |
+| L3 价格指纹 | 14 个定价页的文本哈希与价格串快照 | 尽力而为 | **只告警，不改价** |
+
+跑一次：
+
+```bash
+npm run refresh          # 抓 RSS + 价格指纹，写盘
+npm run refresh:dry      # 只看差异
+npm run refresh:offline  # 不联网，只做新鲜度报告
+```
+
+抓失败是正常的（403 / timeout / TLS 都会发生），`#health` 页会**照实列出来，不隐藏**。
+维护动作就一句话：**打开 `#health`，看「核价与抓取待办」，按它列的顺序核。** 待办可以一键复制成 Markdown。
+
+> 为什么不自动改价：自动解析会把「$20 起」读成「$20」、把「原价 ¥60」读成「现价 ¥60」。
+> 抓错一个价格，比不更新更糟。这条边界不要动。
+
+---
+
+## 5. 发布到 GitHub Pages
+
+站点是零依赖静态文件，发布就是把 `_site/` 交给 Pages。工作流已经写好：
+**推送到 `main` → 自动跑四道门禁 → 生成 `_site/` → 部署**。门禁不过就不部署，站点停在上一版。
+
+### 5.1 本地预览「部署后的样子」
+
+```bash
+npm run preview
+```
+
+它做三件事：重建 `index.html` → 生成 `_site/`（含 `exports/`、`robots.txt`、`404.html`、`.nojekyll`）
+→ 用 http 在 <http://localhost:4173/> 端起来。
+
+**为什么不能只看 `file://`**：本地双击打开走的是 `file://`，Pages 走的是 `https://<user>.github.io/<repo>/`
+子路径。相对链接、下载路径、`404.html` 只有在 http + 子路径下才是真实表现。
+
+### 5.2 首次发布（只做一次）
+
+```bash
+# 1) 确认门禁全绿
+npm run check
+
+# 2) 建公开仓库（本地仓库已经有提交历史，这里只创建远端，不推）
+gh repo create ai-test-stack --public \
+  --description "AI 工具选型 × 测试角色 × AI 冲击决策站：单文件、零依赖、可离线打开"
+
+# 3) 关联远程并推送当前分支
+git remote add origin https://github.com/1ffff-hh/ai-test-stack.git
+git branch -M main
+git push -u origin main
+
+# 4) 打开 Pages，来源选 GitHub Actions
+gh api --method POST repos/1ffff-hh/ai-test-stack/pages \
+  -f build_type=workflow
+
+# 5) 触发一次部署（首次推送时 Pages 还没开，需要重跑）
+gh workflow run pages.yml
+```
+
+站点地址：<https://1ffff-hh.github.io/ai-test-stack/>
+
+> **脱敏提醒**：公开仓库的历史里不能有本机路径和会话 ID。本地已有的历史提交是**私有开发记录**，
+> 发布时用一条干净历史推送，见第 6 节。
+
+### 5.3 之后每次发布
+
+```bash
+node build.js                 # 改了 src/ 或 data/ 才需要
+npm run check                 # 四道门禁
+git add -A && git commit -m "..."
+git push                      # 推送即部署
+gh run watch                  # 看这次部署的进度（可选）
+```
+
+改了数据还要提交产物：`index.html`、`exports/*`（构建期重新生成的）。
+
+### 5.4 回滚
+
+Pages 部署的是一个 artifact，回滚最快的方式是**把代码退回去再推一次**：
+
+```bash
+git revert <坏提交>           # 生成一个反向提交，历史保留
+npm run check
+git push
+```
+
+不要用 `git reset --hard` 强推 `main`——线上站和本地历史会脱节，下一个人接手时看不懂。
+
+---
+
+## 6. 脱敏：发布红线
+
+公开仓库里**不允许**出现：
+
+<!-- pii-scan:off —— 下面在举例说明要拦什么，本身是占位符不是真数据 -->
+- 本机绝对路径（`C:\Users\<你的名字>\...`、`/c/Users/<名字>/...`、`D:\Desktop\...`）
+- 任何会话 ID、聊天记录路径、其他 AI 工具的工作目录
+- 密钥、token、私钥
+- 私人邮箱（机器人地址和 `@users.noreply.github.com` 除外）
+<!-- pii-scan:on -->
+
+`scripts/check-pii.js` 会拦住这四类，并且**它自己带自检**（`--self-test`：每条规则必须先能抓到一条样例，
+否则扫描器自己失败）。一个只会输出 0 的检查器等于没有检查器 —— 这条路这个项目踩过。
+
+内部材料（交接报告、错误日志、验收草稿）放 `docs/internal/`，该目录已被 `.gitignore` 忽略，
+公开仓库里不出现，本地文件保留。
+
+**历史也是内容。** 本地开发过程中的提交可能带着个人信息，所以公开发布时不要直接推旧历史：
+
+```bash
+# 用一条干净的初始提交发布（本地历史保持不变）
+git checkout --orphan publish
+git add -A
+git commit -m "public release: v2.2.0"
+git push -u origin publish:main
+```
+
+之后正常在 `main` 上提交。`publish` 分支用完可删（`git branch -D publish`），
+本地老历史留在原来的分支上，谁也不会看到。
+
+---
+
+## 7. 排查表
+
+| 现象 | 多半是 | 怎么办 |
+|---|---|---|
+| `build.js` exit 1，报某条字段缺失 | 数据写漏了字段 | 看报错里的 `id`，照着同类条目补齐 |
+| `build.js` 报夺冠率 >40% | 某款工具分数给得太满，评分表退化成假对比 | 按 `README.md` 的校准记录那样，只改有事实依据的分 |
+| `a11y-audit.js` 报浅色主题违规 | 新样式写死了亮色 | 改成 `-t` 结尾的变量；内联 `style` 也要用变量 |
+| `verify.js` 某组计数不对 | 数据条目数变了，断言没跟着改 | 数据变了就更新 `scripts/verify.js` 里的期望值，别改数据去凑断言 |
+| Pages 部署失败，门禁红 | 提交没本地跑过 | 本地 `npm run check` 修好再推；站点会自动停在上一版 |
+| 页面上数字和列表对不上 | 文案里写死了计数 | 把数字改成运行时计算，别手改数字 |
+| 下载链接 404 | `exports/` 没发布 | 确认 `scripts/build-site.js` 把 `exports` 拷进了 `_site/` |
+| 数据标黄（>30 天） | 到核验周期了 | 打开 `#health` 按待办核，改 `verified` |
+
+---
+
+## 8. 节奏与约定
+
+| 周期 | 做什么 | 谁 |
+|---|---|---|
+| 每次推送 | 四道门禁 + 自动部署 | 机器（`pages.yml`） |
+| 每周一 09:10 | 抓 RSS 与价格指纹 + 重构建 + 有变化才提交 | 机器（`data-refresh.yml`） |
+| 看到告警时 | 人工核对官网，改 JSON，记 `history` | 人 |
+| 每周 1–2 条 | 人工新闻 + 「对测试的影响」 | 人 |
+| 每季度 | 复核角色渗透度 / 替代度这类编辑判断 | 人 |
+| 每次数据变化 | `data/changelog.json` 记一条 | 人 |
+
+`data/changelog.json` 就是站点的「更新日志」页，用户能看见。**改了什么就写什么，
+不要为了好看把「修正了一个错价」写成「优化了数据准确性」。**
+
+版本号在 `package.json` 与 `data/meta.json` 里，两边要一致（当前 `2.2.0`）。
+功能成规模就升次版本，纯数据核验不发版。
+
+---
+
+## 9. 这个站明确的边界（别越界去补）
+
+- **不做自动改价**：只手写 + 指纹告警。
+- **不做账号与社区**：静态站先服务好单人决策。
+- **不做薪资与 JD 采样**：没有可靠公开源，写了就是编。
+- **不做团队采购 / 席位计算**：需要真实合同条款与报价，公开渠道不足。
+- **报价制产品的区间不是标价**：testRigor / mabl / QA Wolf 的数字只用于预算量级，页面已标注。
+
+这些不是没做完，是**故意不做**。要动它们，先看 `docs/PRODUCT-v6.md` 第 3 节的判断依据。

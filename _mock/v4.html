@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<title>v4 mock</title>
+<style>
+:root{
+  --bg:#0a0b0d; --sheet:#0f1114; --sheet2:#131619; --raise:#171b1f;
+  --line:rgba(255,255,255,.075); --line2:rgba(255,255,255,.14); --line3:rgba(255,255,255,.24);
+  --text:#f3f5f8; --dim:#99a3b1; --dim2:#77818f;
+  /* 三色分工：青=可交互，琥珀=结论/钱，玫红=风险，绿=通过 */
+  --act:#3ee0c8; --act-ink:#04211d;
+  --judge:#ffbf4d; --risk:#ff7684; --ok:#5fdc95;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --ui:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#07080a;color:var(--text);font-family:var(--ui);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.screen{background:var(--bg);position:relative;overflow:hidden}
+.screen::before{ /* 极淡点阵：替代 v2 的三层径向渐变 */
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.055) 1px,transparent 1px);
+  background-size:22px 22px;mask-image:linear-gradient(#000,transparent 420px);
+}
+.wrap{max-width:1200px;margin:0 auto;padding:0 32px;position:relative}
+
+/* ---------- topbar ---------- */
+.tb{height:66px;display:flex;align-items:center;gap:26px;border-bottom:1px solid var(--line);position:relative;z-index:2}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{width:28px;height:28px;border:1px solid var(--line2);display:grid;place-items:center;font:700 11px/1 var(--mono);letter-spacing:.04em;color:var(--act)}
+.bn{font-size:14px;font-weight:600;letter-spacing:-.01em}
+.bv{font:400 9.5px/1 var(--mono);color:var(--dim2);letter-spacing:.14em;margin-top:3px}
+.nav{display:flex;gap:2px;margin-left:6px}
+.nav a{position:relative;padding:6px 11px;font-size:13px;color:var(--dim);text-decoration:none;font-weight:500}
+.nav a.on{color:var(--text)}
+.nav a.on::after{content:'';position:absolute;left:11px;right:11px;bottom:-21px;height:1px;background:var(--act)}
+.more{display:flex;align-items:center;gap:4px}
+.more i{font-style:normal;font-size:9px;color:var(--dim2)}
+.tr{margin-left:auto;display:flex;align-items:center;gap:8px}
+.srch{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 10px;border:1px solid var(--line2);color:var(--dim2);font-size:12px;min-width:126px}
+.srch kbd{font:400 10px/1 var(--mono);border:1px solid var(--line2);padding:2px 4px;color:var(--dim)}
+.icob{width:32px;height:32px;border:1px solid var(--line2);background:none;color:var(--dim);font-size:13px;cursor:pointer}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:64px;padding:56px 0 0;align-items:stretch}
+.hero>div:first-child{display:flex;flex-direction:column}
+.eyebrow{display:flex;align-items:center;gap:10px;font:500 10.5px/1 var(--mono);letter-spacing:.16em;color:var(--dim2);text-transform:uppercase}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--line3)}
+h1{margin:22px 0 0;font-size:62px;line-height:1.04;letter-spacing:-.035em;font-weight:600}
+h1 .q{color:var(--dim2);font-weight:400}
+h1 .hl{color:var(--judge);position:relative;white-space:nowrap}
+.lede{margin:20px 0 0;font-size:14.5px;line-height:1.75;color:var(--dim);max-width:430px}
+.lede b{color:var(--text);font-weight:600}
+.cta{display:flex;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 18px;border:1px solid var(--line2);background:none;color:var(--text);font-size:13px;font-weight:600;text-decoration:none;cursor:pointer;font-family:inherit}
+.btn.pri{background:var(--act);border-color:var(--act);color:var(--act-ink)}
+.btn .ar{font-size:12px;opacity:.8}
+/* 三步轨：把"问答→方案→执行包"写成流程，而不是三张卡 */
+.track{display:flex;align-items:center;gap:0;margin-top:34px;border-top:1px solid var(--line);padding-top:16px}
+.tstep{display:flex;flex-direction:column;gap:3px;padding-right:22px;margin-right:22px;border-right:1px solid var(--line)}
+.tstep:last-child{border:none;margin:0;padding:0}
+.tstep i{font:400 9.5px/1 var(--mono);color:var(--dim2);letter-spacing:.1em}
+.tstep b{font-size:12px;font-weight:600;color:var(--text)}
+.tstep.done i{color:var(--act)}
+/* 左栏底部状态行：把与诊断台等高后剩下的空白变成"数据状态"，而不是留白 */
+.dstat{margin-top:auto;padding-top:14px;border-top:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;font:400 10px/1 var(--mono);letter-spacing:.06em;color:var(--dim2)}
+.dstat b{color:var(--ok);font-weight:500}
+.dstat u{text-decoration:none;color:var(--dim)}
+
+/* ---------- 诊断台 ---------- */
+.diag{border:1px solid var(--line2);background:linear-gradient(180deg,var(--sheet2),var(--sheet));position:relative}
+.diag::after{content:'';position:absolute;inset:-1px -1px auto;height:1px;background:linear-gradient(90deg,transparent,rgba(62,224,200,.6),transparent)}
+.dhead{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--line);font:500 10.5px/1 var(--mono);letter-spacing:.13em;color:var(--dim)}
+.dhead .live{display:flex;align-items:center;gap:6px;color:var(--ok);font-size:9.5px}
+.dhead .live b{width:5px;height:5px;background:var(--ok);border-radius:50%;box-shadow:0 0 0 3px rgba(95,220,149,.14)}
+/* 三步进度：01 02 03 —— 让面板在未答题时也有骨架 */
+.qsteps{display:flex;border-bottom:1px solid var(--line)}
+.qsteps div{flex:1;padding:12px 16px 13px;border-right:1px solid var(--line);display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dim2)}
+.qsteps div:last-child{border:none}
+.qsteps i{font:400 9.5px/1 var(--mono);color:var(--dim2)}
+.qsteps .cur{color:var(--text);background:rgba(255,255,255,.02)}
+.qsteps .cur i{color:var(--act)}
+.qsteps .ok i{color:var(--ok)}
+.dbody{padding:0}
+.q{padding:20px 18px 16px}
+.q .qlab{font:400 9.5px/1 var(--mono);color:var(--dim2);letter-spacing:.12em;margin-bottom:9px}
+.q h3{margin:0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.opts{padding:0 18px 18px}
+.opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;background:none;border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:13px;text-align:left;cursor:pointer;margin-bottom:7px;transition:.15s}
+.opt:hover{border-color:var(--line3);background:rgba(255,255,255,.025)}
+.opt i{font:400 10px/1 var(--mono);color:var(--dim2);width:12px}
+.opt span{flex:1}
+.opt em{font-style:normal;font-size:11px;color:var(--dim2);font-family:var(--mono)}
+.opt:hover i{color:var(--act)}
+/* 报告态 */
+.rep{padding:18px}
+.repTop{display:flex;align-items:flex-start;gap:14px;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.stamp{width:58px;height:58px;flex:0 0 58px;border:2px solid var(--ok);color:var(--ok);display:grid;place-items:center;font:700 13px/1 var(--mono);letter-spacing:.1em;transform:rotate(-7deg);border-radius:2px;opacity:.92}
+.repName b{display:block;font-size:16.5px;font-weight:600;letter-spacing:-.01em}
+.repName small{display:block;font-size:11.5px;color:var(--dim);margin-top:3px}
+.price{margin-left:auto;text-align:right;line-height:1.1}
+.price b{font:600 27px/1 var(--mono);letter-spacing:-.02em;color:var(--judge);font-variant-numeric:tabular-nums}
+.price span{display:block;font-size:10.5px;color:var(--dim2);margin-top:5px}
+.rows{padding:12px 0 4px}
+.row{display:grid;grid-template-columns:52px 1fr;gap:12px;padding:6px 0;align-items:start}
+.row i{font:400 9.5px/1.9 var(--mono);letter-spacing:.06em;color:var(--dim2);font-style:normal}
+.row i.j{color:var(--judge)}
+.row i.r{color:var(--risk)}
+.row p{margin:0;font-size:12.5px;line-height:1.65;color:var(--dim)}
+.row p b{color:var(--text);font-weight:600}
+/* 成本拆解 */
+.cost{display:flex;border:1px solid var(--line);margin:6px 0 12px}
+.cost div{flex:1;padding:9px 11px;border-right:1px solid var(--line)}
+.cost div:last-child{border:none;background:rgba(255,191,77,.05)}
+.cost small{display:block;font:400 9px/1 var(--mono);letter-spacing:.1em;color:var(--dim2);margin-bottom:5px}
+.cost b{font:600 13px/1 var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cost .sum b{color:var(--judge)}
+.acts{display:flex;gap:7px;padding-top:4px}
+.acts .btn{height:34px;font-size:12px;padding:0 12px}
+/* 读数带：发丝分隔的一行，替代 4 张小卡 */
+.band{display:grid;grid-template-columns:repeat(4,1fr);margin-top:52px;border-top:1px solid var(--line2);border-bottom:1px solid var(--line)}
+.band a{padding:20px 0 20px 22px;border-left:1px solid var(--line);text-decoration:none;color:inherit;position:relative}
+.band a:first-child{border:none;padding-left:0}
+.band b{display:block;font:600 33px/1 var(--mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.band span{display:block;font-size:11.5px;color:var(--dim2);margin-top:7px}
+.band a::after{content:'↗';position:absolute;right:16px;top:20px;font-size:11px;color:transparent}
+.band a:hover::after{color:var(--act)}
+
+/* ---------- 模块区 ---------- */
+.sect{margin-top:64px}
+.sHead{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:1px solid var(--line2);padding-bottom:12px;margin-bottom:0}
+.sHead h2{margin:0;font-size:22px;font-weight:600;letter-spacing:-.02em}
+.sHead span{font-size:11.5px;color:var(--dim2)}
+.mods{display:grid;grid-template-columns:repeat(3,1fr);border-left:1px solid var(--line)}
+.mod{padding:20px 20px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:7px;min-height:126px;transition:.16s}
+.mod:hover{background:rgba(255,255,255,.022)}
+.mod .mn{display:flex;align-items:baseline;gap:9px}
+.mod .mn i{font:400 9.5px/1 var(--mono);color:var(--dim2)}
+.mod .mn b{font-size:14px;font-weight:600}
+.mod p{margin:0;font-size:12px;color:var(--dim);line-height:1.6;flex:1}
+.mod .mgo{font-size:11.5px;color:var(--dim2);display:flex;align-items:center;gap:5px}
+.mod:hover .mgo{color:var(--act)}
+.mod.main{background:rgba(62,224,200,.035)}
+.mod.main .mn b{color:var(--act)}
+.foot{display:flex;align-items:center;justify-content:space-between;padding:18px 0 40px;border-top:1px solid var(--line);margin-top:44px}
+.foot span{font-size:11.5px;color:var(--dim2)}
+
+/* ================= 执行包页 ================= */
+.ph{display:grid;grid-template-columns:170px 1fr;gap:0;padding:44px 0 0;border-bottom:1px solid var(--line2)}
+.rail{padding:0 24px 26px 0;border-right:1px solid var(--line)}
+.rail .rk{font:500 9.5px/1 var(--mono);letter-spacing:.16em;color:var(--dim2)}
+.rail .rv{margin-top:10px;font:600 42px/1 var(--mono);color:var(--text);font-variant-numeric:tabular-nums}
+.rail .rv small{font-size:12px;color:var(--dim2);font-family:var(--ui)}
+.rail .rs{margin-top:12px;font-size:11.5px;color:var(--dim2);line-height:1.6}
+.phMain{padding:0 0 26px 30px}
+.phMain h1{font-size:34px;margin:0;letter-spacing:-.025em;font-weight:600}
+.phMain p{margin:10px 0 0;font-size:13.5px;color:var(--dim);max-width:640px}
+.sum{display:grid;grid-template-columns:1.5fr 1fr 1fr;border:1px solid var(--line2);margin-top:26px;background:var(--sheet)}
+.sum>div{padding:14px 16px;border-right:1px solid var(--line)}
+.sum>div:last-child{border:none;background:rgba(255,191,77,.045)}
+.sum small{display:block;font:400 9px/1 var(--mono);letter-spacing:.11em;color:var(--dim2);margin-bottom:7px}
+.sum b{font-size:14px;font-weight:600}
+.sum .mono{font:600 16px/1.2 var(--mono);color:var(--judge);font-variant-numeric:tabular-nums}
+.sum em{font-style:normal;font-size:11px;color:var(--dim2);display:block;margin-top:4px}
+.planGrid{display:grid;grid-template-columns:1fr 268px;gap:36px;margin-top:30px}
+.week{border-top:1px solid var(--line2);padding-top:13px;margin-bottom:26px}
+.wkHead{display:flex;align-items:baseline;gap:12px;margin-bottom:2px}
+.wkHead b{font-size:15px;font-weight:600}
+.wkHead i{font:400 9.5px/1 var(--mono);letter-spacing:.1em;color:var(--dim2)}
+.wkHead span{margin-left:auto;font:400 10.5px/1 var(--mono);color:var(--dim2)}
+.task{display:grid;grid-template-columns:20px 1fr 96px;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);align-items:start}
+.tick{width:15px;height:15px;border:1px solid var(--line3);margin-top:2px;display:grid;place-items:center;font-size:10px;color:transparent}
+.tick.on{border-color:var(--ok);color:var(--ok);background:rgba(95,220,149,.1)}
+.task b{font-size:13px;font-weight:600;display:block}
+.task p{margin:3px 0 0;font-size:11.5px;color:var(--dim);line-height:1.6}
+.task .acc{margin-top:5px;font:400 10.5px/1.5 var(--mono);color:#96a1b0}
+.task .acc em{font-style:normal;color:var(--ok)}
+.task .hrs{font:400 10.5px/1.6 var(--mono);color:#96a1b0;text-align:right}
+.task.done b{color:var(--dim2);text-decoration:line-through}
+.side{border-left:1px solid var(--line);padding-left:22px}
+.side h4{margin:0 0 10px;font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--dim2);text-transform:uppercase}
+.prog{margin-bottom:26px}
+.pbar{height:3px;background:rgba(255,255,255,.09);margin:9px 0 7px}
+.pbar i{display:block;height:100%;width:31%;background:var(--ok)}
+.prog b{font:600 22px/1 var(--mono);font-variant-numeric:tabular-nums}
+.prog b small{font-size:11px;color:var(--dim2);font-family:var(--ui)}
+.riskbox{border:1px solid rgba(255,118,132,.32);background:rgba(255,118,132,.05);padding:12px 13px;margin-bottom:26px}
+.riskbox b{font-size:11.5px;color:var(--risk);display:block;margin-bottom:6px}
+.riskbox p{margin:0;font-size:11.5px;color:var(--dim);line-height:1.65}
+.exp{display:flex;flex-direction:column;gap:7px}
+.exp .btn{justify-content:center}
+.sideNote{border-top:1px solid var(--line);padding-top:16px;margin-top:28px}
+.sideNote h4{margin-bottom:9px}
+.sideNote p{margin:0 0 11px;font-size:11.5px;color:var(--dim);line-height:1.68}
+.sideNote .btn{height:32px;font-size:11.5px;width:100%;justify-content:center}
+.code{border:1px solid var(--line);background:#0b0d10;margin-top:4px}
+.code .ch{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid var(--line);font:400 9.5px/1 var(--mono);letter-spacing:.1em;color:var(--dim2)}
+.code pre{margin:0;padding:12px;font:400 11px/1.7 var(--mono);color:#b8c4d4;overflow:auto}
+.code pre .c{color:#5c6b7d}
+.code pre .k{color:var(--act)}
+</style>
+</head>
+<body>
+
+<!-- ==================== SCREEN 1 · 首页 ==================== -->
+<section class="screen" id="s-home">
+  <div class="wrap">
+    <div class="tb">
+      <div class="brand"><span class="mark">AT</span>
+        <div><div class="bn">AI Test Stack</div><div class="bv">v1.0 / 2026-10-29 核验</div></div></div>
+      <nav class="nav">
+        <a href="#" class="on">首页</a><a href="#">功能地图</a><a href="#">完整工具站</a>
+        <span class="more"><a href="#">我的 <i>▾</i></a></span>
+        <span class="more"><a href="#">更多 <i>▾</i></a></span>
+      </nav>
+      <div class="tr">
+        <div class="srch">⌕ <span>搜索功能 / 工具 / 套餐</span> <kbd>⌘K</kbd></div>
+        <button class="icob">◐</button>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div>
+        <div class="eyebrow">For test engineers · 数据离线可核</div>
+        <h1>别再逛清单了。<br><span class="q">三问，</span><span class="hl">当场出方案</span></h1>
+        <p class="lede">右边的诊断台按<b>核过的实价</b>、20 项能力和你的红线，现场比对全部组合，产出一份能直接交上去的方案：多少钱、为什么、坑在哪、第一周干什么。</p>
+        <div class="cta">
+          <a class="btn pri" href="#">开始诊断 <span class="ar">→</span></a>
+          <a class="btn" href="#">先看执行包样例</a>
+        </div>
+        <div class="track">
+          <div class="tstep done"><i>01</i><b>三问答完</b></div>
+          <div class="tstep done"><i>02</i><b>方案落定</b></div>
+          <div class="tstep"><i>03</i><b>30 天执行包</b></div>
+        </div>
+        <div class="dstat">
+          <span>数据核验 <u>2026-10-29</u></span>
+          <span>11 工具 · 12 档 · 15 组合</span>
+          <b>✓ 无外链</b><b>✓ 离线可开</b>
+        </div>
+      </div>
+
+      <div class="diag">
+        <div class="dhead"><span>DIAG / 选型引擎</span><span class="live"><b></b>RUNS ON LOCAL DATA</span></div>
+        <div class="qsteps">
+          <div class="ok"><i>01</i>目标</div>
+          <div class="ok"><i>02</i>预算</div>
+          <div class="ok"><i>03</i>红线</div>
+        </div>
+        <div class="rep">
+          <div class="repTop">
+            <span class="stamp">PASS</span>
+            <div class="repName"><b>DSH + 火山方舟 Lite</b><small>测试岗性价比之王 · 6 家模型一个 Key</small></div>
+            <div class="price"><b>¥40</b><span>每月总成本</span></div>
+          </div>
+          <div class="cost">
+            <div><small>壳 · 开源</small><b>¥0</b></div>
+            <div><small>电 · Lite</small><b>¥40</b></div>
+            <div class="sum"><small>合计</small><b>¥40/月</b></div>
+          </div>
+          <div class="rows">
+            <div class="row"><i class="j">理由</i><p>壳有 CLI + API，能被 pytest 直接调用 —— 这是进流水线的前提。</p></div>
+            <div class="row"><i class="j">理由</i><p>一个 Key 覆盖豆包 / GLM / Kimi / MiniMax / DeepSeek，换模型不用换订阅。</p></div>
+            <div class="row"><i>额度</i><p>1200 次/5h ≈ 每天 <b>3.5 小时</b>的中度使用，够日常回归；夜里批量要挂兜底。</p></div>
+            <div class="row"><i class="r">注意</i><p>晚高峰 429 较频繁，别把线上回归压在它身上。</p></div>
+            <div class="row"><i>升级</i><p>+¥78 换 GLM Coding Lite，工具白名单 20+，但数据可能用于训练。</p></div>
+          </div>
+          <div class="acts">
+            <button class="btn pri">生成执行包 →</button>
+            <button class="btn">采纳</button>
+            <button class="btn">导出</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="band">
+      <a href="#"><b>17</b><span>功能入口</span></a>
+      <a href="#"><b>11</b><span>工具档案</span></a>
+      <a href="#"><b>39</b><span>元 / 月起</span></a>
+      <a href="#"><b>7</b><span>条市场变动</span></a>
+    </div>
+
+    <div class="sect">
+      <div class="sHead"><h2>六个模块，直接进</h2><span>每个模块是一组要一起办的事，不是分类文件夹</span></div>
+      <div class="mods">
+        <a class="mod main" href="#"><span class="mn"><i>01</i><b>诊断与判断</b></span><p>先搞清「你是谁、你在乎什么」，再谈选型。四个角度逼近同一个答案。</p><span class="mgo">4 个功能 →</span></a>
+        <a class="mod" href="#"><span class="mn"><i>02</i><b>工具与方案</b></span><p>工具是壳、套餐是电、组合是整机。把选型变成能下单的东西。</p><span class="mgo">3 个功能 →</span></a>
+        <a class="mod" href="#"><span class="mn"><i>03</i><b>能力与成长</b></span><p>工具会换，能力不会。20 项能力与一条 12 个月路线。</p><span class="mgo">3 个功能 →</span></a>
+        <a class="mod" href="#"><span class="mn"><i>04</i><b>开始与总览</b></span><p>5 分钟搞清这个站是干什么的、数据从哪来。</p><span class="mgo">1 个功能 →</span></a>
+        <a class="mod" href="#"><span class="mn"><i>05</i><b>选择与资源</b></span><p>套餐横评、免费额度、首购与省钱时段。</p><span class="mgo">3 个功能 →</span></a>
+        <a class="mod" href="#"><span class="mn"><i>06</i><b>数据与更新</b></span><p>价格从哪来、什么时候核的、哪条可能已经过期。</p><span class="mgo">2 个功能 →</span></a>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span>🔖 标出处 · 🕒 留痕 · 🧩 不改你的代码 · 数据源与口径</span>
+      <span>全部页面离线可开 · 无埋点上报</span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SCREEN 2 · 执行包 ==================== -->
+<section class="screen" id="s-plan" style="margin-top:24px">
+  <div class="wrap">
+    <div class="tb">
+      <div class="brand"><span class="mark">AT</span>
+        <div><div class="bn">AI Test Stack</div><div class="bv">v1.0 / 2026-10-29 核验</div></div></div>
+      <nav class="nav">
+        <a href="#">首页</a><a href="#">功能地图</a><a href="#">完整工具站</a>
+        <span class="more"><a href="#" class="on">我的 <i>▾</i></a></span>
+        <span class="more"><a href="#">更多 <i>▾</i></a></span>
+      </nav>
+      <div class="tr"><div class="srch">⌕ <span>搜索</span> <kbd>⌘K</kbd></div><button class="icob">◐</button></div>
+    </div>
+
+    <div class="ph">
+      <div class="rail">
+        <div class="rk">EXECUTION PACK</div>
+        <div class="rv">30<small> 天</small></div>
+        <div class="rs">4 周 · 9 个动作<br>每个动作都有验收标准</div>
+      </div>
+      <div class="phMain">
+        <h1>落地执行包</h1>
+        <p>从签下这套组合到它能替你跑第一次回归，中间只有 9 件事。每件事都给了「做完的标准」，勾掉即完成——进度存在你本机，不上传。</p>
+        <div class="sum">
+          <div><small>当前方案</small><b>DSH + 火山方舟 Lite</b><em>壳：DeepSeek Harness（开源）· 电：火山方舟 Coding Plan Lite</em></div>
+          <div><small>月成本</small><div class="mono">¥40</div><em>首月 ¥9.9</em></div>
+          <div><small>预算余量</small><div class="mono">¥60</div><em>可加一份按量兜底</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="planGrid">
+      <div>
+        <div class="week">
+          <div class="wkHead"><i>WEEK 01</i><b>把电接通</b><span>≈ 2.5 小时</span></div>
+          <div class="task">
+            <span class="tick on">✓</span>
+            <div><b>买 Lite 档，拿到 Key 与 Base URL</b>
+              <p>只买月付，别买年付——这个市场 24 天涨过 140%。</p>
+              <div class="acc">验收：<em>curl 返回 200，模型列表能列出来</em></div></div>
+            <div class="hrs">20 min</div>
+          </div>
+          <div class="task">
+            <span class="tick on">✓</span>
+            <div><b>装壳，指向这个 Base URL</b>
+              <p>壳和电是两件事：壳负责读你的代码，电负责生成。</p>
+              <div class="acc">验收：<em>在仓库根目录跑通一次「解释这个测试文件」</em></div></div>
+            <div class="hrs">40 min</div>
+          </div>
+          <div class="task">
+            <span class="tick"></span>
+            <div><b>把 429 兜底配好</b>
+              <p>晚高峰会撞限流，先配一个按量 API 做 fallback，别等挂了才想。</p>
+              <div class="acc">验收：<em>人为触发限流，脚本能自动切到兜底</em></div></div>
+            <div class="hrs">60 min</div>
+          </div>
+        </div>
+
+        <div class="week">
+          <div class="wkHead"><i>WEEK 02</i><b>让它在 CI 里跑起来</b><span>≈ 4 小时</span></div>
+          <div class="task">
+            <span class="tick"></span>
+            <div><b>写第一个「失败归因」任务</b>
+              <p>不要从"生成用例"开始——那是幻觉重灾区。从读失败日志开始，错了你能一眼看出来。</p>
+              <div class="acc">验收：<em>同一份日志连续 3 次给出可复现的归因</em></div></div>
+            <div class="hrs">90 min</div>
+          </div>
+          <div class="task">
+            <span class="tick"></span>
+            <div><b>接进流水线，只在失败时触发</b>
+              <div class="acc">验收：<em>流水线失败自动产出归因评论，成功率 ≥ 70%</em></div></div>
+            <div class="hrs">120 min</div>
+          </div>
+        </div>
+
+        <div class="code">
+          <div class="ch"><span>接入骨架 · .github/workflows/ai-triage.yml</span><span>复制</span></div>
+<pre><span class="c"># 只在回归失败时调模型，省钱且不阻塞主流程</span>
+- <span class="k">name</span>: AI 失败归因
+  <span class="k">if</span>: failure()
+  <span class="k">run</span>: |
+    pytest --lf -q &gt; fail.log
+    dsh run "读 fail.log，按根因分组，给最小复现步骤" \
+      --model $MODEL --base-url $BASE_URL</pre>
+        </div>
+      </div>
+
+      <div class="side">
+        <div class="prog">
+          <h4>进度</h4>
+          <b>3<small> / 9 完成</small></b>
+          <div class="pbar"><i></i></div>
+          <div style="font-size:11px;color:var(--dim2)">预计 3 周跑完，还剩 6 个动作</div>
+        </div>
+        <div class="riskbox">
+          <b>⚠ 这套方案最容易翻车的地方</b>
+          <p>把"生成测试用例"当成第一目标。模型编出来的用例看着像真的，跑起来全是假阳性——所以执行包里第 2 周才碰它。</p>
+        </div>
+        <h4>带走</h4>
+        <div class="exp">
+          <button class="btn pri">导出 Markdown 方案书</button>
+          <button class="btn">复制给领导的摘要</button>
+          <button class="btn">换一套方案</button>
+        </div>
+        <div class="sideNote">
+          <h4>两个月后回来一次</h4>
+          <p>价格会变——这个市场有过 24 天涨 140% 的记录。执行包做完时，回「市场变动」核一次价，别按旧价续费。</p>
+          <a class="btn" href="#">看价格轨迹 →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>

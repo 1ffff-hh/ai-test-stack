@@ -1,0 +1,105 @@
+{
+ "note": "只记录有官网依据的变动。价格类来自定价页，产品类来自官方公告或文档。没有确认过的一律不写。",
+ "kinds": {
+  "price": {
+   "name": "涨价",
+   "icon": "↑",
+   "color": "#ff7a8a"
+  },
+  "cut": {
+   "name": "降价",
+   "icon": "↓",
+   "color": "#4ade80"
+  },
+  "retire": {
+   "name": "停售",
+   "icon": "×",
+   "color": "#ff7a8a"
+  },
+  "form": {
+   "name": "形态调整",
+   "icon": "↻",
+   "color": "#ffc857"
+  },
+  "launch": {
+   "name": "上线",
+   "icon": "+",
+   "color": "#5aa9ff"
+  },
+  "model": {
+   "name": "模型下线",
+   "icon": "−",
+   "color": "#a78bfa"
+  }
+ },
+ "events": [
+  {
+   "date": "2026-10-29",
+   "kind": "form",
+   "planId": "bailian",
+   "title": "百炼 Coding Plan 全面转向 Token Plan",
+   "body": "官网明确 Coding Plan Lite 已于 3-20 停新购、4-13 停续费，Pro 限量抢购售罄不补货。推荐改用 Token Plan（Credits 制）。",
+   "impact": "在售产品从「按请求次数」变成「按 Credits」，额度单位不再可比",
+   "source": "https://help.aliyun.com/zh/model-studio/token-plan-overview"
+  },
+  {
+   "date": "2026-10-21",
+   "kind": "model",
+   "planId": "mimo",
+   "title": "小米 MiMo-V2.5 系列正式下线",
+   "body": "MiMo-V2.5-Pro 与 MiMo-V2.5 于 2026-10-21 10:00 下线，原模型名失效，需切换到 V2.6 系列。",
+   "impact": "老订阅者若脚本里写死了模型名，会直接报错",
+   "source": "https://mimo.mi.com/docs/zh-CN/price/token-plan"
+  },
+  {
+   "date": "2026-09-01",
+   "kind": "form",
+   "planId": "kimip",
+   "title": "Kimi 会员体系重排，Kimi Code 移出最低档",
+   "body": "档位从音乐术语（Andante/Moderato/Allegretto/Allegro）改为 Go/Plus/Pro/Max。Go 档 ¥49 不再包含 Kimi Code，要 Plus ¥99 起才有。",
+   "impact": "想用 Kimi Code 的入门门槛从 ¥49 抬到 ¥99",
+   "source": "https://www.kimi.com/membership/pricing"
+  },
+  {
+   "date": "2026-07-31",
+   "kind": "price",
+   "planId": "glm",
+   "title": "GLM Coding Lite 涨价 140.8%",
+   "body": "Lite 档从 ¥49 上调至 ¥118，同时 Pro 从 ¥149 上调至 ¥538（+261%）。季付 8 折、年付 7 折仍在。",
+   "impact": "国产 Coding Plan 里最激进的一次调价，24 天内完成",
+   "source": "https://docs.bigmodel.cn/cn/coding-plan/overview"
+  },
+  {
+   "date": "2026-05-11",
+   "kind": "launch",
+   "planId": "ark_agent",
+   "title": "火山方舟发布 Agent Plan",
+   "body": "官方称业界首个「Agent 套餐包」。AFP 积分制，除编程外含 Seedance 视频、Seedream 图像、embedding 与联网搜索/记忆/Auto 路由。",
+   "impact": "国产订阅从「卖 token」分化出「卖 Agent 燃料」这一形态",
+   "source": "https://www.volcengine.com/product/ark"
+  },
+  {
+   "date": "2026-04-13",
+   "kind": "retire",
+   "planId": "bailian",
+   "title": "百炼 Coding Plan Lite 停止续费与升级",
+   "body": "继 3-20 停止新购后，4-13 起停止续费与升级。存量用户到期后无法续订。",
+   "impact": "已订阅用户被迫迁移到 Pro 或 Token Plan",
+   "source": "https://help.aliyun.com/zh/model-studio/coding-plan"
+  },
+  {
+   "date": "2026-03-20",
+   "kind": "retire",
+   "planId": "bailian",
+   "title": "百炼 Coding Plan Lite 停止新购",
+   "body": "¥40 的入门档停止新用户购买，官网引导转向 Pro 或 Token Plan。",
+   "impact": "¥40 价位段少了一个选择",
+   "source": "https://help.aliyun.com/zh/model-studio/coding-plan"
+  }
+ ],
+ "coverage": {
+  "note": "这张时间轴只覆盖我确认过的变动，不是完整市场史。价格没变不代表没变过——只是我没查到确证。",
+  "confirmedPriceChanges": 1,
+  "confirmedProductChanges": 6
+ }
+}

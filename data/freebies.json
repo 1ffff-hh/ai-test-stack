@@ -1,0 +1,738 @@
+{
+ "updated": "2026-11-01",
+ "intro": {
+  "title": "白嫖地图：先把免费的用干净，再决定买什么",
+  "lead": "34 条可自查的免费额度，分成云厂商新户、模型免费层、Agent 免费档、学生/创业四类。每条都写清「怎么领、上限是什么、坑在哪、什么时候过期」。过期活动不删除，标成「已过期」留作证据——因为这张表的价值不是\"看起来多\"，而是\"现在还能用\"。",
+  "rules": [
+   "免费额度是营销预算，不是产品承诺：活动随时改，领完尽快验证。",
+   "「面值」不可比：100 万 Token、25000 积分、10 亿 Token/月 是三种东西，只比\"同一个任务要花多少\"。",
+   "免费档几乎都限速：能跑通不等于能上线，更不等于能做性能基线。",
+   "数据条款要看：GitHub Copilot 个人档、Muse Contributor、Google AI Studio 免费层都可能用你的数据改进产品。"
+  ]
+ },
+ "categories": [
+  {
+   "id": "cloud",
+   "name": "云厂商新户额度",
+   "icon": "☁",
+   "desc": "开通即送，通常按模型发、有有效期"
+  },
+  {
+   "id": "model",
+   "name": "模型 / 推理免费层",
+   "icon": "◇",
+   "desc": "长期免费档或注册赠额，重点看限速"
+  },
+  {
+   "id": "agent",
+   "name": "Agent 产品免费档",
+   "icon": "▣",
+   "desc": "编程工具与助手的免费层，能力通常打折"
+  },
+  {
+   "id": "edu",
+   "name": "学生 / 开源 / 创业",
+   "icon": "◎",
+   "desc": "门槛高但额度大，需审核或学籍"
+  }
+ ],
+ "items": [
+  {
+   "id": "fb-bailian",
+   "name": "阿里云百炼 · 新户模型额度",
+   "vendor": "阿里云",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "高",
+   "amount": "每个模型 100 万 Token，合计 7000 万+",
+   "unit": "Token",
+   "how": "开通百炼自动发放，无需领取、无需实名；模型广场里带蓝色额度条的模型即有额度。",
+   "cap": "有效期 90 天（开通日与模型发布日取较晚）；仅华北2（北京）；输入+输出合并扣减。",
+   "trap": "Token Plan / Coding Plan 的专属 API Key 不消耗免费额度，必须换通用 API Key——很多人试完订阅才发现赠额一分没动。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://help.aliyun.com/zh/model-studio/new-free-quota",
+   "src": "official",
+   "tags": [
+    "新手首选",
+    "90 天"
+   ]
+  },
+  {
+   "id": "fb-volc",
+   "name": "火山方舟 · 新户推理额度",
+   "vendor": "字节 · 火山引擎",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "高",
+   "amount": "新用户最高 500 万 Token",
+   "unit": "Token",
+   "how": "开通方舟后在「免费推理额度」页领取，按模型发放。",
+   "cap": "仅抵扣按 token 后付费的在线推理；不能抵扣插件、知识库等费用；有效期以活动页为准。",
+   "trap": "额度按模型分开发，不是一个大池子；换模型前先看有没有余量，别默认\"还有 500 万\"。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://www.volcengine.com/docs/82379",
+   "src": "official",
+   "tags": [
+    "多模型"
+   ]
+  },
+  {
+   "id": "fb-tokenhub",
+   "name": "腾讯云 TokenHub · 新户体验包",
+   "vendor": "腾讯云",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "高",
+   "amount": "每个语言模型 100 万 Token；视觉 50–100 积分",
+   "unit": "Token / 积分",
+   "how": "开通 TokenHub 服务即领，无需单独申请。",
+   "cap": "语言模型与多模态理解模型各 100 万 Token；视觉模型按积分；额度有有效期。",
+   "trap": "TokenHub 与混元原生 API 是两套入口，额度不互通；在混元控制台看不到 TokenHub 的赠额。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://cloud.tencent.com/product/tokenhub",
+   "src": "official",
+   "tags": [
+    "多模态"
+   ]
+  },
+  {
+   "id": "fb-qianfan",
+   "name": "百度千帆 · 新户模型额度",
+   "vendor": "百度智能云",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "中",
+   "amount": "每个模型 100 万 Token",
+   "unit": "Token",
+   "how": "首次开通千帆自动发放指定模型额度。",
+   "cap": "仅指定模型；有效期以控制台为准；企业主体与个人主体各限一次。",
+   "trap": "指定模型名单会变，昨天有额度的模型今天可能已移出；领完先看控制台实际可用列表。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://cloud.baidu.com/product/wenxinworkshop",
+   "src": "official",
+   "tags": [
+    "指定模型"
+   ]
+  },
+  {
+   "id": "fb-zhipu",
+   "name": "智谱 BigModel · 新户体验包",
+   "vendor": "智谱",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "高",
+   "amount": "2000 万 Token",
+   "unit": "Token",
+   "how": "注册 BigModel 开放平台并完成认证后自动到账。",
+   "cap": "分模型发放，部分旗舰模型不参与；有效期以站内信为准。",
+   "trap": "2000 万是\"全系合计\"的口径，旗舰模型单价高，实际能跑的请求数远低于直觉。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://bigmodel.cn/",
+   "src": "official",
+   "tags": [
+    "额度大"
+   ]
+  },
+  {
+   "id": "fb-deepseek",
+   "name": "DeepSeek 官方 API · 新户赠额",
+   "vendor": "DeepSeek",
+   "region": "cn",
+   "cat": "cloud",
+   "value": "高",
+   "amount": "500 万 Token",
+   "unit": "Token",
+   "how": "注册即送，无需绑卡，自动到账；默认模型 deepseek-v4-flash。",
+   "cap": "30 天有效；输入+输出合计；不含折扣时段叠加。",
+   "trap": "30 天很短，囤着不用会归零；另外夜间折扣是另一套规则，别把两者混着算。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://platform.deepseek.com/",
+   "src": "official",
+   "tags": [
+    "无需绑卡",
+    "30 天"
+   ]
+  },
+  {
+   "id": "fb-siliconflow",
+   "name": "硅基流动 · 永久免费模型",
+   "vendor": "硅基流动",
+   "region": "cn",
+   "cat": "model",
+   "value": "中",
+   "amount": "一批标价 ¥0 的模型（小参数 Qwen / GLM / DeepSeek 蒸馏版）",
+   "unit": "模型",
+   "how": "注册后在模型广场筛选\"免费\"，直接调用。",
+   "cap": "免费模型有并发与速率限制；大参数模型不免费；实名后额度更高。",
+   "trap": "免费模型适合跑通链路，不适合做效果评测——它们和旗舰不是一个东西，别用免费版的结论去选付费版。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://siliconflow.cn/",
+   "src": "official",
+   "tags": [
+    "国内直连",
+    "永久"
+   ]
+  },
+  {
+   "id": "fb-modelscope",
+   "name": "魔搭 ModelScope · 免费推理 API",
+   "vendor": "阿里 · 魔搭",
+   "region": "cn",
+   "cat": "model",
+   "value": "中",
+   "amount": "每日免费调用额度（按模型）",
+   "unit": "次/日",
+   "how": "绑定阿里云账号后在「API-Inference」开通，拿 Token 调用。",
+   "cap": "每日限额，按模型独立；高峰期排队；仅社区模型。",
+   "trap": "这是\"社区模型免费跑\"，不是\"旗舰模型免费\"；延迟不稳定，不能拿它做性能基线。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://modelscope.cn/",
+   "src": "community",
+   "tags": [
+    "每日额度"
+   ]
+  },
+  {
+   "id": "fb-workbuddy",
+   "name": "WorkBuddy 成长计划",
+   "vendor": "腾讯云",
+   "region": "cn",
+   "cat": "agent",
+   "value": "中",
+   "amount": "做任务领 1000+ Credits，限量任务送 1 个月轻量云服务器",
+   "unit": "Credits",
+   "how": "客户端内「成长计划」逐任务领取，每任务 100 Credits + 能量盲盒。",
+   "cap": "约 13 个任务；限量任务先到先得；Credits 有有效期。",
+   "trap": "任务奖励是获客活动，不是长期额度；活动页下线后历史 Credits 仍会过期。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://copilot.tencent.com/",
+   "src": "official",
+   "tags": [
+    "任务制"
+   ]
+  },
+  {
+   "id": "fb-aistudio",
+   "name": "Google AI Studio · 免费层",
+   "vendor": "Google",
+   "region": "global",
+   "cat": "model",
+   "value": "高",
+   "amount": "Gemini 免费层（RPM/RPD 按模型）",
+   "unit": "请求",
+   "how": "用 Google 账号登录 AI Studio 拿 API Key，无需绑卡。",
+   "cap": "速率与日限额按模型；免费层数据可能用于改进产品；部分地区不可用。",
+   "trap": "免费层与付费层的模型版本可能不同；国内访问需要网络条件，且条款不允许绕过地区限制。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://aistudio.google.com/",
+   "src": "official",
+   "tags": [
+    "无需绑卡",
+    "永久"
+   ]
+  },
+  {
+   "id": "fb-groq",
+   "name": "Groq · 永久免费 API",
+   "vendor": "Groq",
+   "region": "global",
+   "cat": "model",
+   "value": "高",
+   "amount": "30 RPM / 1000 RPD / 8K TPM / 200K TPD（每模型）",
+   "unit": "请求",
+   "how": "注册即开通，OpenAI 兼容；无需信用卡。",
+   "cap": "每模型独立限额，24h 重置；只跑 Groq 托管的开源模型。",
+   "trap": "限的是\"每模型\"，不是账号总量；开 5 个模型不等于有 5 倍吞吐，仍受账号级并发约束。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://console.groq.com/",
+   "src": "official",
+   "tags": [
+    "无需绑卡",
+    "低延迟"
+   ]
+  },
+  {
+   "id": "fb-mistral",
+   "name": "Mistral La Plateforme · Experiment",
+   "vendor": "Mistral",
+   "region": "global",
+   "cat": "model",
+   "value": "高",
+   "amount": "约 10 亿 Token / 月 / 模型",
+   "unit": "Token",
+   "how": "注册 Experiment 免费计划，邮箱 + 手机验证，无需信用卡。",
+   "cap": "约 1 req/s；全系模型可用；免费计划数据条款需自行确认。",
+   "trap": "1B/月听起来夸张，但 1 req/s 的速率上限决定它只能做离线批处理，不能做在线服务。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://console.mistral.ai/",
+   "src": "official",
+   "tags": [
+    "额度极大",
+    "限速"
+   ]
+  },
+  {
+   "id": "fb-cloudflare",
+   "name": "Cloudflare Workers AI · 每日免费",
+   "vendor": "Cloudflare",
+   "region": "global",
+   "cat": "model",
+   "value": "中",
+   "amount": "每天 10,000 Neurons",
+   "unit": "Neurons",
+   "how": "Workers 免费计划内含，开通即用，无需信用卡。",
+   "cap": "UTC 0 点重置；按 Neurons 计费，不同模型消耗不同；仅 Workers 运行时。",
+   "trap": "Neurons 不是 token，换模型后同样的 Neuron 能跑的请求数差很多；先查模型单价再估。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://developers.cloudflare.com/workers-ai/",
+   "src": "official",
+   "tags": [
+    "边缘推理"
+   ]
+  },
+  {
+   "id": "fb-ghmodels",
+   "name": "GitHub Models · 免费试用",
+   "vendor": "GitHub",
+   "region": "global",
+   "cat": "model",
+   "value": "中",
+   "amount": "免费、速率受限，覆盖多家模型",
+   "unit": "请求",
+   "how": "有 GitHub 账号即可在 Models 页面拿 Token 调用。",
+   "cap": "速率限制按账号；适合试验不适合生产；输入输出可能被用于评估。",
+   "trap": "它的价值是\"一次试很多家\"，不是\"长期免费生产\"；上线前要换正式端点。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://github.com/marketplace/models",
+   "src": "official",
+   "tags": [
+    "多模型"
+   ]
+  },
+  {
+   "id": "fb-openrouter",
+   "name": "OpenRouter · :free 变体",
+   "vendor": "OpenRouter",
+   "region": "global",
+   "cat": "model",
+   "value": "中",
+   "amount": "免费变体按分钟/天限额，充值可提高上限",
+   "unit": "请求",
+   "how": "一个 Key 接多家；模型名带 :free 的即免费变体。",
+   "cap": "余额需为非负（可以是 0）；免费变体有限速；可用模型随供给变化。",
+   "trap": "免费变体随时下架；生产依赖它就是给自己埋雷。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://openrouter.ai/models?max_price=0",
+   "src": "official",
+   "tags": [
+    "聚合",
+    "一个 Key"
+   ]
+  },
+  {
+   "id": "fb-nvidia",
+   "name": "NVIDIA NIM · 注册赠 Credits",
+   "vendor": "NVIDIA",
+   "region": "global",
+   "cat": "model",
+   "value": "中",
+   "amount": "1000 credits，覆盖 100+ 模型",
+   "unit": "credits",
+   "how": "注册 NVIDIA 开发者账号，在 build.nvidia.com 生成 Key。",
+   "cap": "credits 按模型单价扣；有速率限制；仅托管模型。",
+   "trap": "1000 credits 用旗舰模型很快见底，适合逐个试开源模型，不适合跑批量回归。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://build.nvidia.com/",
+   "src": "official",
+   "tags": [
+    "开源模型"
+   ]
+  },
+  {
+   "id": "fb-cohere",
+   "name": "Cohere · Trial Key",
+   "vendor": "Cohere",
+   "region": "global",
+   "cat": "model",
+   "value": "中",
+   "amount": "20 次/分钟、1000 次/月",
+   "unit": "请求",
+   "how": "注册即得 Trial Key，无需绑卡。",
+   "cap": "仅 Trial 端点；商用需升级；嵌入与重排模型更适合。",
+   "trap": "1000 次/月做 RAG 演示够，做回归测试一周就用完。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://cohere.com/",
+   "src": "official",
+   "tags": [
+    "RAG"
+   ]
+  },
+  {
+   "id": "fb-cerebras",
+   "name": "Cerebras · $5 试用（已非永久免费）",
+   "vendor": "Cerebras",
+   "region": "global",
+   "cat": "model",
+   "value": "低",
+   "amount": "$5 试用额度，30 天",
+   "unit": "USD",
+   "how": "注册后自动发放，需绑支付方式。",
+   "cap": "30 天；超出按量付费；免费层已取消。",
+   "trap": "很多 2025 年的清单还写\"每天 100 万 token 永久免费\"——2026 年已经没有了，别照着旧文做预算。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://cloud.cerebras.ai/",
+   "src": "official",
+   "tags": [
+    "已变更",
+    "反面案例"
+   ]
+  },
+  {
+   "id": "fb-hf",
+   "name": "HuggingFace Inference · 名义免费",
+   "vendor": "HuggingFace",
+   "region": "global",
+   "cat": "model",
+   "value": "无",
+   "amount": "免费账户每月约 $0.10 额度",
+   "unit": "USD",
+   "how": "注册后即可用 Inference Providers。",
+   "cap": "额度极低；热门模型排队；超出按量。",
+   "trap": "这就是\"名义免费\"：$0.10 连一次完整评测都跑不完。列进来是为了让你别被\"HF 免费\"误导。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://huggingface.co/docs/inference-providers",
+   "src": "official",
+   "tags": [
+    "名义免费",
+    "反面案例"
+   ]
+  },
+  {
+   "id": "fb-trae",
+   "name": "Trae 基础版",
+   "vendor": "字节跳动",
+   "region": "cn",
+   "cat": "agent",
+   "value": "中",
+   "amount": "基础补全 + 基础模型调用",
+   "unit": "额度",
+   "how": "下载即用，国内手机号注册。",
+   "cap": "高级模型与 SOLO 需付费；积分制；签到积分有上限。",
+   "trap": "基础版能补全但不能用高级模型；想验证\"AI 能不能写我的用例\"必须至少试 Pro。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://www.trae.cn/",
+   "src": "official",
+   "tags": [
+    "国内直连"
+   ]
+  },
+  {
+   "id": "fb-comate",
+   "name": "文心快码 个人标准版",
+   "vendor": "百度",
+   "region": "cn",
+   "cat": "agent",
+   "value": "高",
+   "amount": "补全不限次 + 注册赠 ¥10",
+   "unit": "额度",
+   "how": "官网下载插件，个人标准版免费开通。",
+   "cap": "高级模型与多 Agent 需专业版；企业能力另计。",
+   "trap": "免费的是\"标准版\"，F2C、多智能体这些卖点不在免费档里。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://comate.baidu.com/",
+   "src": "official",
+   "tags": [
+    "国内直连",
+    "不限次补全"
+   ]
+  },
+  {
+   "id": "fb-codegeex",
+   "name": "CodeGeeX 免费版",
+   "vendor": "智谱",
+   "region": "cn",
+   "cat": "agent",
+   "value": "高",
+   "amount": "全功能免费",
+   "unit": "额度",
+   "how": "IDE 插件市场搜索安装，登录即用。",
+   "cap": "模型为自研开源模型；Pro 提供更高配额；无 CLI。",
+   "trap": "免费且全功能，但能力与一线有代差——适合内网与教学，不适合当主力重构工具。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://codegeex.cn/",
+   "src": "official",
+   "tags": [
+    "国内直连",
+    "可离线"
+   ]
+  },
+  {
+   "id": "fb-qoder",
+   "name": "Qoder CN 体验版 / 社区版",
+   "vendor": "阿里云",
+   "region": "cn",
+   "cat": "agent",
+   "value": "中",
+   "amount": "体验版 300 Credits；社区版 100 Credits/月",
+   "unit": "Credits",
+   "how": "下载 Qoder 后用阿里云账号登录，自动进入体验版。",
+   "cap": "Credits 制；社区版补全有限；Pro ¥59 起。",
+   "trap": "300 Credits 看起来多，但按 token 扣，跑两个大任务就没了；先拿它试\"仓库理解\"值不值。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://qoder.com/",
+   "src": "official",
+   "tags": [
+    "国内直连"
+   ]
+  },
+  {
+   "id": "fb-codebuddy",
+   "name": "CodeBuddy 体验版",
+   "vendor": "腾讯云",
+   "region": "cn",
+   "cat": "agent",
+   "value": "中",
+   "amount": "500 积分/月 + 无限补全",
+   "unit": "积分",
+   "how": "腾讯云账号登录即开通体验版。",
+   "cap": "500 积分/月；高级模型与 CLI 高级能力需付费。",
+   "trap": "无限补全只覆盖基础补全，Agent 与 CLI 的高级能力都要积分。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://copilot.tencent.com/",
+   "src": "official",
+   "tags": [
+    "国内直连"
+   ]
+  },
+  {
+   "id": "fb-copilot",
+   "name": "GitHub Copilot Free",
+   "vendor": "GitHub",
+   "region": "global",
+   "cat": "agent",
+   "value": "中",
+   "amount": "2000 次补全/月 + 有限 chat/agent",
+   "unit": "次",
+   "how": "GitHub 账号直接开通，无需付费。",
+   "cap": "补全 2000 次/月；agent 额度很少；个人档默认用于训练。",
+   "trap": "免费档也在\"默认用于训练\"的范围里（2026-04-24 起），公司代码别往这里放。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://github.com/features/copilot",
+   "src": "official",
+   "tags": [
+    "无需绑卡",
+    "训练条款"
+   ]
+  },
+  {
+   "id": "fb-antigravity",
+   "name": "Google Antigravity 个人免费档",
+   "vendor": "Google",
+   "region": "global",
+   "cat": "agent",
+   "value": "高",
+   "amount": "每周刷新配额，含多 agent 与 CLI",
+   "unit": "配额",
+   "how": "下载 Antigravity，用 Google 账号登录即用。",
+   "cap": "按周配额；2026-06-18 起 Gemini CLI 免费额度被大幅削减并并入 Antigravity CLI。",
+   "trap": "免费额度是 Google 的获客策略，一年内已缩过一次；把免费档写进团队容量计划就是赌博。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://antigravity.google/",
+   "src": "official",
+   "tags": [
+    "多 Agent",
+    "额度会缩"
+   ]
+  },
+  {
+   "id": "fb-kiro",
+   "name": "Kiro Free",
+   "vendor": "AWS",
+   "region": "global",
+   "cat": "agent",
+   "value": "中",
+   "amount": "每月 50 credits",
+   "unit": "credits",
+   "how": "下载 Kiro 用 AWS Builder ID 登录。",
+   "cap": "50 credits/月；开放权重模型可用；超额 $0.04/credit。",
+   "trap": "50 credits 只够跑通流程，一个中型重构就用完；它的价值是验证\"规格驱动\"是否适合你。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://kiro.dev/",
+   "src": "official",
+   "tags": [
+    "规格驱动"
+   ]
+  },
+  {
+   "id": "fb-kimi",
+   "name": "Kimi Code 免费额度",
+   "vendor": "月之暗面",
+   "region": "cn",
+   "cat": "agent",
+   "value": "中",
+   "amount": "32k 上下文 + 50 次高质量请求/天",
+   "unit": "次/日",
+   "how": "Kimi 客户端内开通 Kimi Code。",
+   "cap": "仅官方客户端；50 次/天；超额需会员。",
+   "trap": "50 次/天看着够，但 32k 上下文对长文件不够用；大仓分析会频繁截断。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://www.kimi.com/",
+   "src": "community",
+   "tags": [
+    "国内直连"
+   ]
+  },
+  {
+   "id": "fb-grok",
+   "name": "Grok Build Free（X 订阅）",
+   "vendor": "xAI",
+   "region": "global",
+   "cat": "agent",
+   "value": "低",
+   "amount": "Limited，官方未公布具体次数",
+   "unit": "额度",
+   "how": "X 账号登录 Grok Build CLI / App，Free 档可试。",
+   "cap": "仅\"Limited\"；Grok 4.7 Fast 不含；付费从 $8 起。",
+   "trap": "官方只写\"Limited\"，没有数字；拿它做容量评估等于没有评估。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://x.ai/cli",
+   "src": "official",
+   "tags": [
+    "额度不公开"
+   ]
+  },
+  {
+   "id": "fb-muse",
+   "name": "Muse Code · 没有免费档",
+   "vendor": "Meta",
+   "region": "global",
+   "cat": "agent",
+   "value": "无",
+   "amount": "无免费层，最低 $5/月",
+   "unit": "—",
+   "how": "必须订阅 Everyday $5 起，或按量付 API。",
+   "cap": "无免费额度；订阅默认 Contributor 模式（允许训练）。",
+   "trap": "这是本条目的意义：2026 年新出的主力工具里，Muse 是少数明确\"没有免费档\"的，别在清单里找它的白嫖入口。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://dev.meta.ai/products/muse-code",
+   "src": "official",
+   "tags": [
+    "没有免费档",
+    "反面案例"
+   ]
+  },
+  {
+   "id": "fb-ghstudent",
+   "name": "GitHub Student Developer Pack",
+   "vendor": "GitHub",
+   "region": "global",
+   "cat": "edu",
+   "value": "高",
+   "amount": "Copilot Pro 免费 + 一批开发工具",
+   "unit": "权益",
+   "how": "用学校邮箱 / 学籍证明申请，通过后 Copilot Pro 直接免费用。",
+   "cap": "仅在读学生；需每学年复核；部分权益有地区限制。",
+   "trap": "毕业后会失效，别把课程项目之外的 production 依赖建在上面。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://education.github.com/pack",
+   "src": "official",
+   "tags": [
+    "学生"
+   ]
+  },
+  {
+   "id": "fb-awsactivate",
+   "name": "AWS Activate",
+   "vendor": "AWS",
+   "region": "global",
+   "cat": "edu",
+   "value": "高",
+   "amount": "最高 $100K 云 credits（分档）",
+   "unit": "USD",
+   "how": "创业公司 / 加速器成员申请，需审核。",
+   "cap": "需公司主体与审核；有效期 1–2 年；不能用于所有服务。",
+   "trap": "这是云资源 credits，不是\"AI token 免费\"；Kiro / Bedrock 的用量要先确认在覆盖范围内。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://aws.amazon.com/activate/",
+   "src": "official",
+   "tags": [
+    "创业",
+    "需审核"
+   ]
+  },
+  {
+   "id": "fb-google-startups",
+   "name": "Google for Startups Cloud",
+   "vendor": "Google",
+   "region": "global",
+   "cat": "edu",
+   "value": "高",
+   "amount": "最高 $350K（AI 优先档）",
+   "unit": "USD",
+   "how": "创业公司申请，需验证融资 / 加速器背景。",
+   "cap": "分档审核；有效期 2 年；部分 AI 服务单独计量。",
+   "trap": "额度大但门槛高，个人开发者基本拿不到；别把它写进个人预算。",
+   "expiry": null,
+   "verified": "2026-11-01",
+   "url": "https://cloud.google.com/startup",
+   "src": "official",
+   "tags": [
+    "创业",
+    "需审核"
+   ]
+  },
+  {
+   "id": "fb-hunyuan",
+   "name": "腾讯混元 Hy3 限时免费（已到期）",
+   "vendor": "腾讯混元",
+   "region": "cn",
+   "cat": "model",
+   "value": "无",
+   "amount": "原：夜间 23:00–08:00 限免 + WorkBuddy 每日赠送",
+   "unit": "限时",
+   "how": "客户端内直接调用，无需领取；官方把本轮限免延期到 2026-10-31。",
+   "cap": "仅限活动期；11-01 起恢复正常计费；非活动时段的调用一直计费。",
+   "trap": "这条留着当证据：限免会到期，而且只提前几天通知。把\"免费模型\"写进夜班回归的人，11 月起会开始收到账单。",
+   "expiry": "2026-10-31",
+   "verified": "2026-11-01",
+   "url": "https://copilot.tencent.com/",
+   "src": "official",
+   "tags": [
+    "已过期",
+    "限免"
+   ]
+  }
+ ]
+}

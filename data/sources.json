@@ -1,0 +1,294 @@
+{
+ "groups": [
+  {
+   "id": "official",
+   "name": "官方定价与产品页",
+   "icon": "🏛️",
+   "items": [
+    {
+     "n": "Anthropic Pricing",
+     "u": "https://www.anthropic.com/pricing",
+     "d": "Claude Code 订阅档位（Pro / Max 5x / Max 20x）",
+     "usedFor": "Claude Code 成本"
+    },
+    {
+     "n": "OpenAI Codex",
+     "u": "https://openai.com/codex/",
+     "d": "Codex 产品形态与 ChatGPT 订阅绑定关系",
+     "usedFor": "Codex 定位"
+    },
+    {
+     "n": "DeepSeek Platform",
+     "u": "https://platform.deepseek.com/",
+     "d": "API 价格、上下文长度、模型列表",
+     "usedFor": "DeepSeek API 按量成本"
+    },
+    {
+     "n": "智谱 GLM Coding Plan",
+     "u": "https://bigmodel.cn/",
+     "d": "Lite / Pro / Max 档位与积分规则",
+     "usedFor": "GLM 套餐"
+    },
+    {
+     "n": "火山方舟 Coding Plan",
+     "u": "https://www.volcengine.com/docs/82379/1928261",
+     "d": "Lite / Pro 额度、Base URL、工具白名单",
+     "usedFor": "火山方舟套餐"
+    },
+    {
+     "n": "阿里云百炼",
+     "u": "https://bailian.console.aliyun.com/",
+     "d": "Qwen Coding Plan 档位与模型",
+     "usedFor": "百炼套餐"
+    },
+    {
+     "n": "Moonshot Kimi",
+     "u": "https://platform.moonshot.cn/",
+     "d": "Kimi 会员档位、Kimi Code 归属",
+     "usedFor": "Kimi 套餐"
+    },
+    {
+     "n": "MiniMax",
+     "u": "https://www.minimaxi.com/",
+     "d": "M Plan 档位与 MiniMax Code 全端",
+     "usedFor": "MiniMax 套餐"
+    },
+    {
+     "n": "小米 MiMo",
+     "u": "https://mimo.mi.com/",
+     "d": "MiMo Token Plan 档位与 MiMo Code",
+     "usedFor": "小米套餐"
+    },
+    {
+     "n": "Meta Muse Code",
+     "d": "订阅 $5/$15/$50/$200；标准 API $1.25/$4.25 每百万 token",
+     "u": "https://dev.meta.ai/products/muse-code",
+     "usedFor": "Muse 工具与套餐"
+    },
+    {
+     "n": "xAI Grok Build",
+     "d": "X 订阅 $8/$30/$100/$200；Free 为 Limited",
+     "u": "https://x.ai/cli",
+     "usedFor": "Grok 工具与套餐"
+    },
+    {
+     "n": "GitHub Copilot Plans",
+     "d": "Free/Pro $10/Pro+ $39/Max $100/Business $19/Enterprise $39；2026-06-01 起 AI Credits",
+     "u": "https://github.com/features/copilot/plans",
+     "usedFor": "Copilot 工具与套餐"
+    },
+    {
+     "n": "Cursor Pricing",
+     "d": "X 订阅 $8/$30/$100/$200；第三方模型按 API 价",
+     "u": "https://cursor.com/pricing",
+     "usedFor": "Cursor 工具与套餐"
+    },
+    {
+     "n": "Kiro Pricing",
+     "d": "Free 50 credits；Pro $20/1000；Power $200/10000；超额 $0.04",
+     "u": "https://kiro.dev/pricing/",
+     "usedFor": "Kiro 工具与套餐"
+    },
+    {
+     "n": "Devin Pricing",
+     "d": "Free / Pro $20 / Max $200；原 Windsurf",
+     "u": "https://devin.ai/pricing",
+     "usedFor": "Devin 工具与套餐"
+    },
+    {
+     "n": "Google Antigravity",
+     "d": "个人免费档；AI Pro $19.99；Ultra 价格多次变动",
+     "u": "https://antigravity.google/pricing",
+     "usedFor": "Antigravity 工具与套餐"
+    }
+   ]
+  },
+  {
+   "id": "community",
+   "name": "社区与横向核对",
+   "icon": "💬",
+   "items": [
+    {
+     "n": "CreditsPlan",
+     "u": "https://creditsplan.com/",
+     "d": "国内 Coding Plan 横向比价，2026-10 口径",
+     "usedFor": "套餐价格交叉核对"
+    },
+    {
+     "n": "博客园 · Coding Plan 踩坑汇总",
+     "u": "https://www.cnblogs.com/",
+     "d": "超售 / 限流 / 抵扣规则的社区反馈",
+     "usedFor": "稳定性评分依据"
+    },
+    {
+     "n": "Pi (pi.dev)",
+     "u": "https://pi.dev/",
+     "d": "极简 harness 的设计取舍与 provider 列表",
+     "usedFor": "Pi 定位"
+    },
+    {
+     "n": "Hermes Agent",
+     "u": "https://hermes-agent.nousresearch.com/",
+     "d": "自学习循环、内置 cron、消息平台",
+     "usedFor": "Hermes 定位"
+    },
+    {
+     "n": "小米 MiMo Code",
+     "u": "https://github.com/XiaomiMiMo/MiMo-Code",
+     "d": "基于 OpenCode 的终端 Agent，MIT",
+     "usedFor": "MiMo Code 定位"
+    },
+    {
+     "n": "Qoder",
+     "u": "https://qoder.com/",
+     "d": "阿里 Qoder 多模型与定价",
+     "usedFor": "Qoder 定位"
+    },
+    {
+     "n": "腾讯 WorkBuddy",
+     "u": "https://www.workbuddy.cn/",
+     "d": "办公 Agent 工作台",
+     "usedFor": "WorkBuddy 定位"
+    },
+    {
+     "n": "Z.ai / ZCode",
+     "u": "https://z.ai/",
+     "d": "GLM 官方 harness",
+     "usedFor": "ZCode 定位"
+    }
+   ]
+  },
+  {
+   "id": "pricing_global",
+   "name": "AI 测试平台报价",
+   "icon": "▣",
+   "items": [
+    {
+     "n": "testRigor Pricing",
+     "d": "免费档用例公开；私有档报价制，第三方口径 $300–900/月",
+     "u": "https://testrigor.com/pricing/",
+     "usedFor": "testRigor 套餐"
+    },
+    {
+     "n": "mabl Pricing",
+     "d": "报价制；第三方估算 $450–500/月起",
+     "u": "https://www.mabl.com/pricing",
+     "usedFor": "mabl 套餐"
+    },
+    {
+     "n": "QA Wolf Pricing",
+     "d": "自建平台 1¢/AI credit + 15¢/runner minute；托管服务按 flow",
+     "u": "https://www.qawolf.com/pricing",
+     "usedFor": "QA Wolf 套餐"
+    },
+    {
+     "n": "Katalon Pricing",
+     "d": "Pro 年付 $1000/席（约 $83/月）；BYO-LLM",
+     "u": "https://katalon.com/pricing",
+     "usedFor": "Katalon 套餐"
+    },
+    {
+     "n": "Applitools Pricing",
+     "d": "Eyes Starter 年付约 $667/月，月付约 $899",
+     "u": "https://applitools.com/pricing/",
+     "usedFor": "Applitools 套餐"
+    }
+   ]
+  },
+  {
+   "id": "research",
+   "name": "调研与行业数据",
+   "icon": "◎",
+   "items": [
+    {
+     "n": "PractiTest · State of Testing 2026",
+     "d": "76.8% 团队用 AI；用例创建 69.6%、维护 59.6%、风险识别 19.9%",
+     "u": "https://www.practitest.com/state-of-testing/",
+     "usedFor": "AI 冲击页"
+    },
+    {
+     "n": "Capgemini · World Quality Report 2025-26",
+     "d": "89% 试点/部署、37% 生产、15% 规模化；平均提升 19%；63% 要求 GenAI 技能",
+     "u": "https://www.capgemini.com/insights/research-library/world-quality-report/",
+     "usedFor": "AI 冲击页"
+    },
+    {
+     "n": "Google Cloud · DORA 2025",
+     "d": "AI 是放大器；缺乏自动化测试与快速反馈时与稳定性负相关",
+     "u": "https://cloud.google.com/blog/products/devops-sre/announcing-the-2025-dora-report",
+     "usedFor": "AI 冲击页"
+    },
+    {
+     "n": "Challenger, Gray & Christmas",
+     "d": "2026 上半年美国 443,604 个裁员中 101,743 个把 AI 列为原因（23%）",
+     "u": "https://www.challengergray.com/",
+     "usedFor": "AI 冲击页"
+    },
+    {
+     "n": "GitClear 2026",
+     "d": "复制粘贴代码 15.7%；错误掩盖写法 +47%；AI 代码缺陷约 1.7 倍",
+     "u": "https://www.gitclear.com/",
+     "usedFor": "AI 冲击页"
+    },
+    {
+     "n": "Forrester 2026（媒体转述）",
+     "d": "QA 岗位 -18%，测试策略架构师 +24%",
+     "u": "https://www.forrester.com/",
+     "usedFor": "AI 冲击页 / 角色页"
+    }
+   ]
+  },
+  {
+   "id": "news",
+   "name": "新闻与更新源",
+   "icon": "◷",
+   "items": [
+    {
+     "n": "OpenAI News RSS",
+     "d": "官方公告；自动管线每週抓取",
+     "u": "https://openai.com/news/rss.xml",
+     "usedFor": "AI 大事"
+    },
+    {
+     "n": "Anthropic News RSS",
+     "d": "官方公告；部分网络环境 403",
+     "u": "https://www.anthropic.com/rss.xml",
+     "usedFor": "AI 大事"
+    },
+    {
+     "n": "Google AI Blog RSS",
+     "d": "官方模型与产品公告",
+     "u": "https://blog.google/technology/ai/rss/",
+     "usedFor": "AI 大事"
+    },
+    {
+     "n": "GitHub Blog RSS",
+     "d": "Copilot 计费、隐私与产品变更",
+     "u": "https://github.blog/feed/",
+     "usedFor": "AI 大事"
+    },
+    {
+     "n": "机器之心 / 量子位 / InfoQ 中文 / 开源中国",
+     "d": "国内 AI 与工程动态；标题党词已在管线里过滤",
+     "u": "https://www.jiqizhixin.com/rss",
+     "usedFor": "AI 大事"
+    }
+   ]
+  }
+ ],
+ "method": [
+  "价格优先级：官方定价页 > 官方文档 > 可靠媒体/第三方报价。报价制产品保留区间，不假装是标价。",
+  "美元统一按 7.25 折算人民币，仅为同表比较；下单以支付时汇率为准。",
+  "免费额度：只写能指到官方页的额度，每条必须有「坑」；过期活动不删除，标成「已过期」留作证据。",
+  "新闻：人工条目必须写「对测试的影响」；自动抓取条目单独标记、未复核，不混进人工结论。",
+  "角色「AI 渗透度」是本站按任务结构做的判断，不是调研数据；调研数据单独标注来源。",
+  "自动更新只做两件事：抓 RSS、给价格页做指纹告警。改价永远要人工确认——自动解析会把「$20 起」读成「$20」。"
+ ],
+ "caveats": [
+  "报价制产品（testRigor / mabl）的真实成交价取决于年框、席位与测试量，站内区间只用于预算量级。",
+  "部分海外新闻源在特定网络环境会 403 / 超时，运行报告里如实记录，不影响已有人工条目。",
+  "模型与套餐的额度单位不统一（请求数 / Credits / 积分 / 共享池），跨厂商只能按「同一任务实测消耗」比较。",
+  "汇率、税费、地区定价会变；站内所有价格都带核验日期，超过 45 天会在页面上标黄。",
+  "AI 对岗位的影响存在滞后与结构性差异，任何单一调研都不能直接推导到你的团队。"
+ ]
+}

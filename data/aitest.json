@@ -1,0 +1,164 @@
+{
+  "intro": "这一页只回答一个问题：做测试的人，该用哪些 AI 工具，而不是编程工具清单里的第 N 项。市面上的对比站都在比「谁写代码强」，没人按「能不能把测试这件事跑起来」来分。",
+  "disclaimer": "测试类工具的成熟度和编程工具差一个数量级。这里给的是「现在能用在什么位置」，不是「已经能替代人」。凡是标「实验」的，都别放进生产流水线。",
+  "groups": [
+    {
+      "id": "ui",
+      "name": "UI / E2E 自动化",
+      "icon": "🖱️",
+      "desc": "浏览器和移动端的界面自动化，是 AI 测试落地最多的一块",
+      "items": [
+        {
+          "id": "pw-mcp",
+          "name": "Playwright MCP",
+          "vendor": "微软官方",
+          "license": "开源",
+          "maturity": "stable",
+          "cost": "免费（自带模型费用）",
+          "link": "https://github.com/microsoft/playwright-mcp",
+          "what": "把 Playwright 包成 MCP server，让 Agent 直接操作浏览器。用无障碍树（accessibility tree）而不是截图，所以不需要视觉模型。",
+          "why": "这是目前最靠谱的一条路：确定性高、不靠识图、定位基于语义角色而非像素。官方明确说它是给「需要持续浏览器上下文」的场景用的。",
+          "how": "装 @playwright/mcp → 接进 DSH / Claude Code / Codex → 让它读页面快照、点元素、断言。",
+          "good": ["基于无障碍树，不依赖截图和视觉模型", "确定性工具调用，歧义少", "官方维护，支持 CDP / 持久 profile / 扩展连接", "有 --caps=testing 提供断言类工具"],
+          "bad": ["token 消耗大：快照树很长", "复杂 SPA 的语义结构可能不够用", "仍是「辅助写用例」，不是「自动出可维护用例」"],
+          "pos": "做 UI 自动化的第一选择。适合探索性测试、自愈用例、长流程验证。"
+        },
+        {
+          "id": "pw-cli",
+          "name": "Playwright CLI + Skills",
+          "vendor": "微软官方",
+          "license": "开源",
+          "maturity": "stable",
+          "cost": "免费（自带模型费用）",
+          "link": "https://github.com/microsoft/playwright-cli",
+          "what": "官方给「编码 Agent」准备的 CLI 形态，把浏览器操作暴露成命令 + Skill，而不是 MCP 工具。",
+          "why": "官方 README 直说：CLI 比 MCP 更省 token，因为不用把庞大的工具 schema 和冗长的无障碍树塞进上下文。高频跑的场景应该用它。",
+          "how": "装 playwright-cli → 在 Agent 里作为命令调用 → 配合 Skill 固化流程。",
+          "good": ["比 MCP 省 token，适合长会话", "命令式，可脚本化、可进 CI", "官方推荐给编码 Agent 使用"],
+          "bad": ["没有持久浏览器上下文，多步交互要自己管状态", "生态比 MCP 新，示例少"],
+          "pos": "要进 CI、要跑很多遍的场景用它；探索和调试用 MCP。"
+        },
+        {
+          "id": "midscene",
+          "name": "Midscene.js",
+          "vendor": "字节 web-infra",
+          "license": "开源",
+          "maturity": "beta",
+          "cost": "免费（模型费用另计）",
+          "link": "https://midscenejs.com/",
+          "what": "基于视觉的 GUI Agent 与 E2E 测试框架，用自然语言描述操作，支持 Web / 移动端 / 桌面。",
+          "why": "它解决的是 Playwright 解决不了的场景：没有语义结构的界面（canvas、老系统、小程序），这时只能靠看图。",
+          "how": "接多模态模型 → 用自然语言写步骤 → 它截图理解后执行。",
+          "good": ["能处理无语义结构的界面", "自然语言写用例，门槛低", "覆盖 Web / 移动 / 桌面三端"],
+          "bad": ["依赖截图 + 多模态模型，慢且贵", "稳定性受视觉模型波动影响", "社区实测反馈「效果不如预期」的案例不少"],
+          "pos": "只在你没有别的办法时用（老系统、canvas 界面）。别当主力。"
+        },
+        {
+          "id": "browser-use",
+          "name": "browser-use 类",
+          "vendor": "开源社区",
+          "license": "开源",
+          "maturity": "experimental",
+          "cost": "免费（模型费用另计）",
+          "link": "https://github.com/browser-use/browser-use",
+          "what": "让 LLM 直接驱动浏览器的通用框架，不属于测试专用。",
+          "why": "适合一次性任务（抓数据、走一遍流程），不适合当回归测试基础设施。",
+          "how": "接模型 → 给目标 → 它自己规划步骤。",
+          "good": ["上手最快，几行代码跑起来", "适合探索和一次性任务"],
+          "bad": ["不稳定，同样输入结果可能不同", "没有断言体系，不适合回归", "调试困难"],
+          "pos": "别放进 CI。用来快速摸一个陌生系统还行。"
+        }
+      ]
+    },
+    {
+      "id": "api",
+      "name": "接口 / 契约测试",
+      "icon": "🔌",
+      "desc": "AI 在这里的定位是「加速写」，不是「替代判断」",
+      "items": [
+        {
+          "id": "openapi-mcp",
+          "name": "OpenAPI / Swagger MCP",
+          "vendor": "社区",
+          "license": "开源",
+          "maturity": "beta",
+          "cost": "免费",
+          "link": "https://github.com/search?q=openapi+mcp+server",
+          "what": "把 OpenAPI 文档变成 MCP 工具，Agent 可以直接调用接口、读 schema。",
+          "why": "接口测试最耗时的是「读懂契约 + 造对数据」。这两件事 AI 都能帮，前提是它能直接看到 schema。",
+          "how": "起一个 OpenAPI MCP server → 接进 Agent → 让它根据 schema 生成用例和夹具。",
+          "good": ["从 schema 直接生成用例，比人快", "能发现契约本身的问题（缺字段、类型不一致）", "生成的数据符合 schema 约束"],
+          "bad": ["schema 写得烂时，生成的用例也烂", "不理解业务语义，边界值要靠人补", "需要自己搭 server，不是开箱即用"],
+          "pos": "接口自动化的加速器。用它生成第一版，人负责补业务边界。"
+        },
+        {
+          "id": "pytest-ai",
+          "name": "pytest + AI 生成",
+          "vendor": "通用做法",
+          "license": "开源",
+          "maturity": "stable",
+          "cost": "免费（模型费用另计）",
+          "link": "https://docs.pytest.org/",
+          "what": "不是某个产品，是「让 AI 写 pytest、你来审」这个工作流。",
+          "why": "这是目前投入产出比最高的一件事。pytest 的断言、夹具、参数化结构清晰，AI 写得比人快，而且错了容易看出来。",
+          "how": "把现有接口文档 + 一个已有测试文件喂给 Agent → 让它按同样风格补新用例 → 你审 → 跑。",
+          "good": ["结构清晰，AI 出错时一眼能看出来", "夹具和参数化能复用，越写越快", "能进 CI，跑一万次成本几乎为零"],
+          "bad": ["AI 常写「看起来对但断言太弱」的用例", "mock 和真实环境的差异要人把关"],
+          "pos": "这是测试工程师最该先做的事。比学任何新工具都值。"
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "name": "测试数据与缺陷分析",
+      "icon": "🗂️",
+      "desc": "AI 擅长「从一堆噪音里找规律」，这正是缺陷归因需要的",
+      "items": [
+        {
+          "id": "log-analysis",
+          "name": "日志 / 堆栈归因",
+          "vendor": "通用做法",
+          "license": "—",
+          "maturity": "stable",
+          "cost": "按 token 计费，很便宜",
+          "link": "",
+          "what": "把失败日志、堆栈、网络请求一起丢给 Agent，让它判断是脚本问题还是产品缺陷。",
+          "why": "这是 AI 在测试里最被低估的用法。人看一千行日志会疲劳，AI 不会，而且它会把「这三条报错其实是同一个原因」指出来。",
+          "how": "失败时自动收集日志 + 截图 + 网络记录 → 交给 Agent → 输出「根因分类 + 证据 + 建议」。",
+          "good": ["能发现人眼漏掉的关联", "批量处理时优势明显", "输出可以直接当缺陷单的初稿"],
+          "bad": ["可能编造不存在的调用栈", "上下文不够时会瞎猜", "敏感日志要考虑合规"],
+          "pos": "几乎零成本、立刻能用。建议第一周就上。"
+        },
+        {
+          "id": "data-factory",
+          "name": "测试数据工厂",
+          "vendor": "通用做法",
+          "license": "—",
+          "maturity": "beta",
+          "cost": "按 token 计费",
+          "link": "",
+          "what": "让 Agent 根据表结构和业务规则，生成符合约束的测试数据 + 清理脚本。",
+          "why": "造数据是测试里最枯燥、最容易出错的一环。AI 生成 + 人审约束，比手写快得多。",
+          "how": "给表结构 + 业务规则 → 生成 SQL / 脚本 → 人审 → 在隔离环境跑。",
+          "good": ["速度快，尤其是多表关联的场景", "能生成边界值组合"],
+          "bad": ["可能生成违反业务约束的数据", "绝对不能让它在生产库上跑", "敏感字段要脱敏"],
+          "pos": "在隔离环境用。生产数据永远不要交给 AI 生成。"
+        }
+      ]
+    }
+  ],
+  "matrix": {
+    "note": "同一个工具在不同阶段的价值完全不同。这张表按「你处于哪个阶段」给建议，不是给工具排名。",
+    "rows": [
+      { "phase": "Phase 0 · 刚上手", "use": ["日志归因", "让 AI 读需求文档"], "skip": ["UI 自动化框架", "数据工厂"], "why": "先把「问 AI」变成习惯，别一上来搭框架" },
+      { "phase": "Phase 1 · 脚本化", "use": ["pytest + AI 生成", "Playwright CLI"], "skip": ["Midscene", "browser-use"], "why": "要的是能进 CI 的确定性，不是炫技" },
+      { "phase": "Phase 2 · 沉淀资产", "use": ["Playwright MCP", "OpenAPI MCP", "把流程写成 Skill"], "skip": ["一次性 Agent 框架"], "why": "这阶段的目标是「别人也能用」，不是「我能跑」" },
+      { "phase": "Phase 3 · 平台化", "use": ["全部接进流水线", "定时值守 + 自动归因"], "skip": ["任何需要人工盯着的工具"], "why": "平台化的敌人是「必须有人在场」" }
+    ]
+  },
+  "judgments": [
+    { "title": "别用视觉方案解决有语义结构的问题", "body": "Midscene 这类截图方案，在能用 Playwright 无障碍树的地方是纯浪费——更慢、更贵、更不稳。只有 canvas、老系统、小程序这类「没有语义」的界面才值得上视觉。" },
+    { "title": "AI 在测试里最强的不是「写用例」，是「看日志」", "body": "写用例的上限是人给的规格，AI 只是加速。但日志归因是人真的做不好——疲劳、遗漏关联、看多了会麻木。这件事 AI 立刻就有价值。" },
+    { "title": "所有「自动生成用例」都要人审，没有例外", "body": "AI 会写出「断言太弱、看着通过其实没测」的用例。这种用例比没有用例更危险，因为它给了你虚假的安全感。" }
+  ]
+}

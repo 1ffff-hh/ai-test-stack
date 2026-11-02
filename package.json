@@ -1,0 +1,28 @@
+{
+  "name": "ai-test-stack",
+  "version": "2.2.0",
+  "private": true,
+  "description": "单文件、零外部依赖、可离线打开的 AI 工具选型 × 测试角色 × AI 冲击决策站",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "site": "node scripts/build-site.js",
+    "serve": "node scripts/serve.js",
+    "preview": "node build.js && node scripts/build-site.js && node scripts/serve.js",
+    "pii": "node scripts/check-pii.js",
+    "pii:self-test": "node scripts/check-pii.js --self-test",
+    "audit": "node scripts/a11y-audit.js",
+    "verify": "node scripts/verify.js",
+    "check": "node build.js && node scripts/check-pii.js --self-test && node scripts/check-pii.js && node scripts/a11y-audit.js && node scripts/verify.js",
+    "refresh": "node scripts/refresh.js",
+    "refresh:dry": "node scripts/refresh.js --dry",
+    "refresh:offline": "node scripts/refresh.js --offline",
+    "shots": "node scripts/shots.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.0"
+  }
+}

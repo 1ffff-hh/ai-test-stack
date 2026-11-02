@@ -1,0 +1,69 @@
+name: 数据纠错
+description: 价格、额度、限制或来源链接不对 —— 这个项目最需要的贡献
+title: "[数据] "
+labels: ["data"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢来纠错。这个站最值钱的东西是「数据可信」，一条错价会毁掉整页。
+        请把四项填全；**没有来源链接的，不会受理**。
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 哪一类问题
+      options:
+        - 价格不对
+        - 额度 / 限制不对
+        - 套餐已停售或改名
+        - 免费额度已过期 / 领法变了
+        - 来源链接失效
+        - 工具能力或评分有异议
+        - 其它
+    validations:
+      required: true
+  - type: input
+    id: entry
+    attributes:
+      label: 哪一条
+      description: 页面上的条目名，或 data/*.json 里的 id
+      placeholder: 例：火山方舟 Lite / 或 plans.json 的 volc
+    validations:
+      required: true
+  - type: input
+    id: current
+    attributes:
+      label: 现在显示什么
+      placeholder: 例：¥40 / 月
+    validations:
+      required: true
+  - type: input
+    id: correct
+    attributes:
+      label: 应该是什么
+      placeholder: 例：¥50 / 月
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 来源链接
+      description: 官网定价页或官方文档的 URL，不要第三方转述
+      placeholder: https://...
+    validations:
+      required: true
+  - type: input
+    id: verified
+    attributes:
+      label: 核验日期
+      description: 你是哪天看到这个页面的
+      placeholder: 2026-11-02
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 补充说明（可选）
+      description: 截图、活动价与常规价的区别、是否含税、是否有地区限制等
+    validations:
+      required: false

@@ -1,0 +1,56 @@
+name: pages
+
+# 推送到 main 就重建并部署到 GitHub Pages。
+# 部署前必须过四道门禁：数据校验（build.js）、脱敏扫描、对比度、功能验收。
+# 门禁不过就不部署 —— 宁可站点停在上一版，也不发一版坏的。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 装 Playwright（门禁要开真浏览器）
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: 四道门禁
+        run: npm run check
+        env:
+          PW_CHANNEL: chromium
+
+      - name: 生成发布目录 _site
+        run: node scripts/build-site.js
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

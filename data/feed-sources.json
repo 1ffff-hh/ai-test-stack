@@ -1,0 +1,211 @@
+{
+  "updated": "2026-11-01",
+  "note": "自动更新管线配置。enabled=false 的源不会抓取；all 表示不按关键词过滤。",
+  "keywords": [
+    "AI",
+    "AI编程",
+    "大模型",
+    "LLM",
+    "agent",
+    "智能体",
+    "GPT",
+    "Claude",
+    "Gemini",
+    "Grok",
+    "Muse",
+    "Qwen",
+    "通义",
+    "DeepSeek",
+    "Kimi",
+    "GLM",
+    "智谱",
+    "豆包",
+    "MiniMax",
+    "Copilot",
+    "Cursor",
+    "Trae",
+    "Qoder",
+    "文心快码",
+    "CodeBuddy",
+    "Playwright",
+    "Cypress",
+    "测试",
+    "test automation",
+    "QA",
+    "评测",
+    "降价",
+    "涨价",
+    "模型下线",
+    "开源模型"
+  ],
+  "feeds": [
+    {
+      "id": "openai",
+      "name": "OpenAI News",
+      "url": "https://openai.com/news/rss.xml",
+      "region": "global",
+      "kind": "product",
+      "enabled": true
+    },
+    {
+      "id": "anthropic",
+      "name": "Anthropic News",
+      "url": "https://www.anthropic.com/rss.xml",
+      "region": "global",
+      "kind": "product",
+      "enabled": true
+    },
+    {
+      "id": "googleai",
+      "name": "Google AI Blog",
+      "url": "https://blog.google/technology/ai/rss/",
+      "region": "global",
+      "kind": "model",
+      "enabled": true
+    },
+    {
+      "id": "deepmind",
+      "name": "Google DeepMind",
+      "url": "https://deepmind.google/blog/rss.xml",
+      "region": "global",
+      "kind": "model",
+      "enabled": true
+    },
+    {
+      "id": "hf",
+      "name": "Hugging Face Blog",
+      "url": "https://huggingface.co/blog/feed.xml",
+      "region": "global",
+      "kind": "model",
+      "enabled": true
+    },
+    {
+      "id": "github",
+      "name": "GitHub Blog",
+      "url": "https://github.blog/feed/",
+      "region": "global",
+      "kind": "product",
+      "enabled": true
+    },
+    {
+      "id": "techcrunch-ai",
+      "name": "TechCrunch AI",
+      "url": "https://techcrunch.com/category/artificial-intelligence/feed/",
+      "region": "global",
+      "kind": "funding",
+      "enabled": true
+    },
+    {
+      "id": "verge-ai",
+      "name": "The Verge AI",
+      "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml",
+      "region": "global",
+      "kind": "product",
+      "enabled": true
+    },
+    {
+      "id": "jiqizhixin",
+      "name": "机器之心",
+      "url": "https://www.jiqizhixin.com/rss",
+      "region": "cn",
+      "kind": "model",
+      "enabled": true
+    },
+    {
+      "id": "qbitai",
+      "name": "量子位",
+      "url": "https://www.qbitai.com/feed",
+      "region": "cn",
+      "kind": "model",
+      "enabled": true
+    },
+    {
+      "id": "infoq-cn",
+      "name": "InfoQ 中文",
+      "url": "https://www.infoq.cn/feed",
+      "region": "cn",
+      "kind": "product",
+      "enabled": true
+    },
+    {
+      "id": "oschina",
+      "name": "开源中国",
+      "url": "https://www.oschina.net/news/rss",
+      "region": "cn",
+      "kind": "product",
+      "enabled": true
+    }
+  ],
+  "pricing": [
+    {
+      "id": "anthropic",
+      "name": "Anthropic Pricing",
+      "url": "https://www.anthropic.com/pricing"
+    },
+    {
+      "id": "openai",
+      "name": "OpenAI ChatGPT Pricing",
+      "url": "https://openai.com/chatgpt/pricing/"
+    },
+    {
+      "id": "copilot",
+      "name": "GitHub Copilot Plans",
+      "url": "https://github.com/features/copilot/plans"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor Pricing",
+      "url": "https://cursor.com/pricing"
+    },
+    {
+      "id": "muse",
+      "name": "Meta Muse Code",
+      "url": "https://dev.meta.ai/products/muse-code"
+    },
+    {
+      "id": "grok",
+      "name": "xAI Grok / X",
+      "url": "https://x.ai/cli"
+    },
+    {
+      "id": "kiro",
+      "name": "Kiro Pricing",
+      "url": "https://kiro.dev/pricing/"
+    },
+    {
+      "id": "devin",
+      "name": "Devin Pricing",
+      "url": "https://devin.ai/pricing"
+    },
+    {
+      "id": "antigravity",
+      "name": "Google Antigravity",
+      "url": "https://antigravity.google/pricing"
+    },
+    {
+      "id": "trae",
+      "name": "Trae CN Pricing",
+      "url": "https://www.trae.cn/pricing"
+    },
+    {
+      "id": "qoder",
+      "name": "Qoder Pricing",
+      "url": "https://qoder.com/pricing"
+    },
+    {
+      "id": "comate",
+      "name": "文心快码",
+      "url": "https://comate.baidu.com/"
+    },
+    {
+      "id": "codebuddy",
+      "name": "腾讯 CodeBuddy",
+      "url": "https://copilot.tencent.com/"
+    },
+    {
+      "id": "testrigor",
+      "name": "testRigor Pricing",
+      "url": "https://testrigor.com/pricing/"
+    }
+  ]
+}

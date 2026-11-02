@@ -1,0 +1,20 @@
+# 依赖与本地环境
+node_modules/
+.env
+.env.*
+
+# 本地运行产物
+.shots/
+verify.json
+_site/
+*.log.tmp
+
+# 内部材料：交接报告、错误日志。本地保留，不进公开仓库
+docs/internal/
+errors.log
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

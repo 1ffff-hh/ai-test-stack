@@ -1,0 +1,315 @@
+{
+ "criteria": [
+  {
+   "id": "onboard",
+   "name": "上手难度",
+   "short": "上手",
+   "icon": "↗",
+   "desc": "新手多久能跑通第一个真实任务"
+  },
+  {
+   "id": "cn",
+   "name": "国内可用性",
+   "short": "国内",
+   "icon": "◎",
+   "desc": "网络可达 / 支付方式 / 账号风控"
+  },
+  {
+   "id": "eco",
+   "name": "工具插件生态",
+   "short": "生态",
+   "icon": "◇",
+   "desc": "MCP / Skills / Hooks / IDE / 社区模板"
+  },
+  {
+   "id": "model",
+   "name": "模型编码能力",
+   "short": "模型",
+   "icon": "◈",
+   "desc": "复杂重构 / 长上下文 / 多文件"
+  },
+  {
+   "id": "cost",
+   "name": "成本友好度",
+   "short": "成本",
+   "icon": "¥",
+   "desc": "同等用量下的实际花费"
+  },
+  {
+   "id": "auto",
+   "name": "自动化可编排",
+   "short": "编排",
+   "icon": "⚙",
+   "desc": "CI / 脚本 / 子代理 / 定时"
+  },
+  {
+   "id": "test",
+   "name": "测试工程适配",
+   "short": "测试",
+   "icon": "◇",
+   "desc": "UI/API 自动化、用例生成、缺陷归因"
+  },
+  {
+   "id": "future",
+   "name": "长期演进",
+   "short": "演进",
+   "icon": "↗",
+   "desc": "社区活跃度 / 迭代速度 / 可迁移性"
+  },
+  {
+   "id": "compliance",
+   "name": "数据合规",
+   "short": "合规",
+   "icon": "▣",
+   "desc": "代码是否出境 / 是否用于训练"
+  }
+ ],
+ "planCriteria": [
+  {
+   "id": "price",
+   "name": "价格",
+   "icon": "¥",
+   "desc": "月付标准价，越便宜分越高"
+  },
+  {
+   "id": "predict",
+   "name": "成本可预测",
+   "icon": "↘",
+   "desc": "月底账单会不会失控：固定月费高，按量计费低"
+  },
+  {
+   "id": "model",
+   "name": "模型质量",
+   "icon": "◈",
+   "desc": "底层模型的编码能力"
+  },
+  {
+   "id": "quota",
+   "name": "额度充足度",
+   "icon": "▦",
+   "desc": "高峰之外能不能跑满一天"
+  },
+  {
+   "id": "tool",
+   "name": "工具自由度",
+   "icon": "⊕",
+   "desc": "能用多少工具、能否接自建脚本"
+  },
+  {
+   "id": "stable",
+   "name": "稳定性",
+   "icon": "▣",
+   "desc": "限流频率、超售情况、服务可用性"
+  },
+  {
+   "id": "compliance",
+   "name": "合规",
+   "icon": "▣",
+   "desc": "数据是否出境 / 是否训练"
+  },
+  {
+   "id": "test",
+   "name": "测试适配",
+   "icon": "◇",
+   "desc": "能否被 pytest/CI 直接调用"
+  }
+ ],
+ "profiles": {
+  "beginner": {
+   "name": "AI 小白",
+   "icon": "◌",
+   "desc": "没碰过终端，想先能用起来",
+   "w": {
+    "onboard": 10,
+    "cn": 9,
+    "eco": 5,
+    "model": 6,
+    "cost": 7,
+    "auto": 3,
+    "test": 5,
+    "future": 4,
+    "compliance": 4
+   }
+  },
+  "qa": {
+   "name": "功能测试",
+   "icon": "◎",
+   "desc": "写用例、提缺陷为主，脚本刚起步",
+   "w": {
+    "onboard": 7,
+    "cn": 8,
+    "eco": 7,
+    "model": 5,
+    "cost": 7,
+    "auto": 4,
+    "test": 10,
+    "future": 3,
+    "compliance": 4
+   }
+  },
+  "aitest": {
+   "name": "AI 测试开发",
+   "icon": "◈",
+   "desc": "要进 CI、要沉淀资产、要能编排",
+   "w": {
+    "onboard": 4,
+    "cn": 7,
+    "eco": 9,
+    "model": 7,
+    "cost": 6,
+    "auto": 9,
+    "test": 10,
+    "future": 6,
+    "compliance": 4
+   }
+  },
+  "geek": {
+   "name": "极客自建",
+   "icon": "⚒",
+   "desc": "愿意读源码、自己写扩展",
+   "w": {
+    "onboard": 1,
+    "cn": 2,
+    "eco": 10,
+    "model": 10,
+    "cost": 4,
+    "auto": 10,
+    "test": 6,
+    "future": 8,
+    "compliance": 3
+   }
+  },
+  "budget": {
+   "name": "预算敏感",
+   "icon": "¥",
+   "desc": "每月预算卡在 ¥50 以内",
+   "w": {
+    "onboard": 8,
+    "cn": 9,
+    "eco": 5,
+    "model": 5,
+    "cost": 10,
+    "auto": 4,
+    "test": 6,
+    "future": 4,
+    "compliance": 3
+   }
+  },
+  "team": {
+   "name": "企业合规",
+   "icon": "▣",
+   "desc": "公司代码不能出境、要能审计",
+   "w": {
+    "onboard": 5,
+    "cn": 9,
+    "eco": 8,
+    "model": 7,
+    "cost": 4,
+    "auto": 8,
+    "test": 8,
+    "future": 5,
+    "compliance": 10
+   }
+  },
+  "global": {
+   "name": "海外无限制",
+   "icon": "◎",
+   "desc": "能稳定访问境外、能付美元",
+   "w": {
+    "onboard": 3,
+    "cn": 1,
+    "eco": 10,
+    "model": 10,
+    "cost": 3,
+    "auto": 8,
+    "test": 8,
+    "future": 8,
+    "compliance": 3
+   }
+  }
+ },
+ "planProfiles": {
+  "starter": {
+   "name": "先花 ¥50 试水",
+   "icon": "◌",
+   "w": {
+    "price": 10,
+    "model": 5,
+    "quota": 5,
+    "tool": 7,
+    "stable": 5,
+    "compliance": 4,
+    "test": 4,
+    "predict": 6
+   }
+  },
+  "daily": {
+   "name": "长期日常主力",
+   "icon": "↻",
+   "w": {
+    "price": 6,
+    "model": 8,
+    "quota": 7,
+    "tool": 8,
+    "stable": 8,
+    "compliance": 6,
+    "test": 6,
+    "predict": 6
+   }
+  },
+  "ci": {
+   "name": "要进 CI 流水线",
+   "icon": "⚙",
+   "w": {
+    "price": 5,
+    "model": 6,
+    "quota": 8,
+    "tool": 10,
+    "stable": 7,
+    "compliance": 6,
+    "test": 10,
+    "predict": 5
+   }
+  },
+  "enterprise": {
+   "name": "公司采购",
+   "icon": "▣",
+   "w": {
+    "price": 3,
+    "model": 7,
+    "quota": 7,
+    "tool": 6,
+    "stable": 9,
+    "compliance": 10,
+    "test": 6,
+    "predict": 7
+   }
+  }
+ },
+ "provenanceLevels": {
+  "official": {
+   "name": "官方",
+   "short": "官",
+   "color": "#5aa9ff",
+   "desc": "官方文档/定价页明写"
+  },
+  "measured": {
+   "name": "实测",
+   "short": "测",
+   "color": "#4ade80",
+   "desc": "本人实测或有可复现的外部跑分"
+  },
+  "community": {
+   "name": "社区",
+   "short": "社",
+   "color": "#ffc857",
+   "desc": "社区反馈汇总（issue / 论坛 / 博客）"
+  },
+  "inferred": {
+   "name": "推断",
+   "short": "推",
+   "color": "#a78bfa",
+   "desc": "根据架构与公开信息推断，未经实测"
+  }
+ }
+}

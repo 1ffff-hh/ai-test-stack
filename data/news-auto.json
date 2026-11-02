@@ -1,0 +1,625 @@
+{
+ "updated": "2026-11-01",
+ "events": [
+  {
+   "id": "auto-oschina-09c512c223",
+   "date": "2026-10-30",
+   "region": "cn",
+   "kind": "product",
+   "title": "拿注意力层当内存——有人在 Qwen 权重里编译了一颗 RISC-V CPU",
+   "body": "开发者 Divyansh Agrawal 往 Qwen 3.5 4B 的权重里编译了一颗真正的 RISC-V CPU，然后用模型自己的 Gated DeltaNet 注意力层当内存。他给这东西起名 Qwenputer。 先把话说明白：这不是插件、不是工具调用、也不是沙箱。CPU 完全跑在模型的前向传播里，能执行算术、跑 C 和 MicroPython 代码，不需要任何外部运行时。 原理...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503307/qwenputer-risc-v"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-8260e50a24",
+   "date": "2026-10-30",
+   "region": "cn",
+   "kind": "product",
+   "title": "MiniMax Code 团队把自己每天用的 16 个 Agent 技能开源了",
+   "body": "MiniMax Code 团队把他们自己天天在用的工作流和 skills 开源了。仓库开头第一句就把定位说清楚了：这不是提示词合集，也不是\"最佳实践\"清单，而是团队里的人每天真在用的东西——怎么让 AI 写的代码保持高标准、怎么判断一个任务该不该交给子 agent、一条长命令该等多久、长会话怎么不变得迟钝、每一轮到底是什么进了上...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503308"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-2d2b75a2a2",
+   "date": "2026-10-30",
+   "region": "cn",
+   "kind": "product",
+   "title": "这个 Agent 宿主把界面做成了纯文本，你想要什么形状自己让 Agent 改",
+   "body": "Herdr 的自我介绍里有一句话很吸睛：\"每一处界面都是你 agent 能改的文件。\" 它是一个给 coding agent 用的原生宿主——Claude Code、Codex、以及任何在终端里跑的 agent 都能住进去。想法是反过来的：不是让你去学一套新的 IDE 布局，而是把整个界面做成纯文本文件，你要什么形状，让 agent 自己改。 具体做法简单到有点...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503317/herdr-dev-agent-ide-runtime"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-6e1a5813bb",
+   "date": "2026-10-30",
+   "region": "cn",
+   "kind": "product",
+   "title": "DeepSeek 千亿融资名单曝光，国资占比从 2% 跳到 27%",
+   "body": "DeepSeek 第二轮融资拿下了 1055 亿元人民币，约 158 亿美元。The Information 拿到了出资名单，近 30 家投资者——比金额更有意思的是名单的构成变化。 腾讯和宁德时代仍是两大主力。腾讯两轮各出 100 亿；宁德时代及其董事长两轮分别出 50 亿和 100 亿。长鑫存储和中芯国际这两家芯片厂商也在里面，金额未披露。互联网...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503318"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-4f134d3f83",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "DoorDash said it’s only received ‘several hundred’ orders from AI agents",
+   "body": "DoorDash said that it is open to working with third-party agent makers.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/doordash-said-its-only-received-several-hundred-orders-from-ai-agents/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-06e6afaaf5",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "Zest’s new AI agent finds restaurants and books reservations over text",
+   "body": "Can't agree on where to eat? Zest's AI concierge can combine everyone's tastes, put restaurant options to a vote, and make the reservation.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-3d6ab3b4d4",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "Cursor 把创造 Agent 的那套工序做成了产品",
+   "body": "Cursor 把自己的家底掏出来了。10 月 20 日发布的 Agent SDK，就是他们构建 Bugbot、Security Reviewer、Rollouts 这些托管 agent 时用的那套框架——现在对外开放。 该团队提到，最有用的 agent 是贴合某个团队工作方式的。以前要这么做，基本等于二选一——要么接受一个按别人工作流设计好的产品，要么从零开始搭。Age...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503287/cursor-agent-sdk"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-31504530c2",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "Anthropic 平台负责人：多 Agent 跑起来之后，还有四个工程难题无法解决",
+   "body": "\"很多软件工程师正在经历一场身份危机。这份工作变了很多。有人沮丧，有人正玩得开心。\" 写这段话的是 Anthropic 平台负责人 Katelyn Lesse，她看到的是另一种可能：\"AI 要创造出它本可以创造的那些惊人成果，除非软件工程师把那些问题解决掉，否则做不到。这件事是生存级的，说实话这挺好玩。\" 她所说的\"那些问题\"，来自...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503288/new-problems-for-engineers-to-solve"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-64d3677da7",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "我只说了 15 句“哪里不对”，OpenAgents 就帮我做出了一个鹈鹕骑行 3D 游戏",
+   "body": "我只说了15句“哪里不对”，OpenAgents就帮我做出了一个鹈鹕骑行3D游戏 本文所用的作品、全部渲染截图与制作过程数据，均由作者本人授权发布。 一个 161 KB 的 HTML 文件，零外部素材。AI 真正干活 5.9 小时。而这位用户做的，只是看图、说一句哪里不对。 快来成为用户体验官，快速上手！ https://openagents.org/blog/...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503291"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-3bb6a190a5",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "OpenAI 隔离的 AI agent 通过 CPU 缓存互相通信",
+   "body": "OpenAI 做了个测试：把两个 agent 放进完全隔离的环境，跑在同一套硬件上，没有网络、没有共享文件，命令它们互相传递一个秘密。它们做到了——用的是处理器缓存。一个 agent 故意改写缓存里的数据，另一个测量加载时间的差异，把消息解码出来。这套手法正是著名 Spectre 和 Meltdown 攻击的原理。 这不是科幻设定，是 ...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503303/openai-securing-our-frontier-model-training-environment"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-19aab46742",
+   "date": "2026-10-29",
+   "region": "global",
+   "kind": "product",
+   "title": "Credit Saison achieves 954% ROI in a ChatGPT Enterprise pilot",
+   "body": "Credit Saison’s ChatGPT Enterprise pilot delivered 954% ROI. See how leaders and employees helped turn the results into companywide adoption.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/credit-saison"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-2212baa2a1",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Carbon: Our next frontier model",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-carbon-our-next-frontier-model/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-github-c3a85f641e",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "product",
+   "title": "Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents",
+   "body": "See how a record year of growth reached every industry, every field, and every kind of builder in the 2026 Octoverse report. The post Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents appeared first on The GitHub Blog .",
+   "impact": "",
+   "source": {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "github",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-0a02d539f7",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "product",
+   "title": "Legora is building the agentic operating system for legal work",
+   "body": "See how Legora uses OpenAI models, ChatGPT, and Codex to accelerate legal workflows, expand contract analysis, and free lawyers to focus on higher-value work.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/legora"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-24b87a718a",
+   "date": "2026-10-27",
+   "region": "global",
+   "kind": "product",
+   "title": "OpenAI expands partnership with Oracle to bring its apps to ChatGPT",
+   "body": "OpenAI and Oracle are expanding their partnership to bring business applications and AI agents into ChatGPT and power new Oracle offerings.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/oracle-apps-in-chatgpt"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-080dafe675",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "Introducing GPT-6.1 Terra",
+   "body": "Bringing fast and capable computer use to everyone",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/introducing-gpt-6-1-terra"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-d85c3038d4",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "ChatGPT’s expanding world of work",
+   "body": "Explore OpenAI Signals data on 165 work activities across nearly 100 countries, revealing how people use ChatGPT for work and how usage changes over time.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/chatgpt-expanding-world-of-work"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-8d34baaf86",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "GPT-6.1 Sol helps CodeRabbit strengthen security across complex codebases",
+   "body": "CodeRabbit uses GPT-6.1 Sol to investigate security risks across complex codebases. Its security agent helps developers review findings and proposed fixes.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/gpt-6-1-sol-coderabbit-code-security"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-6dd7f50a68",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
+   "body": "How Greptile uses GPT-6 Astra to test user workflows, Daybreak to strengthen security, and Codex to reduce rework.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/greptile-code-review-codex-astra"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-5a2e6d305c",
+   "date": "2026-10-23",
+   "region": "global",
+   "kind": "product",
+   "title": "Rapidly scaling online storage to serve over 1 billion ChatGPT users (Part II)",
+   "body": "Learn how OpenAI scaled Habitat with reliable multi-tenancy, global caching, and Azure Cosmos DB to deliver 12× faster reads for ChatGPT.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/scaling-storage-one-billion-users-part-two"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-github-896a48ef15",
+   "date": "2026-10-21",
+   "region": "global",
+   "kind": "product",
+   "title": "The bridge to agent-scale Git infrastructure",
+   "body": "We moved a copy of 99.99999% of GitHub's repositories to Azure. Here's how per-reference quorums will bring over the rest, and how object storage lets reads scale independently. The post The bridge to agent-scale Git infrastructure appeared first on The GitHub",
+   "impact": "",
+   "source": {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/engineering/architecture-optimization/the-bridge-to-agent-scale-git-infrastructure/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "github",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-github-2811cc7416",
+   "date": "2026-10-20",
+   "region": "global",
+   "kind": "product",
+   "title": "How 3 Java Champions are using GitHub Copilot for increased productivity",
+   "body": "Three Java Champions share how they use GitHub Copilot to solve problems, accelerate development, and keep humans responsible for the results. The post How 3 Java Champions are using GitHub Copilot for increased productivity appeared first on The GitHub Blog .",
+   "impact": "",
+   "source": {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/ai-and-ml/github-copilot/how-3-java-champions-are-using-github-copilot-for-increased-productivity/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "github",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-github-59ca2a8adc",
+   "date": "2026-10-19",
+   "region": "global",
+   "kind": "product",
+   "title": "How to continue a GitHub Copilot app session in VS Code",
+   "body": "Learn how to move an agent session from the GitHub Copilot app into VS Code without losing the conversation, code changes, or working context. The post How to continue a GitHub Copilot app session in VS Code appeared first on The GitHub Blog .",
+   "impact": "",
+   "source": {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/ai-and-ml/github-copilot/how-to-continue-a-github-copilot-app-session-in-vs-code/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "github",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-4bb6ea2a75",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Argon for Robotics",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-029ddfd209",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Developing Gemini 4 Argon responsibly and safely",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/developing-gemini-4-argon-responsibly-and-safely/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-googleai-b09e76dc49",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Argon: Built to solve your hardest problems",
+   "body": "<img src=\"https://storage.googleapis.com/gweb-uniblog-publish-prod/images/gemini-4-argon__blog-header__27.max-600x600.format-webp.webp\">We’re giving developers, enterprises, scientists, and consumers access to Gemini 4 Argon, our latest frontier model.",
+   "impact": "",
+   "source": {
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "googleai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-googleai-4023b516de",
+   "date": "2026-10-02",
+   "region": "global",
+   "kind": "model",
+   "title": "The latest AI news we announced in September 2026",
+   "body": "<img src=\"https://storage.googleapis.com/gweb-uniblog-publish-prod/images/September_AI_Recap_hero.max-600x600.format-webp.webp\">Here are Google’s latest AI updates from September 2026",
+   "impact": "",
+   "source": {
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-september-2026/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "googleai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-98a5fb330e",
+   "date": "2026-09-30",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Argon: our next era of frontier intelligence",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-argon-our-next-era-of-frontier-intelligence/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-1e91a49a3a",
+   "date": "2026-09-24",
+   "region": "global",
+   "kind": "model",
+   "title": "Introducing Gemini 3.8 Live with Live Avatar",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/introducing-gemini-38-live-with-live-avatar/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-165cb7ed55",
+   "date": "2026-09-23",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 3.8 text-to-speech says hello",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/say-hello-to-gemini-38-text-to-speech/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-c68c326b2d",
+   "date": "2026-09-15",
+   "region": "global",
+   "kind": "model",
+   "title": "Introducing Gemini 3.8 Live and 3.8 Live Extended Thinking",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/introducing-gemini-3-8-live-and-3-8-live-extended-thinking/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  }
+ ]
+}

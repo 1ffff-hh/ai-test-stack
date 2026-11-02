@@ -1,0 +1,15 @@
+{
+  "siteName": "AI Test Stack",
+  "subtitle": "AI Agent × Coding Plan × 测试角色与 AI 冲击",
+  "version": "2.2.0",
+  "lastBuilt": "2026-11-02",
+  "lastVerified": "2026-11-01",
+  "staleAfterDays": 30,
+  "disclaimer": "所有价格为公开页面核验值，市场变动极快（GLM 曾在 24 天内从 ¥49 涨到 ¥118；Gemini CLI 免费额度在 2026-06 被砍到几十次/天）。下单前务必以官网为准。评分是编辑判断，不是跑分。",
+  "owner": "测试工程师 · 功能测试 → AI 测试开发",
+  "repoNote": "数据与页面分离：改 data/*.json 即可更新，无需碰代码。",
+  "fx": {
+    "USD": 7.25,
+    "note": "美元按 7.25 折算人民币，仅用于同表比较；下单以支付时汇率为准。"
+  }
+}

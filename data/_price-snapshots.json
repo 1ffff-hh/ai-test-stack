@@ -1,0 +1,192 @@
+{
+ "updated": "2026-11-01",
+ "pages": {
+  "anthropic": {
+   "name": "Anthropic Pricing",
+   "url": "https://www.anthropic.com/pricing",
+   "hash": "a0fcd5ee7c19b97a",
+   "prices": [
+    "$0",
+    "$17",
+    "$200",
+    "$20",
+    "$100",
+    "$100",
+    "$200",
+    "$200",
+    "$100",
+    "$100",
+    "$200",
+    "$20",
+    "$25",
+    "$100",
+    "$125",
+    "$500",
+    "$20",
+    "$500",
+    "$0.25",
+    "$12.50",
+    "$10",
+    "$50",
+    "$0.20",
+    "$5"
+   ],
+   "at": "2026-11-01"
+  },
+  "copilot": {
+   "name": "GitHub Copilot Plans",
+   "url": "https://github.com/features/copilot/plans",
+   "hash": "2123a05b74463a7e",
+   "prices": [
+    "$0",
+    "$10",
+    "$39",
+    "$100",
+    "$15",
+    "$70",
+    "$200",
+    "$10",
+    "$ 39",
+    "$100",
+    "$5",
+    "$31",
+    "$100",
+    "$0.01",
+    "$0.01",
+    "$10",
+    "$0.01",
+    "$0.01",
+    "$10"
+   ],
+   "at": "2026-11-01"
+  },
+  "cursor": {
+   "name": "Cursor Pricing",
+   "url": "https://cursor.com/pricing",
+   "hash": "78a09598c32a7e22",
+   "prices": [
+    "$0",
+    "$8",
+    "$30",
+    "$100",
+    "$200",
+    "$0",
+    "$8",
+    "$30",
+    "$100",
+    "$200",
+    "$30",
+    "$0",
+    "$8",
+    "$30",
+    "$100",
+    "$200",
+    "$0",
+    "$8",
+    "$30",
+    "$100",
+    "$200",
+    "$30"
+   ],
+   "at": "2026-11-01"
+  },
+  "kiro": {
+   "name": "Kiro Pricing",
+   "url": "https://kiro.dev/pricing/",
+   "hash": "9570d0713d93789e",
+   "prices": [
+    "$0",
+    "$20",
+    "$0.04",
+    "$40",
+    "$0.04",
+    "$100",
+    "$0.04",
+    "$200",
+    "$0.04",
+    "$20",
+    "$40",
+    "$100",
+    "$200",
+    "$0.04",
+    "$20",
+    "$10.67",
+    "$0",
+    "$10.67",
+    "$20",
+    "$0.04",
+    "$5",
+    "$100",
+    "$0.04"
+   ],
+   "at": "2026-11-01"
+  },
+  "devin": {
+   "name": "Devin Pricing",
+   "url": "https://devin.ai/pricing",
+   "hash": "21f1d7e5ccb21258",
+   "prices": [
+    "$0",
+    "$20",
+    "$200",
+    "$80",
+    "$40",
+    "$0",
+    "$20",
+    "$200",
+    "$80",
+    "$40"
+   ],
+   "at": "2026-11-01"
+  },
+  "antigravity": {
+   "name": "Google Antigravity",
+   "url": "https://antigravity.google/pricing",
+   "hash": "48b1aa945dab285e",
+   "prices": [
+    "$0",
+    "$30",
+    "$0"
+   ],
+   "at": "2026-11-01"
+  },
+  "trae": {
+   "name": "Trae CN Pricing",
+   "url": "https://www.trae.cn/pricing",
+   "hash": "af55bc5b5fd6f4af",
+   "prices": [
+    "¥ 0",
+    "¥ 39",
+    "¥49",
+    "¥ 69",
+    "¥99",
+    "¥ 219",
+    "¥239",
+    "¥ 629",
+    "¥699"
+   ],
+   "at": "2026-11-01"
+  },
+  "qoder": {
+   "name": "Qoder Pricing",
+   "url": "https://qoder.com/pricing",
+   "hash": "558bb68b8f9549fe",
+   "prices": [],
+   "at": "2026-11-01"
+  },
+  "comate": {
+   "name": "文心快码",
+   "url": "https://comate.baidu.com/",
+   "hash": "e3b0c44298fc1c14",
+   "prices": [],
+   "at": "2026-11-01"
+  },
+  "codebuddy": {
+   "name": "腾讯 CodeBuddy",
+   "url": "https://copilot.tencent.com/",
+   "hash": "a313ae54e13445eb",
+   "prices": [],
+   "at": "2026-11-01"
+  }
+ }
+}

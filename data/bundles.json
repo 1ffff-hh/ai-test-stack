@@ -1,0 +1,1090 @@
+[
+ {
+  "id": "b_dsh_volc",
+  "name": "DSH + 火山方舟 Lite",
+  "title": "测试岗性价比之王",
+  "tool": "dsh",
+  "plan": "volc",
+  "monthlyCost": 40,
+  "tags": [
+   "国内直连",
+   "可脚本化",
+   "多模型"
+  ],
+  "summary": "壳能进 CI，电一个月 ¥40 还能试六家模型。日常写用例、改脚本、查日志全覆盖。",
+  "why": [
+   "DSH 有 CLI + API，能被 pytest 直接调用，这是进流水线的前提",
+   "火山 Lite 一个 Key 覆盖豆包/GLM/Kimi/MiniMax/DeepSeek，换模型不用换订阅",
+   "两件都是国内直连、人民币付款，半夜 CI 挂了能立刻排查"
+  ],
+  "watch": "火山晚高峰 429 较频繁，别把线上回归压在它身上；重活挂 DeepSeek API 兜底",
+  "fit": "国内测试工程师的第一套组合。预算 ¥100 以内，覆盖 90% 日常场景。",
+  "s": {
+   "coding": 8.5,
+   "value": 9.5,
+   "flex": 9,
+   "cn": 9.5,
+   "ci": 8,
+   "test": 8,
+   "ease": 5
+  },
+  "costBasis": "DSH 开源免费 + 火山 Lite ¥40",
+  "toolName": "DeepSeek Harness",
+  "planName": "火山方舟 Coding Plan Lite",
+  "planForm": "Coding Plan"
+ },
+ {
+  "id": "b_dsh_dsapi",
+  "name": "DSH + DeepSeek API 按量",
+  "title": "最省钱也最自由",
+  "tool": "dsh",
+  "plan": "dsapi",
+  "monthlyCost": 60,
+  "tags": [
+   "按量",
+   "零白名单",
+   "可进 CI"
+  ],
+  "summary": "没有月费门槛，用多少付多少。闲时半价，缓存命中输入 0.02 元/百万 token。",
+  "why": [
+   "没有任何工具白名单，接到自建测试平台、定时任务、批处理脚本都行",
+   "非高峰时段价格是高峰的一半，晚上跑批量回归特别划算",
+   "数据不出境，公司内部代码可以放心跑"
+  ],
+  "watch": "账单没有上限，跑批处理前先估算 token，设个预算告警",
+  "fit": "用量波动大、要跑 CI 批处理、或者讨厌被额度窗口卡住的人。",
+  "s": {
+   "coding": 8,
+   "value": 9,
+   "flex": 9.5,
+   "cn": 9,
+   "ci": 9,
+   "test": 8.5,
+   "ease": 4.5
+  },
+  "costBasis": "DSH 开源免费 + DeepSeek API 按量约 ¥60",
+  "toolName": "DeepSeek Harness",
+  "planName": "DeepSeek API 按量 · 中度用量",
+  "planForm": "按量 API"
+ },
+ {
+  "id": "b_dsh_ark_agent",
+  "name": "DSH + 火山方舟 Agent Plan",
+  "title": "要写代码也要出图出视频",
+  "tool": "dsh",
+  "plan": "ark_agent",
+  "monthlyCost": 40,
+  "tags": [
+   "多模态",
+   "Harness 工具链",
+   "含联网搜索"
+  ],
+  "summary": "订阅里自带联网搜索、内置记忆、Auto 路由，还能调 Seedance 出视频、Seedream 出图。",
+  "why": [
+   "做 UI 测试要生成测试图片/对比图，直接用 Seedream，不用另买图床服务",
+   "内置联网搜索省掉自己搭搜索工具的成本",
+   "Medium 档起送 7×24 在线智能伙伴"
+  ],
+  "watch": "长上下文有 7.5× 倍率，一次塞整个仓库会烧得很快；单价是 Coding Plan 的 2–2.5 倍",
+  "fit": "需要多模态素材的测试场景（视觉回归、截图对比、报告配图），或想一步到位要 Agent 工具链的人。",
+  "s": {
+   "coding": 8.2,
+   "value": 7,
+   "flex": 9,
+   "cn": 9.5,
+   "ci": 8.5,
+   "test": 8,
+   "ease": 4.5
+  },
+  "costBasis": "DSH 开源免费 + 方舟 Agent Plan Small ¥40",
+  "toolName": "DeepSeek Harness",
+  "planName": "火山方舟 Agent Plan Small",
+  "planForm": "Agent Plan"
+ },
+ {
+  "id": "b_dsh_bailian",
+  "name": "DSH + 百炼 Token Plan",
+  "title": "一份订阅覆盖文本到视频",
+  "tool": "dsh",
+  "plan": "bailian",
+  "monthlyCost": 39,
+  "tags": [
+   "Credits 统一",
+   "多模态",
+   "双协议"
+  ],
+  "summary": "¥39 限时价拿 11,500 Credits，文本、图像、视频、语音共用一套额度。",
+  "why": [
+   "Credits 统一计量，换模型不用换订阅，也不用重新算额度",
+   "支持 Anthropic / OpenAI 双协议，接 DSH 或 Claude Code 都行",
+   "团队版明确承诺数据不入训"
+  ],
+  "watch": "只有华北2（北京）地域；月额度不结转，用超即停服，得等下个订阅月",
+  "fit": "要在一个订阅里同时解决编码和多模态、且能接受月额度制的人。",
+  "s": {
+   "coding": 8,
+   "value": 9.5,
+   "flex": 8.5,
+   "cn": 8.5,
+   "ci": 8,
+   "test": 7.5,
+   "ease": 5.5
+  },
+  "costBasis": "DSH 开源免费 + 百炼 Token Plan Lite 限时 ¥39",
+  "toolName": "DeepSeek Harness",
+  "planName": "阿里云百炼 Token Plan Lite",
+  "planForm": "Token Plan"
+ },
+ {
+  "id": "b_dsh_glm",
+  "name": "DSH + GLM Coding Lite",
+  "title": "工具生态最全",
+  "tool": "dsh",
+  "plan": "glm",
+  "monthlyCost": 118,
+  "tags": [
+   "20+ 工具",
+   "Anthropic 协议",
+   "含 MCP"
+  ],
+  "summary": "GLM 官方支持 20+ 工具，包括 Claude Code 和 Codex，还带几类现成 MCP。",
+  "why": [
+   "官方 MCP 工具链（联网搜索、网页读取、开源仓库）开箱可用",
+   "非高峰按 50% 抵扣，白天忙晚上跑批量能省一半",
+   "Claude Code 兼容性目前国产里最好"
+  ],
+  "watch": "只剩 GLM 一个模型家族；隐私政策写明数据可能用于训练且无退出选项，公司代码慎用",
+  "fit": "确定长期用 GLM、且主要用 Claude Code 系工具的人。公司环境建议先确认合规。",
+  "s": {
+   "coding": 8.8,
+   "value": 5,
+   "flex": 7,
+   "cn": 9,
+   "ci": 8.5,
+   "test": 8,
+   "ease": 5
+  },
+  "costBasis": "DSH 开源免费 + GLM Coding Lite ¥118",
+  "toolName": "DeepSeek Harness",
+  "planName": "智谱 GLM Coding Lite",
+  "planForm": "Coding Plan"
+ },
+ {
+  "id": "b_cc_volc",
+  "name": "Claude Code + 火山方舟 Lite",
+  "title": "借最强的壳，用最便宜的油",
+  "tool": "cc",
+  "plan": "volc",
+  "monthlyCost": 40,
+  "tags": [
+   "壳最强",
+   "国产供电",
+   "需境外装壳"
+  ],
+  "summary": "Claude Code 的壳 + 火山方舟的模型。壳的能力天花板，油的价格地板。",
+  "why": [
+   "Claude Code 的 MCP / Skills / Hooks 生态目前仍是最成熟的",
+   "火山方舟提供 Anthropic 兼容协议，可以直接喂给 Claude Code",
+   "比订阅 Claude 官方省一大截，且人民币付款"
+  ],
+  "watch": "装 Claude Code 本身仍需境外网络（只是模型调用走国内）；部分高级功能依赖官方模型才完整",
+  "fit": "能用境外网络装壳、但希望模型走国内付款的人。",
+  "s": {
+   "coding": 9.2,
+   "value": 9,
+   "flex": 7.5,
+   "cn": 6,
+   "ci": 9,
+   "test": 8.5,
+   "ease": 3
+  },
+  "costBasis": "Claude Code 用第三方 Base URL 免订阅 + 火山 Lite ¥40（若要官方功能需另加 $20）",
+  "toolName": "Claude Code",
+  "planName": "火山方舟 Coding Plan Lite",
+  "planForm": "Coding Plan"
+ },
+ {
+  "id": "b_hermes_dsapi",
+  "name": "Hermes + DeepSeek API",
+  "title": "无人值守的测试值守员",
+  "tool": "hermes",
+  "plan": "dsapi",
+  "monthlyCost": 60,
+  "tags": [
+   "定时值守",
+   "自我进化",
+   "消息播报"
+  ],
+  "summary": "让 Agent 长期挂在服务器上，每天定时跑冒烟、把结果发到飞书群里，还会自己攒技能。",
+  "why": [
+   "唯一内置 cron + 20+ 消息平台网关的组合，天生适合值守",
+   "会把「怎么归因这类缺陷」写成 SKILL.md，下次自己用",
+   "DeepSeek API 按量计费，闲时跑批量几乎不花钱"
+  ],
+  "watch": "配置重，全在 config.yaml；安装源在境外，Windows 原生装还是早期测试版",
+  "fit": "走到「能沉淀 Skill」阶段之后、想让测试自动跑起来的人。新手别一上来就用。",
+  "s": {
+   "coding": 7,
+   "value": 8.5,
+   "flex": 9,
+   "cn": 6,
+   "ci": 9,
+   "test": 8.8,
+   "ease": 2
+  },
+  "costBasis": "Hermes 开源免费 + DeepSeek API 按量约 ¥60",
+  "toolName": "Hermes Agent",
+  "planName": "DeepSeek API 按量 · 中度用量",
+  "planForm": "按量 API"
+ },
+ {
+  "id": "b_qoder_qoder",
+  "name": "Qoder + 专业版",
+  "title": "小白第一套，开箱即用",
+  "tool": "qcode",
+  "plan": "qoder",
+  "monthlyCost": 59,
+  "tags": [
+   "图形界面",
+   "零配置",
+   "多模型"
+  ],
+  "summary": "IDE 里直接对话改代码，一个订阅可选 Qwen/DeepSeek/GLM/Kimi/MiniMax 多家模型。",
+  "why": [
+   "图形界面，不用背命令，第一天就能用起来",
+   "一个订阅多模型，按任务挑性价比",
+   "¥59 在 IDE 类里算克制"
+  ],
+  "watch": "图形界面为主，进不了 CI；模型多但都不是各自最强版本",
+  "fit": "完全没接触过 AI 编程工具、想先跑起来再说的测试同学。",
+  "s": {
+   "coding": 8,
+   "value": 8.5,
+   "flex": 6,
+   "cn": 9,
+   "ci": 3,
+   "test": 7,
+   "ease": 9.5
+  },
+  "costBasis": "Qoder IDE 与专业版订阅是同一产品，只计一次 ¥59",
+  "toolName": "QCode / Qoder",
+  "planName": "Qoder 专业版 Pro",
+  "planForm": "会员制"
+ },
+ {
+  "id": "b_pi_dsapi",
+  "name": "Pi + DeepSeek API",
+  "title": "把 Agent 嵌进测试平台",
+  "tool": "pi",
+  "plan": "dsapi",
+  "monthlyCost": 60,
+  "tags": [
+   "极简壳",
+   "RPC/SDK",
+   "开源"
+  ],
+  "summary": "Pi 有 RPC 和 SDK 两种嵌入模式，可以直接当组件塞进你的测试平台。",
+  "why": [
+   "四种运行模式（交互 / print-JSON / RPC / SDK），最适合被别的系统调用",
+   "MIT 开源，读得懂源码，改起来没有黑盒",
+   "模型随便接，不被任何一家绑死"
+  ],
+  "watch": "刻意不做 sub-agents / plan mode / 权限弹窗，新手会觉得「什么都没有」",
+  "fit": "AI 测试开发后期，要把 Agent 能力嵌进自研测试平台的人。",
+  "s": {
+   "coding": 7,
+   "value": 9,
+   "flex": 10,
+   "cn": 8,
+   "ci": 10,
+   "test": 8,
+   "ease": 2.5
+  },
+  "costBasis": "Pi 开源免费 + DeepSeek API 按量约 ¥60",
+  "toolName": "Pi",
+  "planName": "DeepSeek API 按量 · 中度用量",
+  "planForm": "按量 API"
+ },
+ {
+  "id": "b_mimo_mimo",
+  "name": "MiMo Code + Token Plan",
+  "title": "预算最紧的批处理执行器",
+  "tool": "mimo",
+  "plan": "mimo",
+  "monthlyCost": 39,
+  "tags": [
+   "超便宜",
+   "无窗口限制",
+   "开源"
+  ],
+  "summary": "¥39 给 41 亿 Credits，没有周限额也没有 5 小时限额，夜间还打 8 折。",
+  "why": [
+   "唯一没有 5 小时/周窗口限制的档位，连续跑不断",
+   "夜间 00:00–08:00 消耗 0.8×，正好适合挂定时批处理",
+   "MIT 开源，基于 OpenCode，兼容 Cursor/Cline/Zed"
+  ],
+  "watch": "模型本身（mimo-v2.6）在复杂重构上不如一线；产品线很新，长期性待观察",
+  "fit": "预算极紧、任务偏「长而重复」的批处理场景。不适合当攻坚手。",
+  "s": {
+   "coding": 6.5,
+   "value": 10,
+   "flex": 7,
+   "cn": 9,
+   "ci": 8,
+   "test": 6.5,
+   "ease": 7
+  },
+  "costBasis": "MiMo Code 开源免费 + Token Plan Lite ¥39",
+  "toolName": "小米 MiMo Code",
+  "planName": "小米 MiMo Token Plan Lite",
+  "planForm": "Token Plan"
+ },
+ {
+  "id": "b_zcode_glm",
+  "name": "ZCode + GLM Coding Lite",
+  "title": "官方座舱，下载即用",
+  "tool": "zcode",
+  "plan": "glm",
+  "monthlyCost": 118,
+  "tags": [
+   "官方 GUI",
+   "多智能体",
+   "绑 GLM"
+  ],
+  "summary": "智谱为 GLM-5.3 深度调优的官方桌面 Harness，多智能体协作 + 可视化界面，订阅即 GLM Coding 套餐。",
+  "why": [
+   "ZCode 与 GLM 同厂同订阅，不存在第三方壳的兼容滞后，新模型能力第一时间可用",
+   "图形界面 + 多智能体，下载就能用，不用配 API Key",
+   "官方调优意味着 GLM 的能力在座舱里是满血状态"
+  ],
+  "watch": "绑死 GLM 单一模型家族；无法脚本化，进不了 CI；¥118 比开源壳方案贵",
+  "fit": "想要官方图形界面、不想碰命令行，且确定长期用 GLM 的人。",
+  "s": {
+   "coding": 7.5,
+   "value": 6,
+   "flex": 5,
+   "cn": 9,
+   "ci": 2,
+   "test": 6,
+   "ease": 9.5
+  },
+  "costBasis": "ZCode 订阅即 GLM Coding 套餐，同厂同价 ¥118",
+  "toolName": "ZCode",
+  "planName": "智谱 GLM Coding Lite",
+  "planForm": "Coding Plan"
+ },
+ {
+  "id": "b_mmcode_minimax",
+  "name": "MiniMax Code + M Plan",
+  "title": "一个订阅管五个端",
+  "tool": "mmcode",
+  "plan": "minimax",
+  "monthlyCost": 49,
+  "tags": [
+   "全端覆盖",
+   "多模态",
+   "移动办公"
+  ],
+  "summary": "网页、桌面、TUI、iOS、Android 五端一个 M Plan 订阅通用，token 池跨端共享。",
+  "why": [
+   "¥49 在有官方客户端的方案里最低，订阅价就是 M Plan 价",
+   "TUI 可脚本化，能进简单的批处理链路",
+   "App 测试要在真机上接一手活，移动端覆盖是刚需"
+  ],
+  "watch": "token 池跨端共享，手机上的使用会吃掉桌面额度；单一模型家族",
+  "fit": "多设备办公、想在手机上也能续上任务的测试人。",
+  "s": {
+   "coding": 7.5,
+   "value": 8.5,
+   "flex": 6,
+   "cn": 9,
+   "ci": 6.5,
+   "test": 6.5,
+   "ease": 7.5
+  },
+  "costBasis": "MiniMax Code 订阅即 M Plan，¥49/月",
+  "toolName": "MiniMax Code",
+  "planName": "MiniMax M Plan",
+  "planForm": "Token Plan"
+ },
+ {
+  "id": "b_kimicode_kimip",
+  "name": "Kimi Code + Kimi 会员",
+  "title": "长上下文吞大仓库，限制也最严",
+  "tool": "kimicode",
+  "plan": "kimip",
+  "monthlyCost": 99,
+  "tags": [
+   "长上下文",
+   "Goal Mode",
+   "会员共享池"
+  ],
+  "summary": "Kimi K3.1 Pro 长上下文起家，会员额度与 Kimi App 共享池，会员制计费。",
+  "why": [
+   "超长上下文读遗留系统、大仓库，QA 做代码理解类任务有优势",
+   "会员与 App 共享额度池，手机上问问题不另花钱",
+   "Goal Mode 适合一次交代一个大任务让它自己跑"
+  ],
+  "watch": "套餐限制是 12 个套餐里最严的，重度使用会先撞墙；无法脚本化，进不了 CI",
+  "fit": "读代码多、写代码少，需要吞大仓库做分析的测试人。",
+  "s": {
+   "coding": 7.5,
+   "value": 6,
+   "flex": 5,
+   "cn": 9,
+   "ci": 3,
+   "test": 4.5,
+   "ease": 7
+  },
+  "costBasis": "Kimi Code 订阅即 Kimi 会员，¥99/月共享额度池",
+  "toolName": "Kimi Code",
+  "planName": "Kimi 会员 Plus",
+  "planForm": "会员制"
+ },
+ {
+  "id": "b_codex_sub",
+  "name": "Codex 官方订阅",
+  "title": "云端并行工程队，境外专属",
+  "tool": "codex",
+  "plan": null,
+  "monthlyCost": 145,
+  "tags": [
+   "云端并行",
+   "AGENTS.md",
+   "PR 流"
+  ],
+  "summary": "CLI + IDE 扩展 + 云端沙箱并行跑任务，模型与工具生态均第一梯队；需要境外网络与支付。",
+  "why": [
+   "云端并行沙箱是全场独一份，多任务同时跑",
+   "AGENTS.md + PR 流程，工程化程度最高",
+   "模型编码能力满分，复杂重构与长上下文一致性强"
+  ],
+  "watch": "国内无直连，需要境外网络与海外支付方式；数据出境，公司代码慎用",
+  "fit": "有境外支付条件、做海外项目或个人学习的人；国内公司环境基本无缘。",
+  "s": {
+   "coding": 9.5,
+   "value": 4,
+   "flex": 7.5,
+   "cn": 2,
+   "ci": 7,
+   "test": 8,
+   "ease": 3
+  },
+  "costBasis": "Codex 官方订阅 ¥145/月（境外支付），无国内独立套餐档",
+  "toolName": "Codex",
+  "planName": "OpenAI 订阅（境外）",
+  "planForm": "官方订阅"
+ },
+ {
+  "id": "b_wb_sub",
+  "name": "WorkBuddy 订阅",
+  "title": "不写代码，写报告和用例",
+  "tool": "wb",
+  "plan": null,
+  "monthlyCost": 70,
+  "tags": [
+   "办公 Agent",
+   "企微生态",
+   "零门槛"
+  ],
+  "summary": "腾讯办公 Agent：打通企微、文档、邮箱、会议、知识库，自然语言驱动跨应用流程。",
+  "why": [
+   "测试管理场景（用例文档、周报、缺陷单流转）是它的主场",
+   "企微生态内多人协作，天然贴合团队流程",
+   "腾讯系的企业采购与合规链路成熟"
+  ],
+  "watch": "不是编码工具：测试工程适配只有 2 分，别指望它写自动化脚本；无法进 CI",
+  "fit": "想把测试流程管理（文档、报告、协作）交给 AI 的负责人，而不是要写代码的人。",
+  "s": {
+   "coding": 3,
+   "value": 6,
+   "flex": 4.5,
+   "cn": 9.5,
+   "ci": 1.5,
+   "test": 3,
+   "ease": 9.5
+  },
+  "costBasis": "WorkBuddy 官方订阅 ¥70/月，一体化产品无独立套餐档",
+  "toolName": "WorkBuddy",
+  "planName": "WorkBuddy 订阅",
+  "planForm": "官方订阅"
+ },
+ {
+  "id": "b_trae_pro",
+  "name": "Trae + Pro",
+  "title": "国内个人最低价的完整 IDE",
+  "tool": "trae",
+  "plan": "trae_pro",
+  "monthlyCost": 99,
+  "tags": [
+   "国内直连",
+   "积分制",
+   "IDE"
+  ],
+  "summary": "¥99 拿到完整 IDE 与全量高级模型，自带 API Key 还能不扣积分。",
+  "why": [
+   "Pro 才是能写代码的档，Lite 仅 Work 模式",
+   "自定义模型不扣积分，等于送一个免费壳",
+   "国内直连、人民币付款"
+  ],
+  "watch": "积分是自家记账单位，别拿它和别家比面值；签到积分 10 月起有上限",
+  "fit": "预算 ¥100 上下、想要 IDE 体验的个人测试。",
+  "s": {
+   "coding": 7.5,
+   "value": 8.5,
+   "flex": 7,
+   "cn": 9.5,
+   "ci": 4,
+   "test": 6,
+   "ease": 8
+  },
+  "costBasis": "Trae Pro ¥99（含 IDE 与积分池）",
+  "toolName": "Trae",
+  "planName": "Trae Pro",
+  "planForm": "积分套餐"
+ },
+ {
+  "id": "b_comate_pro",
+  "name": "文心快码 + 专业版",
+  "title": "账面额度最大的 ¥59",
+  "tool": "comate",
+  "plan": "comate_pro",
+  "monthlyCost": 59,
+  "tags": [
+   "国内直连",
+   "个人免费档",
+   "单测"
+  ],
+  "summary": "专业版 25000 积分，单测生成与安全扫描是它的强项。",
+  "why": [
+   "同价位账面额度最大",
+   "个人标准版免费，团队可先白嫖再决定",
+   "国内直连、政企落地多"
+  ],
+  "watch": "官网 ¥59、智能云文档 ¥70，两套价；额度用完限速 150k tokens/h",
+  "fit": "预算极低、以单测与代码扫描为主的团队。",
+  "s": {
+   "coding": 7,
+   "value": 8,
+   "flex": 6,
+   "cn": 9.5,
+   "ci": 3.5,
+   "test": 6,
+   "ease": 8.5
+  },
+  "costBasis": "专业版 ¥59（官网价；标准价 ¥70）",
+  "toolName": "文心快码 Comate",
+  "planName": "专业版",
+  "planForm": "积分套餐"
+ },
+ {
+  "id": "b_codebuddy_std",
+  "name": "CodeBuddy + 标准版",
+  "title": "腾讯栈的流程原生派",
+  "tool": "codebuddy",
+  "plan": "codebuddy_std",
+  "monthlyCost": 99,
+  "tags": [
+   "国内直连",
+   "可脚本化",
+   "小程序"
+  ],
+  "summary": "CLI 能进 CI，小程序与云开发场景打通，适合腾讯技术栈。",
+  "why": [
+   "CLI + IDE + 插件三形态，CI 能用",
+   "小程序 / 云开发深度集成",
+   "企业版等保三级"
+  ],
+  "watch": "标准版 4000 积分里一半是活动赠送，促销结束要重新算",
+  "fit": "腾讯云 / 小程序团队，或需要 CLI 进流水线的国内团队。",
+  "s": {
+   "coding": 8,
+   "value": 7.5,
+   "flex": 7.5,
+   "cn": 9.5,
+   "ci": 7.5,
+   "test": 6.5,
+   "ease": 7
+  },
+  "costBasis": "CodeBuddy 标准版 ¥99（连续包月 ¥70）",
+  "toolName": "CodeBuddy",
+  "planName": "标准版",
+  "planForm": "积分套餐"
+ },
+ {
+  "id": "b_codegeex_pro",
+  "name": "CodeGeeX + Pro",
+  "title": "内网与信创的最低成本",
+  "tool": "codegeex",
+  "plan": "codegeex_pro",
+  "monthlyCost": 49,
+  "tags": [
+   "国内直连",
+   "可离线",
+   "信创"
+  ],
+  "summary": "¥49，模型可本地部署，代码不出内网。",
+  "why": [
+   "开源模型可离线部署",
+   "免费档已含全功能",
+   "国内最低价一档"
+  ],
+  "watch": "模型能力与一线有代差，复杂重构会露怯；无 CLI 不能进 CI",
+  "fit": "内网、信创、教学场景。",
+  "s": {
+   "coding": 6,
+   "value": 9,
+   "flex": 5.5,
+   "cn": 10,
+   "ci": 2.5,
+   "test": 5,
+   "ease": 8.5
+  },
+  "costBasis": "CodeGeeX Pro ¥49（免费档可先用）",
+  "toolName": "CodeGeeX",
+  "planName": "Pro",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_qoder_plus",
+  "name": "Qoder CN + Pro+",
+  "title": "阿里系的重度个人档",
+  "tool": "qcode",
+  "plan": "qoder_plus",
+  "monthlyCost": 169,
+  "tags": [
+   "国内直连",
+   "可脚本化",
+   "多端"
+  ],
+  "summary": "多端覆盖最全，仓库级理解（Repowiki）对大仓友好。",
+  "why": [
+   "IDE + 插件 + CLI + 桌面 + 云端",
+   "Repowiki 仓库全局理解",
+   "国内直连、企业可私有化"
+  ],
+  "watch": "Credits 换算不公开；社区版补全有限",
+  "fit": "几十万行以上的大仓、需要多端统一的国内团队。",
+  "s": {
+   "coding": 8.2,
+   "value": 7,
+   "flex": 8,
+   "cn": 9.5,
+   "ci": 8,
+   "test": 6.5,
+   "ease": 6.5
+  },
+  "costBasis": "Qoder CN Pro+ ¥169",
+  "toolName": "Qoder CN",
+  "planName": "Pro+",
+  "planForm": "Credits 套餐"
+ },
+ {
+  "id": "b_claude_pro",
+  "name": "Claude Code + Claude Pro",
+  "title": "编码能力的上限",
+  "tool": "cc",
+  "plan": "claude_pro",
+  "monthlyCost": 145,
+  "tags": [
+   "可脚本化",
+   "编码最强",
+   "需境外"
+  ],
+  "summary": "$20 含 Claude Code，Opus 5.5 在复杂重构和失败归因上仍是标杆。",
+  "why": [
+   "Claude Pro 直接含 Claude Code，只付一次",
+   "Opus 5.5 的跨文件重构与根因分析最强",
+   "MCP / Skills / Hooks 生态最成熟"
+  ],
+  "watch": "额度与聊天共享；国内需境外网络 + 支付；风控会查时区与支付地",
+  "fit": "有海外支付能力、把 AI 当攻坚手的团队。",
+  "s": {
+   "coding": 9.5,
+   "value": 6.5,
+   "flex": 7,
+   "cn": 1,
+   "ci": 9,
+   "test": 9,
+   "ease": 5.5
+  },
+  "costBasis": "Claude Pro $20 ≈ ¥145（含 Claude Code）",
+  "toolName": "Claude Code",
+  "planName": "Claude Pro",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_chatgpt_plus",
+  "name": "Codex + ChatGPT Plus",
+  "title": "云 agent 最顺手的一档",
+  "tool": "codex",
+  "plan": "chatgpt_plus",
+  "monthlyCost": 145,
+  "tags": [
+   "可脚本化",
+   "云 agent",
+   "需境外"
+  ],
+  "summary": "$20 的 Codex 能云端跑任务、自动评审 PR，适合把回归甩给云。",
+  "why": [
+   "Codex 云任务 + 自动 PR 评审",
+   "与 ChatGPT 全家桶共享",
+   "DevDay 后支持手机触发云任务"
+  ],
+  "watch": "按消息数限额，云任务消耗更快；Astra 额度很紧",
+  "fit": "已有 ChatGPT 订阅、想把长任务委派到云的团队。",
+  "s": {
+   "coding": 9,
+   "value": 6.5,
+   "flex": 7,
+   "cn": 1,
+   "ci": 8.5,
+   "test": 8,
+   "ease": 6
+  },
+  "costBasis": "ChatGPT Plus $20 ≈ ¥145（含 Codex）",
+  "toolName": "Codex",
+  "planName": "ChatGPT Plus",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_copilot_pro",
+  "name": "Copilot + Pro",
+  "title": "$10 的合规入场券",
+  "tool": "copilot",
+  "plan": "copilot_pro",
+  "monthlyCost": 73,
+  "tags": [
+   "可脚本化",
+   "最便宜",
+   "需境外"
+  ],
+  "summary": "$10 给 $15 额度，IDE 全覆盖，是团队铺开成本最低的一档。",
+  "why": [
+   "唯一把\"钱换额度\"写清楚的厂商",
+   "VS Code / JetBrains / Xcode 全覆盖",
+   "Business $19 带 IP 赔付"
+  ],
+  "watch": "个人档默认用你的代码训练（2026-04-24 起），上线前必须关",
+  "fit": "预算敏感、以补全为主、需要合规票据的团队。",
+  "s": {
+   "coding": 8,
+   "value": 9,
+   "flex": 8.5,
+   "cn": 1,
+   "ci": 7,
+   "test": 8,
+   "ease": 9
+  },
+  "costBasis": "Copilot Pro $10 ≈ ¥73（含 $15 credits）",
+  "toolName": "GitHub Copilot",
+  "planName": "Copilot Pro",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_cursor_premium",
+  "name": "Cursor + Premium",
+  "title": "编辑器党的完整工作台",
+  "tool": "cursor",
+  "plan": "cursor_premium",
+  "monthlyCost": 218,
+  "tags": [
+   "可脚本化",
+   "IDE",
+   "需境外"
+  ],
+  "summary": "$30 的 Premium 才开放第三方模型，Composer 多文件改写很顺。",
+  "why": [
+   "$8 档只有 Grok 额度，$30 才开第三方模型",
+   "Composer 2.5 批量改写快",
+   "Bugbot 做 PR 缺陷预扫"
+  ],
+  "watch": "第三方模型按 API 原价另算，实际账单常高于标价",
+  "fit": "愿意换编辑器、日常编码为主的前端 / 全栈测试。",
+  "s": {
+   "coding": 8.5,
+   "value": 5,
+   "flex": 8,
+   "cn": 1,
+   "ci": 6.5,
+   "test": 7.5,
+   "ease": 7
+  },
+  "costBasis": "Cursor Premium $30 ≈ ¥218（第三方模型另计）",
+  "toolName": "Cursor",
+  "planName": "Cursor Premium",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_muse_high",
+  "name": "Muse Code + High",
+  "title": "最便宜的多 agent 终端",
+  "tool": "muse",
+  "plan": "muse_high",
+  "monthlyCost": 109,
+  "tags": [
+   "可脚本化",
+   "多 Agent",
+   "需境外"
+  ],
+  "summary": "$15 给 5 倍额度，多 agent 并行 + 可回放事件日志。",
+  "why": [
+   "$15 的 5 倍额度，价格锚点最低",
+   "每个 subagent 独立 worktree，事件日志可回放",
+   "适合批量迁移模块"
+  ],
+  "watch": "订阅默认允许 Meta 用你的代码训练；Contributor 折价仅美国账号；无合规背书",
+  "fit": "个人与小团队、能接受数据换低价。",
+  "s": {
+   "coding": 8.5,
+   "value": 9,
+   "flex": 5,
+   "cn": 1,
+   "ci": 8.5,
+   "test": 7.5,
+   "ease": 6
+  },
+  "costBasis": "Muse Code High $15 ≈ ¥109",
+  "toolName": "Muse Code",
+  "planName": "Muse Code High",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_grok_premium",
+  "name": "Grok Build + Premium",
+  "title": "X 生态里的便宜 agent",
+  "tool": "grok",
+  "plan": "grok_premium",
+  "monthlyCost": 218,
+  "tags": [
+   "可脚本化",
+   "X 订阅",
+   "需境外"
+  ],
+  "summary": "Premium 给 4 倍额度，还带 Grok Bot 与 Cursor Pro 权益。",
+  "why": [
+   "与 X / Grok 共用一个池",
+   "Arena 模式多模型竞标",
+   "附带 Grok Bot 与 Cursor Pro 权益"
+  ],
+  "watch": "官方只公布倍数不公布绝对额度；共享池会被聊天消耗",
+  "fit": "已经在用 X / Grok 的个人与内容团队。",
+  "s": {
+   "coding": 8,
+   "value": 6.5,
+   "flex": 5.5,
+   "cn": 1,
+   "ci": 8,
+   "test": 6.5,
+   "ease": 6.5
+  },
+  "costBasis": "X Premium $30 ≈ ¥218",
+  "toolName": "Grok Build",
+  "planName": "X Premium",
+  "planForm": "X 订阅"
+ },
+ {
+  "id": "b_kiro_pro",
+  "name": "Kiro + Pro",
+  "title": "先出规格再写代码",
+  "tool": "kiro",
+  "plan": "kiro_pro",
+  "monthlyCost": 145,
+  "tags": [
+   "可脚本化",
+   "规格驱动",
+   "需境外"
+  ],
+  "summary": "规格、设计、任务三段留痕，产出本身就是测试依据。",
+  "why": [
+   "需求→设计→任务三段可评审",
+   "hooks 在保存等事件触发 agent",
+   "AWS 生态与合规"
+  ],
+  "watch": "credits 消耗不直观，大任务一次几百；超额 $0.04/credit",
+  "fit": "需要评审证据、流程规范的团队。",
+  "s": {
+   "coding": 8.2,
+   "value": 6,
+   "flex": 6.5,
+   "cn": 1,
+   "ci": 8,
+   "test": 8.5,
+   "ease": 5
+  },
+  "costBasis": "Kiro Pro $20 ≈ ¥145（1000 credits）",
+  "toolName": "Kiro",
+  "planName": "Kiro Pro",
+  "planForm": "Credits 套餐"
+ },
+ {
+  "id": "b_antigravity_pro",
+  "name": "Antigravity + AI Pro",
+  "title": "免费档之外最划算的多 agent",
+  "tool": "antigravity",
+  "plan": "antigravity_pro",
+  "monthlyCost": 145,
+  "tags": [
+   "可脚本化",
+   "多 Agent",
+   "需境外"
+  ],
+  "summary": "免费档先用，不够再上 $20；Artifacts 把 agent 产出变成可审阅证据。",
+  "why": [
+   "免费档 $0 就能跑多 agent",
+   "浏览器录像 / Artifacts 适合测试留痕",
+   "CLI 与 IDE 同一套 agent"
+  ],
+  "watch": "2026-06-18 免费额度被大幅削减；Ultra 价格多次变动",
+  "fit": "预算为零先试、再决定是否付费的团队。",
+  "s": {
+   "coding": 8,
+   "value": 9,
+   "flex": 6.5,
+   "cn": 1,
+   "ci": 7.5,
+   "test": 8,
+   "ease": 7.5
+  },
+  "costBasis": "Google AI Pro $19.99 ≈ ¥145（免费档可先用）",
+  "toolName": "Google Antigravity",
+  "planName": "AI Pro",
+  "planForm": "Google AI 订阅"
+ },
+ {
+  "id": "b_devin_pro",
+  "name": "Devin Desktop + Pro",
+  "title": "把长任务甩给云",
+  "tool": "devin",
+  "plan": "devin_pro",
+  "monthlyCost": 145,
+  "tags": [
+   "可脚本化",
+   "云 agent",
+   "需境外"
+  ],
+  "summary": "本地与云端 agent 同一块看板，适合跑一晚上回归。",
+  "why": [
+   "本地 + 云端统一指挥台",
+   "大仓上下文加载成熟",
+   "Free 档可先试"
+  ],
+  "watch": "云 agent 按 ACU 另计；JetBrains 插件维护模式",
+  "fit": "VS Code 系、有大量可委派长任务的团队。",
+  "s": {
+   "coding": 8.8,
+   "value": 4.5,
+   "flex": 7,
+   "cn": 1,
+   "ci": 8,
+   "test": 8,
+   "ease": 6
+  },
+  "costBasis": "Devin Desktop Pro $20 ≈ ¥145（云用量另计）",
+  "toolName": "Devin Desktop",
+  "planName": "Devin Pro",
+  "planForm": "订阅"
+ },
+ {
+  "id": "b_testrigor",
+  "name": "testRigor Private",
+  "title": "维护成本最低的 E2E",
+  "tool": "testrigor",
+  "plan": "testrigor_private",
+  "monthlyCost": 2175,
+  "tags": [
+   "自然语言",
+   "自愈",
+   "报价制"
+  ],
+  "summary": "大白话写用例，自愈 + 视觉兜底，业务同学也能上手。",
+  "why": [
+   "自然语言写用例，门槛最低",
+   "自愈 + Vision AI 兜底",
+   "能测对话式 AI 功能"
+  ],
+  "watch": "私有档价格不公开，$300 只是第三方下限；小团队偏贵",
+  "fit": "业务测试占比高、前端迭代快的中大型团队。",
+  "s": {
+   "coding": 3,
+   "value": 3,
+   "flex": 4,
+   "cn": 1,
+   "ci": 8,
+   "test": 9.5,
+   "ease": 9
+  },
+  "costBasis": "第三方口径 $300 ≈ ¥2175/月（官方报价制）",
+  "toolName": "testRigor",
+  "planName": "Private",
+  "planForm": "测试平台订阅"
+ },
+ {
+  "id": "b_katalon",
+  "name": "Katalon + Pro",
+  "title": "BYO-LLM 的测试平台",
+  "tool": "katalon",
+  "plan": "katalon_pro",
+  "monthlyCost": 602,
+  "tags": [
+   "低代码",
+   "BYO-LLM",
+   "按席位"
+  ],
+  "summary": "低代码到全代码都能写，模型费用走自己合同。",
+  "why": [
+   "低代码 / 脚本 / 全代码三写法",
+   "自带 OpenAI / Azure / Gemini / Bedrock 端点",
+   "价格相对透明"
+  ],
+  "watch": "按席位计费；自愈能力不如 mabl / testRigor 激进",
+  "fit": "已有 Katalon 资产、需要控制模型成本的中大型团队。",
+  "s": {
+   "coding": 5,
+   "value": 5.5,
+   "flex": 8,
+   "cn": 4,
+   "ci": 9,
+   "test": 8.5,
+   "ease": 6
+  },
+  "costBasis": "Katalon Pro $83 ≈ ¥602/席/月（年付）",
+  "toolName": "Katalon",
+  "planName": "Katalon Pro",
+  "planForm": "测试平台订阅"
+ },
+ {
+  "id": "b_mabl",
+  "name": "mabl Team",
+  "title": "一个平台覆盖 Web/API/移动",
+  "tool": "mabl",
+  "plan": "mabl_team",
+  "monthlyCost": 3263,
+  "tags": [
+   "低代码",
+   "自愈",
+   "报价制"
+  ],
+  "summary": "工程主导的统一 E2E，自愈范围广，CI 集成成熟。",
+  "why": [
+   "Web / API / 移动 / 无障碍一个平台",
+   "自愈范围广",
+   "CI 集成成熟"
+  ],
+  "watch": "报价制，$450 只是估算下限；canvas / shadow DOM 支持弱",
+  "fit": "有稳定产品、需要统一 E2E 的中大型团队。",
+  "s": {
+   "coding": 3,
+   "value": 2.5,
+   "flex": 5,
+   "cn": 1,
+   "ci": 9,
+   "test": 9.5,
+   "ease": 8.5
+  },
+  "costBasis": "第三方估算 $450 ≈ ¥3263/月（官方报价制）",
+  "toolName": "mabl",
+  "planName": "Team",
+  "planForm": "测试平台订阅"
+ }
+]

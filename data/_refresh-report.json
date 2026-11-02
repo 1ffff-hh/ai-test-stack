@@ -1,0 +1,249 @@
+{
+ "at": "2026-11-01T15:39:18.632Z",
+ "dry": false,
+ "offline": false,
+ "feeds": [
+  {
+   "id": "openai",
+   "name": "OpenAI News",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "anthropic",
+   "name": "Anthropic News",
+   "ok": false,
+   "n": 0,
+   "err": "HTTP 404"
+  },
+  {
+   "id": "googleai",
+   "name": "Google AI Blog",
+   "ok": false,
+   "n": 0,
+   "err": "Client network socket disconnected before secure TLS connection was established"
+  },
+  {
+   "id": "deepmind",
+   "name": "Google DeepMind",
+   "ok": true,
+   "n": 7,
+   "err": ""
+  },
+  {
+   "id": "hf",
+   "name": "Hugging Face Blog",
+   "ok": false,
+   "n": 0,
+   "err": "timeout"
+  },
+  {
+   "id": "github",
+   "name": "GitHub Blog",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "techcrunch-ai",
+   "name": "TechCrunch AI",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "verge-ai",
+   "name": "The Verge AI",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "jiqizhixin",
+   "name": "机器之心",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "qbitai",
+   "name": "量子位",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "infoq-cn",
+   "name": "InfoQ 中文",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "oschina",
+   "name": "开源中国",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  }
+ ],
+ "pricing": [
+  {
+   "id": "anthropic",
+   "name": "Anthropic Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "openai",
+   "name": "OpenAI ChatGPT Pricing",
+   "ok": false,
+   "changed": false,
+   "err": "HTTP 403"
+  },
+  {
+   "id": "copilot",
+   "name": "GitHub Copilot Plans",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "cursor",
+   "name": "Cursor Pricing",
+   "ok": false,
+   "changed": false,
+   "err": "timeout"
+  },
+  {
+   "id": "muse",
+   "name": "Meta Muse Code",
+   "ok": false,
+   "changed": false,
+   "err": "timeout"
+  },
+  {
+   "id": "grok",
+   "name": "xAI Grok / X",
+   "ok": false,
+   "changed": false,
+   "err": "timeout"
+  },
+  {
+   "id": "kiro",
+   "name": "Kiro Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "devin",
+   "name": "Devin Pricing",
+   "ok": false,
+   "changed": false,
+   "err": "timeout"
+  },
+  {
+   "id": "antigravity",
+   "name": "Google Antigravity",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "trae",
+   "name": "Trae CN Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "qoder",
+   "name": "Qoder Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "comate",
+   "name": "文心快码",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "codebuddy",
+   "name": "腾讯 CodeBuddy",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "testrigor",
+   "name": "testRigor Pricing",
+   "ok": false,
+   "changed": false,
+   "err": "timeout"
+  }
+ ],
+ "news": {
+  "feeds": 12,
+  "fetched": 7,
+  "total": 31
+ },
+ "priceChanges": [],
+ "freshness": [
+  {
+   "file": "tools.json",
+   "name": "工具",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  },
+  {
+   "file": "plans.json",
+   "name": "套餐",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  },
+  {
+   "file": "promos.json",
+   "name": "优惠",
+   "date": "2026-10-30",
+   "days": 3,
+   "stale": false
+  },
+  {
+   "file": "freebies.json",
+   "name": "免费额度",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  },
+  {
+   "file": "news.json",
+   "name": "AI 大事",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  },
+  {
+   "file": "roles.json",
+   "name": "角色阶梯",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  },
+  {
+   "file": "impact.json",
+   "name": "冲击数据",
+   "date": "2026-11-01",
+   "days": 1,
+   "stale": false
+  }
+ ],
+ "durationMs": 128621
+}

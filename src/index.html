@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Test Stack · AI 工具选型 × 测试角色 × AI 冲击</title>
+<meta name="description" content="面向测试工程师的 AI 工具选型与职业判断看板：29 款工具、57 档国内外套餐、34 条免费额度、30 条 AI 评测用例、测试角色阶梯、数据健康与可打印决策报告。">
+<meta name="theme-color" content="#070b12" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#eef2f8" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
+<meta property="og:type" content="website">
+<meta property="og:title" content="AI Test Stack · AI Agent × Coding Plan 选型与能力图谱">
+<meta property="og:description" content="29 款 AI 工具 + 57 档国内外套餐 + 34 条免费额度 + 11 个测试角色 + 30 条评测用例 + 数据健康与决策报告。含决策矩阵、能力图谱、组合方案与 90 天应对。">
+<meta property="og:site_name" content="AI Test Stack">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI Test Stack · 为测试工程师选一套能一直用下去的组合">
+<meta name="twitter:description" content="29 款工具 × 57 档套餐 × 20 项能力。数据可下载，健康度可见，结论可打印。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232fe3d4'/><text y='72' x='50' text-anchor='middle' font-size='54' font-family='monospace' font-weight='bold' fill='%230a0e14'>AT</text></svg>">
+<script>
+/* 主题：必须在首屏渲染前执行，否则会闪白/闪黑 */
+(function(){
+  try{
+    var saved = localStorage.getItem('ats_theme');
+    // v7 是深色数据台优先；用户手动切过浅色才用浅色
+    document.documentElement.dataset.theme = saved || 'dark';
+  }catch(e){ document.documentElement.dataset.theme = 'dark'; }
+})();
+</script>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+
+<a class="skip" href="#main">跳到主内容</a>
+
+<div class="staleBar" id="staleBar" role="status" hidden>
+  <span class="sIco">!</span>
+  <span id="staleTxt"></span>
+  <a href="#sources">看数据源</a>
+  <button class="sX" id="staleClose" aria-label="关闭提示">×</button>
+</div>
+
+<div class="shell">
+  <!-- ===================== TOPBAR：一级导航只放大模块入口 ===================== -->
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="AI Test Stack，回首页">
+      <span class="logo" aria-hidden="true">AT</span>
+      <span class="bwrap"><span class="bn">AI Test Stack</span><span class="bv" id="metaVer">v1.0.0</span></span>
+    </a>
+    <nav class="tnav" aria-label="主导航">
+      <a href="#home" data-nav="home">首页</a>
+      <a href="#map" data-nav="map">功能地图</a>
+      <a href="#all" data-nav="all">完整工具站</a>
+      <span class="tdd">
+        <button class="tddBtn" type="button" data-nav="mine" aria-expanded="false" aria-haspopup="true">我的 <i aria-hidden="true">▾</i></button>
+        <span class="tddMenu" hidden>
+          <a href="#report">决策报告</a>
+          <a href="#opinion">我的判断</a>
+          <a href="#stack">我的组合</a>
+          <a href="#plan">落地执行包</a>
+        </span>
+      </span>
+      <span class="tdd">
+        <button class="tddBtn" type="button" data-nav="more" aria-expanded="false" aria-haspopup="true">更多 <i aria-hidden="true">▾</i></button>
+        <span class="tddMenu" hidden>
+          <a href="#news">AI 大事</a>
+          <a href="#impact">AI 冲击</a>
+          <a href="#roles">角色阶梯</a>
+          <a href="#evalset">AI 评测集</a>
+          <a href="#free">白嫖地图</a>
+          <a href="#health">数据健康</a>
+          <a href="#changelog">更新日志</a>
+          <a href="#sources">数据源</a>
+          <!-- 后期规划位：测试社区（技能/MCP/插件推荐、实时数据、反馈入口）。本次只预留位置，不实现 -->
+          <span class="ddSoon">◌ 测试社区<b class="soon">规划中</b></span>
+        </span>
+      </span>
+    </nav>
+    <div class="tools">
+      <button class="tbtn" id="palBtn" aria-label="搜索功能、工具、套餐（Ctrl+K）" title="搜索 Ctrl+K">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l4 4"/></svg><span class="tbn">搜索</span>
+      </button>
+      <button class="tbtn" id="themeBtn" aria-label="切换深浅色主题" title="切换主题">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="6.2"/><path d="M10 3.8a6.2 6.2 0 0 1 0 12.4z" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <button class="tbtn" id="copyLink" aria-label="复制当前页面配置的链接" title="复制带当前配置的链接">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="7" y="7" width="9" height="10"/><path d="M13 7V4H4v10h3"/></svg>
+      </button>
+      <button class="tbtn burger" id="burger" aria-label="打开导航菜单" aria-expanded="false" aria-controls="mnav">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== 子导航：面包屑 + 模块内功能切换（进入模块后才出现） ===================== -->
+  <nav class="subnav" id="subnav" aria-label="面包屑与模块内导航" hidden></nav>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main" id="main">
+
+    <!-- ============ 第一层 · 首页 = 诊断台：少字、当场出结果 ============ -->
+    <section class="view" id="v-home">
+      <div class="hero">
+        <div class="heroCopy">
+          <div class="eyebrow">For test engineers · 数据可离线核</div>
+          <h1>别再逛清单了。<br><span class="q">三问，</span><em>当场出方案</em></h1>
+          <p class="heroSub">右边的诊断台按<b>核过的实价</b>、20 项能力和你的红线，现场比对全部组合，产出一份能直接交上去的方案：多少钱、为什么、坑在哪、第一周干什么。</p>
+          <div class="ctaRow">
+            <a class="btn primary lg" href="#persona">开始深度诊断 <span class="ar" aria-hidden="true">→</span></a>
+            <a class="btn ghost lg" href="#plan">先看执行包</a>
+          </div>
+          <div class="track" aria-label="使用路径">
+            <div class="tstep done"><i>01</i><b>三问答完</b></div>
+            <div class="tstep done"><i>02</i><b>方案落定</b></div>
+            <div class="tstep"><i>03</i><b>30 天执行包</b></div>
+          </div>
+          <div class="dstat">
+            <span>数据核验 <u id="hVerify">—</u></span>
+            <span id="hCounts">—</span>
+            <b>✓ 无外链</b><b>✓ 离线可开</b>
+          </div>
+        </div>
+        <div class="diag" id="diag" aria-label="AI 选型诊断台：三个问题，当场生成组合方案">
+          <div class="diagHead">
+            <b>DIAG / 选型引擎</b>
+            <span class="dlive"><i aria-hidden="true"></i>RUNS ON LOCAL DATA</span>
+          </div>
+          <div class="qsteps" id="dsteps"></div>
+          <div class="dlog" id="dlog" aria-live="polite"></div>
+          <div class="dopts" id="dopts"></div>
+          <div class="dmeter" id="dmeter" hidden><i aria-hidden="true"></i><span id="dMeterTx">比对组合中…</span></div>
+        </div>
+      </div>
+
+      <div class="band">
+        <a class="read" href="#map"><b class="num" id="rdFeats">0</b><span>功能入口</span></a>
+        <a class="read" href="#tools"><b class="num" id="rdTools">0</b><span>工具档案</span></a>
+        <a class="read" href="#bundles"><b class="num" id="rdCost">0</b><span>元 / 月起</span></a>
+        <a class="read" href="#events"><b class="num" id="rdEvs">0</b><span>条市场变动</span></a>
+      </div>
+
+      <div class="sect">
+        <div class="sHead"><h2>七个模块，直接进</h2><span>每个模块是一组要一起办的事，不是分类文件夹</span></div>
+        <div class="mods stagger homeMods" id="homeMods"></div>
+      </div>
+
+      <div class="hfoot">
+        <a class="btn primary" href="#all">全部功能一屏总览：进入完整工具站 →</a>
+        <span class="htrust">◇ 标出处 · ◷ 留痕 · ◇ 不改代码 · <a href="#sources">数据源与口径</a></span>
+      </div>
+    </section>
+
+    <!-- ============ 第二层 · 功能地图 ============ -->
+    <section class="view" id="v-map">
+      <div class="phead">
+        <div class="kick">Feature Map</div>
+        <h1>功能地图</h1>
+        <p>7 个模块管 24 个功能。不知道从哪开始，就点「诊断与判断」；想看行业发生了什么，去「变局与大事」。</p>
+      </div>
+      <div class="mgrid stagger" id="mapBody"></div>
+    </section>
+
+    <!-- ============ 第五层 · 完整工具站 = 直接总览控制台，所有入口平铺一屏 ============ -->
+    <section class="view" id="v-all">
+      <div class="phead">
+        <div class="kick">All-In Console</div>
+        <h1>完整工具站</h1>
+        <p>全部功能直接铺开，点任何一个立刻进入，不用再进下一层。</p>
+      </div>
+      <div class="kpiRow" id="allKpis"></div>
+      <div class="toolbar allToolbar">
+        <div class="search"><input type="text" id="allSearch" placeholder="搜功能，例如「诊断」「涨价」「组合」"></div>
+        <div class="presets" id="allMods"></div>
+      </div>
+      <div class="acgrid" id="allBody"></div>
+      <div class="dataStrip" id="allData"></div>
+      <div class="allBack">
+        <a class="btn" href="#home">← 回首页</a>
+        <a class="btn" href="#map">按模块引导：功能地图 →</a>
+      </div>
+    </section>
+
+    <!-- ============ 第三层 · 模块页（模板渲染，内容由 modules.json 驱动） ============ -->
+    <section class="view" id="v-mod-start"><div class="modbody" data-mod="start"></div></section>
+    <section class="view" id="v-mod-diagnose"><div class="modbody" data-mod="diagnose"></div></section>
+    <section class="view" id="v-mod-grow"><div class="modbody" data-mod="grow"></div></section>
+    <section class="view" id="v-mod-shift"><div class="modbody" data-mod="shift"></div></section>
+    <section class="view" id="v-mod-toolkit"><div class="modbody" data-mod="toolkit"></div></section>
+    <section class="view" id="v-mod-choose"><div class="modbody" data-mod="choose"></div></section>
+    <section class="view" id="v-mod-data"><div class="modbody" data-mod="data"></div></section>
+
+    <!-- ============ 404 · 容错 ============ -->
+    <section class="view" id="v-404">
+      <div class="phead">
+        <div class="kick">404</div>
+        <h1>这个地址不存在</h1>
+        <p>可能是链接打错了，或者这个版本里没有这个页面。原来的功能都还在——从下面挑一个：</p>
+      </div>
+      <div class="panel">
+        <div class="gchips" id="nfMain">
+          <a class="btn primary" href="#home">回首页 →</a>
+          <a class="btn" href="#map">功能地图 →</a>
+          <a class="btn" href="#all">完整工具站 →</a>
+        </div>
+        <div class="hr"></div>
+        <div class="gchips" id="nfLinks"></div>
+      </div>
+    </section>
+
+    <!-- ============ OVERVIEW ============ -->
+    <section class="view" id="v-overview">
+      <div class="phead">
+        <div class="kick">AI Test Stack</div>
+        <h1>AI Agent 与 Coding Plan，<br>为测试工程师选一套能一直用下去的组合</h1>
+        <p>这个站解决三个问题：<b>哪个工具能干什么</b>、<b>哪家套餐值得买</b>、<b>怎么从功能测试走到 AI 测试开发</b>。数据放在 JSON 里，改数据不用改代码，可以一直更新下去。</p>
+        <div class="chips">
+          <span class="chip"><b data-c="tools">29</b> 款工具</span>
+          <span class="chip"><b data-c="plans">57</b> 档国内外套餐</span>
+          <span class="chip"><b data-c="free">34</b> 条免费额度</span>
+          <span class="chip"><b data-c="caps">20</b> 项能力</span>
+          <span class="chip"><b data-c="roles">11</b> 个测试角色</span>
+          <span class="chip"><b data-c="news">32</b> 条 AI 大事</span>
+        </div>
+      </div>
+
+      <div class="stats" id="ovStats"></div>
+      <div class="verdict" id="ovVerdict"></div>
+
+      <div class="panel">
+        <h3><span class="ic">▦</span>能力图谱速览</h3>
+        <div class="sub">20 项能力分 5 组，每格 1–5 分。这是「它能不能做某件事」的量化答案，比读十篇测评快。</div>
+        <div class="hmwrap" id="ovHeat"></div>
+        <div class="legend" id="ovHeatLegend"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3><span class="ic">◈</span>当前画像下前三名</h3>
+          <div class="sub">权重来自「决策矩阵」页当前设置。</div>
+          <div class="rank" id="ovTop3"></div>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">↻</span>最近更新</h3>
+          <div class="sub">价格、档位、能力变化都会记在这里。</div>
+          <div id="ovLog"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">↯</span>不想调参数？七组直接答案</h3>
+        <div class="sub">按你的处境对号入座。每条都给了理由，不同意可以自己去矩阵里改权重。</div>
+        <div class="grid3" id="ovQuick"></div>
+      </div>
+    </section>
+
+    <!-- ============ REPORT · 决策报告（把当前状态收成一份 A4 报告） ============ -->
+    <section class="view" id="v-report">
+      <div class="phead">
+        <div class="kick">Start / 02</div>
+        <h1>决策报告</h1>
+        <p>把当前诊断、已选组合、四项自检与 30 天动作收成一份 A4 报告。可以打印成 PDF，也可以复制成 Markdown 交给主管或采购。报告只读本地数据，不联网。</p>
+        <div class="phMeta" id="reportMeta"></div>
+      </div>
+      <div id="reportBody"></div>
+    </section>
+
+    <!-- ============ MATRIX ============ -->
+    <section class="view" id="v-matrix">
+      <div class="phead">
+        <div class="kick">Decision Matrix</div>
+        <h1>交互式决策矩阵</h1>
+        <p>先选一个画像（它会预设权重），再按你自己的偏好微调。左侧滑块是「你有多在乎」，右侧排序实时重算。硬性筛选会把不满足条件的工具置灰但仍保留在列表里，方便你看到「差在哪」。</p>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◌</span>1 · 你是谁</h3>
+        <div class="sub">点一下，权重自动填好。之后拖动滑块会变成「自定义」。</div>
+        <div class="presets" id="mPresets"></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3><span class="ic">◫</span>2 · 你有多在乎</h3>
+          <div class="sub">0 = 完全不在乎，10 = 决定性因素。权重只影响相对比较，不影响单项分。</div>
+          <div class="sliders" id="mSliders"></div>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">▣</span>3 · 硬性条件</h3>
+          <div class="sub">不满足的直接排除——这些是「能不能用」的问题，不是「好不好用」。</div>
+          <div class="switches">
+            <label class="sw"><input type="checkbox" id="swCn"><span class="track"></span>必须国内直连</label>
+            <label class="sw"><input type="checkbox" id="swSc"><span class="track"></span>必须可脚本化（进 CI）</label>
+          </div>
+          <div class="budget" style="margin-top:18px">
+            <span>月预算上限</span>
+            <input type="number" id="mBudget" min="0" max="9999" step="10" value="200">
+            <span>元 / 月</span>
+          </div>
+          <div class="note" style="margin-top:18px">
+            「可脚本化」指有 CLI / API / SDK，能被 pytest 或流水线直接调用。<b>ZCode、Qoder、Kimi Code 这类图形界面产品</b>勾上就会被排除——它们能帮你写代码，但没法被你的测试平台当组件用。
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict" id="mVerdict"></div>
+
+      <div class="panel">
+        <h3><span class="ic">◈</span>夺冠率分布</h3>
+        <div class="sub">
+          随机抽 2 万组权重（每个维度 0–10 均匀取）后，各工具夺冠的百分比。
+          这条分布回答的是「这套评分表是不是被某一款吃死了」——
+          如果某一款在任何权重下都赢，那上面那句「换权重排名会变」就是假的。
+          <b>拖上面的滑块时，这里的分布会重算</b>（当前这组权重算一次，其余重新采样）。
+        </div>
+        <div class="winbars" id="mWinBars"></div>
+        <div class="note" id="mWinNote" style="margin-top:16px"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▣</span>综合排名</h3>
+        <div class="sub" id="mRankSub"></div>
+        <div class="rank" id="mRank"></div>
+        <div class="note warn" style="margin-top:16px">
+          <b>利益冲突声明：</b>这个页面是在 DeepSeek Harness 里做出来的，DSH 天然是"亲儿子"，所以我做了一件别家对比表很少做的事：把它的分数重新校准过，并写进构建门禁。<b>现在没有任何一款工具能在随机权重下通吃</b>——固定种子抽 2 万组权重，夺冠率最高的一款也只有约 25%，另有 5–6 款能真正夺冠（见上面"夺冠率分布"）。如果你把"工具插件生态"和"模型编码能力"各拉到 10、其余归零，排第一的是 Claude Code（5.00），DSH 掉到第 10（2.50）——这两维本来就是它的弱项。评分只是把公开信息压成可比较的数字，最终请以你自己的体感为准。
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TOOLS ============ -->
+    <section class="view" id="v-tools">
+      <div class="phead">
+        <div class="kick">Tool Library</div>
+        <h1>工具库</h1>
+        <p><span id="tlCount">工具</span>，每张卡片点开是完整档案：它是干什么的、能拿来做什么、优势和短板、适合谁、模型适配、九维评分、20 项能力明细。</p>
+      </div>
+      <div class="filterBar">
+        <div class="segGroup" id="tKind" aria-label="按类型筛选"></div>
+        <div class="segGroup" id="tRegion" aria-label="按地区筛选"></div>
+        <div class="search"><input type="text" id="toolSearch" placeholder="搜工具名 / 厂商 / 关键词，例如「测试」「开源」「国内」"></div>
+      </div>
+      <div class="tgrid" id="tgrid"></div>
+    </section>
+
+    <!-- ============ CAPABILITIES ============ -->
+    <section class="view" id="v-capabilities">
+      <div class="phead">
+        <div class="kick">Capability Map</div>
+        <h1>能力图谱</h1>
+        <p>把「它能不能做这件事」拆成 20 个可判断的问题。这张表的价值不在于分数本身，而在于让你意识到<b>没有一款工具是全绿的</b>——选型就是选你最能忍的那几个红格。</p>
+        <div class="chips">
+          <span class="chip">悬停格子看等级说明</span>
+          <span class="chip">最右列是横向均值</span>
+          <span class="chip">按需排序</span>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="toolbar" style="margin-bottom:14px">
+          <div class="budget">
+            <span>排序</span>
+            <select id="capSort" style="background:rgba(255,255,255,.05);border:1px solid var(--line2);color:var(--text);border-radius:var(--r-sm);padding:6px 9px;font-size:var(--fs-2);font-family:inherit">
+              <option value="avg">按能力均值</option>
+              <option value="name">按名称</option>
+            </select>
+          </div>
+        </div>
+        <div class="hmwrap" id="hmTable"></div>
+        <div class="legend" id="hmLegend"></div>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">◇</span>这张表怎么读</h3>
+        <ul class="ul">
+          <li><b>先看行，再看列。</b>先找到你每天要做的事（比如「UI 自动化」），横向扫一遍谁 ≥4，再在这些人里选成本能接受的。</li>
+          <li><b>红格不一定是缺点。</b>「定时任务」这一行大部分是 1–2，因为大多数编程 Agent 本来就不做这件事——你要的是补一个 cron 或换 Hermes。</li>
+          <li><b>均值高不等于适合你。</b>Claude Code 均值最高，但国内可用性是 1；对国内团队来说，这一格直接否决。</li>
+          <li><b>能力会变。</b>这张表按季度重估，每次改动都进「更新日志」。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ PLANS ============ -->
+    <section class="view" id="v-plans">
+      <div class="phead">
+        <div class="kick">Coding Plans</div>
+        <h1>国内外套餐对比</h1>
+        <p><span id="plRange">正在统计档位…</span>套餐和工具是两件事：<b>工具是壳，套餐是电</b>。同一个壳可以换不同套餐，反过来也一样。国际档位按 $1 = ¥7.25 折算，仅用于同表比较。</p>
+        <div class="segGroup" id="pRegion" aria-label="按地区筛选" style="margin-top:16px"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▤</span>按工具看阶梯</h3>
+        <div class="sub">同一家的档位排在一起，才看得出「加钱买到了什么」。价格是当前核验值，点上方地区可只看国内或国际。</div>
+        <div class="ladder" id="pLadder"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◎</span>按用法切换排序</h3>
+        <div class="sub">不同用法对「价格 / 额度 / 稳定性 / 合规」的权重完全不同。</div>
+        <div class="presets" id="pPresets"></div>
+        <div class="hr"></div>
+        <div class="sub" style="margin-bottom:10px">按<b>订阅形态</b>看。四种形态的计费单位根本不同（请求次数 / Credits / AFP 积分 / 共享额度池），混在一起比价会得出错误结论。</div>
+        <div class="presets" id="pTypeFilter"></div>
+        <div class="note" id="pFormDesc" style="margin-top:14px"></div>
+      </div>
+
+      <div class="verdict" id="pVerdict"></div>
+      <div class="grid2">
+        <div class="panel" style="margin-bottom:0">
+          <h3><span class="ic">▣</span>如果只买一个订阅</h3>
+          <div class="sub">按量 API 综合分常常最高，但很多人要的是「月底账单固定」。这里只比订阅档。</div>
+          <div id="pSubBest"></div>
+        </div>
+        <div class="panel" style="margin-bottom:0">
+          <h3><span class="ic">▦</span>按量 vs 订阅，怎么选</h3>
+          <ul class="ul">
+            <li><b>按量</b>适合：用量波动大、要进 CI、要接自建脚本、讨厌被白名单限制。代价是账单没上限。</li>
+            <li><b>订阅</b>适合：每天稳定用、讨厌看账单、想一次付完不管了。代价是额度窗口和工具白名单。</li>
+            <li><b>最优解通常是两个都要</b>：订阅做日常主力，按量做兜底和批处理。加起来常常还比一个 Pro 档便宜。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▣</span>全量对比</h3>
+        <div class="sub">按当前画像排序。「选它」是单选——套餐建议只留一个主力，其余按量兜底。</div>
+        <div class="tableBar"><span id="pCount">—</span><button class="btn sm" id="pMore">显示全部</button></div>
+        <div class="tblWrap">
+          <table class="tb">
+            <thead><tr>
+              <th>#</th><th>套餐 / 模型</th><th>形态</th><th>月价</th><th>分</th><th>额度 / 工具</th><th>超限 · 风险 · 限制</th><th></th>
+            </tr></thead>
+            <tbody id="planBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3><span class="ic">◈</span>只选一个，选哪个</h3>
+          <ul class="ul">
+            <li><b>要通用、要试错便宜：火山方舟 Lite ¥40。</b>一个订阅六家模型，工具白名单最宽，首月 ¥9.9。缺点是高峰 429，别把线上回归压在它身上。</li>
+            <li><b>要工具生态最全、能接 Claude Code：GLM Coding Lite ¥118。</b>支持 20+ 工具，但 2026-07 涨过一次 140%，且数据可能用于训练。</li>
+            <li><b>要极致便宜、能自己写脚本：DeepSeek API 按量。</b>没有月费，用多少付多少，闲时半价。适合当兜底和批处理。</li>
+            <li><b>要合规、代码不出境：</b>优先国产模型 + 自建壳（DSH / MiMo Code），别碰明确写「数据用于训练」的套餐。</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">!</span>四个容易踩的坑</h3>
+          <ul class="ul bad">
+            <li><b>套餐 ≠ API 余额。</b>绝大多数 Coding Plan 只能在白名单工具里用，写个 Python 脚本直接调是不行的。要脚本调用，得单独买 API。</li>
+            <li><b>「不限量」都有滚动窗口。</b>5 小时窗口 + 周窗口是行业惯例，跑长任务时会被卡在窗口边界上。</li>
+            <li><b>首月价不是价格。</b>¥9.9、¥7.9、¥24.5 都是首月，第二个月恢复原价。做预算按标准价算。</li>
+            <li><b>涨价没有承诺。</b>GLM 24 天内涨了 140%。任何「长期锁定」的说法都要看合同条款。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PROMOS ============ -->
+    <section class="view" id="v-promos">
+      <div class="phead">
+        <div class="kick" id="prKick">Promos &amp; Free Tier</div>
+        <h1 id="prTitle">免费额度、首购优惠与省钱时段</h1>
+        <p id="prLede"></p>
+        <div class="stats" id="prStats"></div>
+      </div>
+
+      <div class="staleBar on" id="prWarn" style="position:static;margin-bottom:22px"></div>
+
+      <div class="panel">
+        <h3><span class="ic">◌</span>先白嫖：免费额度都藏在哪</h3>
+        <div class="sub">真正能零成本试的只有少数几家。每条都写了「怎么拿」和「坑在哪」——只看好处的那是广告。</div>
+        <div class="presets" id="ftFilter"></div>
+        <div class="ftgrid" id="ftGrid"></div>
+        <div class="note" style="margin-top:14px">
+          <b>「模型 API」和「Agent 产品」是两笔账。</b>前者给你一个 Key，能接进测试流水线；后者是「在它的界面里用」，额度再大也拿不出来。混着看会得出错误结论。
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">¥</span>首购优惠：第一次买能便宜多少</h3>
+        <div class="sub">左列是标准月付价，右列是能拿到的最低首购价。红色表示优惠幅度大，别拿它做长期预算。</div>
+        <div class="tblWrap">
+          <table class="tbl" id="fbTable"></table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▦</span>优惠怎么叠：四层结构</h3>
+        <div class="sub">很多人只知道第一层。按顺序用，同样的东西能便宜一大截。</div>
+        <div class="stacklayers" id="prStack"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">🌙</span>省钱时段：晚上跑等于额度翻倍</h3>
+        <div class="sub">这一条对测试岗位价值最大——批量回归、造数据本来就是该排到夜里的活。</div>
+        <div class="offgrid" id="offGrid"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◇</span>四条我的判断</h3>
+        <div class="sub">每条都写了「什么情况下这条不成立」，别当教条。</div>
+        <div class="opjudges" id="prJudges"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">!</span>使用边界</h3>
+        <ul class="ul bad" id="prCaveats"></ul>
+      </div>
+    </section>
+
+    <!-- ============ BUNDLES ============ -->
+    <section class="view" id="v-bundles">
+      <div class="phead">
+        <div class="kick">Bundles</div>
+        <h1>组合方案</h1>
+        <p>工具和套餐分开选容易选错。<b>能直接照抄的组合</b>长这样：一个壳 + 一份电，加起来多少钱、能干什么、坑在哪，一次说清。</p>
+        <div class="chips">
+          <span class="chip"><b id="bundleCount">10</b> 套组合</span>
+          <span class="chip">成本按「壳免费 + 套餐价」算</span>
+          <span class="chip">六维评分可排序</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◎</span>按场景筛</h3>
+        <div class="sub">不同处境对「便宜 / 能进 CI / 多模态」的取舍完全不同。</div>
+        <div class="presets" id="bPresets"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">⊞</span>全部组合</h3>
+        <div class="sub" id="bSub">—</div>
+        <div class="grid3" id="bGrid"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◇</span>成本怎么算的</h3>
+        <ul class="ul">
+          <li><b>开源壳算 ¥0。</b>DSH、Pi、Hermes、MiMo Code 本身免费，成本就是套餐价。之前把壳和套餐重复相加是错的，已修正。</li>
+          <li><b>Qoder 只算一次。</b>它的 IDE 和订阅是同一个产品，¥59 包含两者。</li>
+          <li><b>Claude Code 走第三方 Base URL 时免订阅。</b>只有要用官方独有功能才需要另付 $20。</li>
+          <li><b>按量 API 给的是估算值。</b>按每天 30–50 万 token 的中度用量折算，你的实际账单会不一样。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ AI TEST ============ -->
+    <section class="view" id="v-aitest">
+      <div class="phead">
+        <div class="kick">AI × Testing</div>
+        <h1>AI 测试专项</h1>
+        <p>市面上的对比站都在比「谁写代码强」，没人按<b>「能不能把测试这件事跑起来」</b>来分。这一页只回答一个问题：做测试的人，该用哪些工具。</p>
+        <div class="chips">
+          <span class="chip" id="atCount">9 个工具</span>
+          <span class="chip">按成熟度标注</span>
+          <span class="chip">按阶段给建议</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">!</span>先说清楚</h3>
+        <div class="note warn" id="atDisclaimer"></div>
+      </div>
+
+      <div id="atGroups"></div>
+
+      <div class="panel">
+        <h3><span class="ic">◎</span>按你现在的阶段选</h3>
+        <div class="sub" id="atMatrixNote"></div>
+        <div class="atmatrix" id="atMatrix"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◇</span>三个我坚持的判断</h3>
+        <ol class="ul" id="atJudgments"></ol>
+      </div>
+    </section>
+
+    <!-- ============ VERSUS ============ -->
+    <section class="view" id="v-versus">
+      <div class="phead">
+        <div class="kick">Head to Head</div>
+        <h1>两两 PK</h1>
+        <p>排行榜告诉你「谁第一」，PK 告诉你<b>「这两款到底差在哪」</b>。选两个工具，逐维高亮差异，赢的格子标绿，输的标红。</p>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">⇄</span>选两个对手</h3>
+        <div class="sub">左边和右边任选。同一款不能和自己比。</div>
+        <div class="vsPick">
+          <select id="vsA"></select>
+          <div class="vsMid">VS</div>
+          <select id="vsB"></select>
+        </div>
+        <div class="presets" id="vsPresets" style="margin-top:14px"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▦</span>逐维对比</h3>
+        <div class="sub" id="vsSub"></div>
+        <div id="vsTable"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◈</span>能力明细对比</h3>
+        <div class="sub">20 项能力逐项比。差距 ≥2 分才算「明显领先」，1 分以内算平手。</div>
+        <div id="vsCaps"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◇</span>结论</h3>
+        <div id="vsVerdict"></div>
+      </div>
+    </section>
+
+    <!-- ============ EVENTS ============ -->
+    <section class="view" id="v-events">
+      <div class="phead">
+        <div class="kick">Market Timeline</div>
+        <h1>市场变动</h1>
+        <p>价格不是静态的。这个页面回答一个问题：<b>过去半年这个市场到底发生了什么</b>——谁涨价、谁停售、哪个模型下线、订阅形态怎么变的。</p>
+        <div class="chips">
+          <span class="chip" id="evCount">7 条记录</span>
+          <span class="chip">只记有官网依据的</span>
+          <span class="chip">按时间倒序</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◷</span>变动时间轴</h3>
+        <div class="sub" id="evNote"></div>
+        <div class="evfilter" id="evFilter"></div>
+        <div class="evline" id="evLine"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">↗</span>价格轨迹</h3>
+        <div class="sub">只画有 2 个以上数据点的套餐。单点画不出趋势，标成「单点」。</div>
+        <div class="sparkwrap" id="sparkWrap"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">!</span>这张时间轴的局限</h3>
+        <ul class="ul bad" id="evLimits"></ul>
+      </div>
+    </section>
+
+    <!-- ============ PERSONA ============ -->
+    <section class="view" id="v-persona">
+      <div class="phead">
+        <div class="kick">Who Are You</div>
+        <h1>测试人诊断</h1>
+        <p id="peIntro"></p>
+        <div class="chips">
+          <span class="chip"><b id="peQCount">4</b> 道题</span>
+          <span class="chip"><b id="pePCount">8</b> 种类型</span>
+          <span class="chip">约 2 分钟</span>
+        </div>
+      </div>
+
+      <!-- 答题区 -->
+      <div id="peQuiz">
+        <div class="panel">
+          <div class="peProgress">
+            <div class="peBar"><i id="peBarFill"></i></div>
+            <div class="peStep" id="peStep">第 1 / 4 题</div>
+          </div>
+          <div id="peQuestion"></div>
+          <div class="peNav">
+            <button class="btn" id="pePrev">← 上一题</button>
+            <button class="btn" id="peRestart" style="margin-left:auto">重新开始</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 结果区 -->
+      <div id="peResult" style="display:none"></div>
+    </section>
+
+    <!-- ============ OPINION ============ -->
+    <section class="view" id="v-opinion">
+      <div class="phead">
+        <div class="kick" id="opKick"></div>
+        <h1 id="opTitle"></h1>
+        <p id="opLede"></p>
+      </div>
+      <div id="opBody"></div>
+    </section>
+
+    <!-- ============ ROADMAP ============ -->
+    <section class="view" id="v-roadmap">
+      <div class="phead">
+        <div class="kick">Roadmap</div>
+        <h1>从功能测试到 AI 测试开发</h1>
+        <p>这条路线的前提是：<b>工具会换，能力不会。</b>所以每个阶段都以「产出物」而不是「学完某门课」为验收标准。四个阶段加起来大约 12 个月，但没人规定你必须按这个速度走。</p>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▦</span>四个阶段</h3>
+        <div class="sub">每阶段都标了「最容易翻车的地方」和「怎么算过关」。</div>
+        <div id="phases"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">¥</span>三档预算组合</h3>
+        <div class="sub">工具是壳、套餐是电、技能是你的资产。三档的差别主要在「电」上，不在「壳」上。</div>
+        <div class="grid3" id="stacks"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">◈</span>三个我坚持的判断</h3>
+        <ol class="ul" id="judgments"></ol>
+      </div>
+    </section>
+
+    <!-- ============ STACK BUILDER ============ -->
+    <section class="view" id="v-stack">
+      <div class="phead">
+        <div class="kick">My Stack</div>
+        <h1>我的组合</h1>
+        <p>勾选你打算用的工具和套餐，下面实时算月总成本，并检查四件事：有没有壳、有没有电、能不能进 CI、要不要翻墙。选择存在浏览器本地，下次打开还在。</p>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3><span class="ic">◌</span>诊断记录</h3>
+        <div class="sub">首页诊断台跑出来的最近方案。点「采纳」会把推荐的工具壳加进下面的组合计算。</div>
+        <div id="stackDiag"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▦</span>选工具壳</h3>
+        <div class="sub">可以多选。但说实话，两个以上你大概率只会用其中一个。</div>
+        <div class="pickgrid" id="stackTools"></div>
+      </div>
+
+      <div class="panel">
+        <h3><span class="ic">▣</span>选模型供给</h3>
+        <div class="sub">单选。主力套餐 + 按量 API 兜底是更常见的做法。</div>
+        <div class="pickgrid" id="stackPlans"></div>
+      </div>
+
+      <div class="totalbox" id="stackTotal"></div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3><span class="ic">▦</span>额度够不够？算一下</h3>
+        <div class="sub">套餐页的额度是静态数字，没人算得清够不够。这里按你的真实用法估算——输入每天大概干多少活，看会不会撞额度窗口。</div>
+
+        <div class="calc">
+          <div class="calcRow">
+            <div class="calcLab">每天用几小时</div>
+            <input type="range" id="calcHours" min="1" max="12" step="1" value="4">
+            <div class="calcVal" id="calcHoursV">4 小时</div>
+          </div>
+          <div class="calcRow">
+            <div class="calcLab">每小时大概几轮对话</div>
+            <input type="range" id="calcTurns" min="2" max="40" step="2" value="12">
+            <div class="calcVal" id="calcTurnsV">12 轮</div>
+          </div>
+          <div class="calcRow">
+            <div class="calcLab">上下文规模</div>
+            <select id="calcCtx">
+              <option value="1">小（单文件、几百行）</option>
+              <option value="2.5" selected>中（模块级、几千行）</option>
+              <option value="5">大（整个仓库、上万行）</option>
+            </select>
+            <div class="calcVal"></div>
+          </div>
+          <div class="calcRow">
+            <div class="calcLab">跑批 / 自动化占比</div>
+            <input type="range" id="calcBatch" min="0" max="100" step="5" value="20">
+            <div class="calcVal" id="calcBatchV">20%</div>
+          </div>
+        </div>
+
+        <div class="calcOut" id="calcOut"></div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <h3><span class="ic">查</span>自检说明</h3>
+        <ul class="ul">
+          <li><b>至少一个可脚本化的壳</b>——没有它，你所有的 AI 能力都停在「手动点一下」，进不了流水线，也就谈不上「测试开发」。</li>
+          <li><b>至少一个国内直连</b>——不是爱国问题，是「半夜 CI 挂了能不能立刻排查」的问题。</li>
+          <li><b>套餐只留一个主力</b>——两个套餐的钱够你买三个月的按量 API 了，而按量 API 不会限流。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ PLAN PACK · 落地执行包（从方案到动作的唯一出口） ============ -->
+    <section class="view" id="v-plan">
+      <div class="ph">
+        <div class="rail">
+          <div class="rk">EXECUTION PACK</div>
+          <div class="rv" id="ppDays">30<small> 天</small></div>
+          <div class="rs" id="ppRail">—</div>
+        </div>
+        <div class="phMain">
+          <h1>落地执行包</h1>
+          <p id="ppLead">从签下这套组合，到它能替你跑第一次回归，中间只有这些事。</p>
+          <div class="sum" id="ppSum"></div>
+        </div>
+      </div>
+      <div id="ppEmpty"></div>
+      <div class="planGrid" id="ppGrid" hidden>
+        <div id="ppBody"></div>
+        <div class="side" id="ppSide"></div>
+      </div>
+    </section>
+
+    <!-- ============ NEWS · AI 大事 ============ -->
+    <section class="view" id="v-news">
+      <div class="pageHead" id="newsHead"></div>
+      <div class="filterBar newsBar">
+        <div class="segGroup" id="newsRegion" aria-label="按地区筛选"></div>
+        <div class="segGroup" id="newsKind" aria-label="按类型筛选"></div>
+        <div class="search"><input type="text" id="newsSearch" placeholder="搜标题 / 影响，例如「降价」「政策」「Muse」"></div>
+        <label class="switch"><input type="checkbox" id="newsAutoToggle"><span class="sw" aria-hidden="true"></span>含自动抓取</label>
+      </div>
+      <div class="listMeta"><b id="newsCount">—</b><span class="mini">人工条目都写了「对测试的影响」；自动条目只保证来源与时间，未做判断。</span></div>
+      <div class="newsList" id="newsList"></div>
+      <div class="autoNote">
+        <b>关于自动更新</b>
+        <p>管线在 <code>scripts/refresh.js</code>：按 <code>data/feed-sources.json</code> 抓官方 RSS / 更新日志，按关键词过滤、按标题去重，写入 <code>data/news-auto.json</code>；价格页只做“变了”的指纹告警，不自动改价。人工核过的条目永远优先，自动条目在页面上单独标记。</p>
+        <p class="mini">建议节奏：每周一次 RSS + 比价快照；每月一次人工复核人工条目。<code>node scripts/refresh.js</code> 即可运行，CI 里用 <code>--dry</code> 先看差异。</p>
+      </div>
+    </section>
+
+    <!-- ============ IMPACT · AI 对测试的冲击 ============ -->
+    <section class="view" id="v-impact">
+      <div class="pageHead" id="impactHead"></div>
+      <div class="numGrid" id="impNums"></div>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">01</span><h2>五个变化：从「做什么」到「对什么负责」</h2></div>
+        <div class="shiftList" id="impShifts"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">02</span><h2>哪些测试活动正在被替代</h2><p class="shSub">替代度是本站按任务结构做的判断，不是调研数据；判断依据写在表格最后一列。</p></div>
+        <div class="matrixBox" id="impMatrix"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">03</span><h2>90 天：把「会用 AI」变成「能证明价值」</h2></div>
+        <div class="playbook" id="impPlaybook"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">04</span><h2>六条反模式：看起来在进步，其实在挖坑</h2></div>
+        <div class="antiGrid" id="impAnti"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">05</span><h2>30 秒自检：你在哪一档</h2><p class="shSub">不是考试，是定位。勾选你确实做到的事，下面会给下一步。</p></div>
+        <div class="checkBox" id="impCheck"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">06</span><h2>数据来源</h2></div>
+        <ul class="srcList2" id="impSources"></ul>
+      </section>
+    </section>
+
+    <!-- ============ ROLES · 测试角色阶梯 ============ -->
+    <section class="view" id="v-roles">
+      <div class="pageHead" id="rolesHead"></div>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">01</span><h2>先分清：AI 与测试的四件事</h2><p class="shSub">用 AI 测、测 AI、与 AI 协作、防 AI 风险——四件事的能力与指标完全不同。</p></div>
+        <div class="quadGrid" id="roleQuad"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">02</span><h2>11 个角色，三层梯队</h2><p class="shSub">点角色看它「每天交付什么、AI 接手什么、什么仍然只属于人」。</p></div>
+        <div class="stageTabs" id="roleStages"></div>
+        <div class="roleGrid" id="roleList"></div>
+        <div class="roleDetail" id="roleDetail"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">03</span><h2>初 / 中 / 高，差在哪</h2><p class="shSub">不是差在速度，是差在「对什么负责」。</p></div>
+        <div class="lvGrid" id="roleLevels"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">04</span><h2>同一角色，三个级别的分水岭</h2></div>
+        <div class="matrixBox" id="roleMatrix"></div>
+      </section>
+
+      <section class="sec">
+        <div class="secHead"><span class="shN">05</span><h2>数据来源</h2></div>
+        <ul class="srcList2" id="roleSources"></ul>
+      </section>
+    </section>
+
+    <!-- ============ EVALSET · AI 评测集模板 ============ -->
+    <section class="view" id="v-evalset">
+      <div class="phead">
+        <div class="kick">Grow / 04</div>
+        <h1>AI 评测集模板</h1>
+        <p>这不是榜单，是一套给 AI 测试 Agent / AI 功能用的最小验收集。六类各 5 条，每条都有输入、预期、判定器和严重级别。先跑通 P0，再谈规模化。</p>
+        <div class="phMeta" id="evalMeta"></div>
+      </div>
+      <div class="evalStats" id="evalStats"></div>
+      <div class="evalBar">
+        <div class="presets" id="evalCats" aria-label="按类别筛选"></div>
+        <div class="search"><input type="text" id="evalSearch" placeholder="搜用例、判定器、标签，例如「注入」「P0」「成本」" aria-label="搜索评测用例"></div>
+        <button class="btn sm" id="evalCopyAll" type="button">复制全部 JSON</button>
+        <a class="btn sm" href="exports/evalset.json" download>下载 JSON</a>
+      </div>
+      <div class="evalGrid" id="evalGrid"></div>
+      <div class="evalHow" style="margin-top:22px">
+        <div class="panel">
+          <h3><span class="ic">◎</span>怎么用：五步</h3>
+          <div class="sub">不要一次跑 100 条。先把 P0 跑稳，再扩场景。</div>
+          <ol class="howList" id="evalHow"></ol>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">▦</span>六个指标</h3>
+          <div class="sub">用一个总分掩盖 P0 回退，是评测最常见的自欺。</div>
+          <div id="evalMetrics"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">◫</span>当前筛选的 JSON</h3>
+        <div class="sub">直接复制进你的评测仓库；字段固定，方便脚本读取。</div>
+        <div class="evalJSON"><pre id="evalJSON"></pre></div>
+        <div class="note" style="margin-top:12px">
+          <b>评分档位：</b><span id="evalBands"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ FREE · 白嫖地图 ============ -->
+    <section class="view" id="v-free">
+      <div class="pageHead" id="freeHead"></div>
+      <div class="filterBar">
+        <div class="segGroup" id="freeCat" aria-label="按类别筛选"></div>
+        <div class="segGroup" id="freeRegion" aria-label="按地区筛选"></div>
+      </div>
+      <div class="listMeta"><b id="freeCount">—</b><span class="mini">标「已过期」的条目保留下来做证据：免费额度会消失，这件事本身值得记住。</span></div>
+      <div class="freeGrid" id="freeGrid"></div>
+      <div class="rulesBox">
+        <h3>四条使用规则</h3>
+        <ol id="freeRules"></ol>
+      </div>
+    </section>
+
+    <!-- ============ HEALTH · 数据健康 ============ -->
+    <section class="view" id="v-health">
+      <div class="phead">
+        <div class="kick">Data / 01</div>
+        <h1>数据健康</h1>
+        <p>这一页不新增数据，只把已有的核验日、抓取结果、过期项和导出入口摆在一起。目标很简单：任何一条价格，你都能在 10 秒内判断「新不新、谁该去核、能不能拿走」。</p>
+        <div class="phMeta" id="healthMeta"></div>
+      </div>
+      <div class="healthGrid" id="healthGrid"></div>
+      <div class="healthTwo">
+        <div class="panel">
+          <h3><span class="ic">◷</span>核价与抓取待办</h3>
+          <div class="sub">按「影响金额 × 超期天数」排序。复制成 Markdown，直接贴进周会或 issue。</div>
+          <div id="healthQueue"></div>
+          <div class="exportGrid" id="healthQueueActions"></div>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">!</span>自动更新源健康</h3>
+          <div class="sub">失败不隐藏，按错误类型分组。连续失败 2 次的源会被标红。</div>
+          <div id="healthSources"></div>
+          <div class="hnote" id="healthNote"></div>
+          <div class="exportGrid" id="healthExports"></div>
+        </div>
+      </div>
+      <div class="panel" style="margin-top:22px">
+        <h3><span class="ic">⌘</span>这些数字怎么来的</h3>
+        <ul class="ul">
+          <li><b>新鲜度</b>：取 <code>meta.lastVerified</code>；超过 <code>staleAfterDays</code> 标黄，超过两倍标红。</li>
+          <li><b>核验覆盖</b>：套餐的 <code>verified</code> 字段；缺失即进入待办，不按「应该核过」估算。</li>
+          <li><b>源健康</b>：最近一次 <code>refresh.js</code> 的 <code>_refresh-report.json</code>；失败按 HTTP / timeout / TLS 分组，不吞错。</li>
+          <li><b>将过期</b>：免费额度的 <code>expiry</code> 在 30 天内；已过期的保留在列表里做证据。</li>
+          <li><b>导出</b>：构建期由 <code>build.js</code> 生成，和页面同源；不提供「猜测字段」。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ CHANGELOG ============ -->
+    <section class="view" id="v-changelog">
+      <div class="phead">
+        <div class="kick">Changelog</div>
+        <h1>更新日志</h1>
+        <p>每一次价格变动、档位调整、能力重估都记在这里。这个页面的存在意义是：<b>让你知道哪条信息可能已经过期了</b>。</p>
+      </div>
+      <div class="panel">
+        <div id="logList"></div>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">↻</span>怎么更新这个站</h3>
+        <ul class="ul">
+          <li>所有数据在 <b>data/*.json</b>：工具、套餐、能力、权重、路线、更新日志、数据源。</li>
+          <li>改完跑 <b>node build.js</b>，会把数据、样式、脚本内联成一个 <b>index.html</b>，双击就能开，也能直接扔到任何静态托管。</li>
+          <li>想自动化：挂一个定时任务跑 <b>node scripts/refresh.js</b>，它抓 RSS 与定价页指纹；脚本抓不到的价格（国内定价页多为 JS 空壳），按「数据健康」里的核价待办对照官网改 JSON，改完 build。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ SOURCES ============ -->
+    <section class="view" id="v-sources">
+      <div class="phead">
+        <div class="kick">Sources & Method</div>
+        <h1>数据源与口径</h1>
+        <p>所有价格和「支持/不支持」都标了出处。评分是编辑判断，我把判断依据写出来，你可以不同意。</p>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">↻</span>自动更新管线</h3>
+        <div class="sub">这一块不是文案，是最近一次真实运行的结果。抓取失败也照实写。</div>
+        <div id="srcRefresh"></div>
+      </div>
+      <div id="srcGroups"></div>
+      <div class="grid2">
+        <div class="panel">
+          <h3><span class="ic">◈</span>评分口径</h3>
+          <ul class="ul" id="srcMethod"></ul>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">!</span>已知的不确定性</h3>
+          <ul class="ul bad" id="srcCaveats"></ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== 页脚：次级入口 + 数据元信息 ===================== -->
+  <footer class="sitefoot">
+    <div class="sfcol">
+      <div class="sfb"><span class="logo sm" aria-hidden="true">AT</span>AI Test Stack</div>
+      <p class="sfdis">价格为公开页面核验值，下单前以官网为准。评分是编辑判断，依据见「数据源」。</p>
+    </div>
+    <nav class="sfcol" aria-label="页脚导航">
+      <a href="#map">功能地图</a>
+      <a href="#all">完整工具站</a>
+      <a href="#persona">测试人诊断</a>
+      <a href="#opinion">我的判断</a>
+      <a href="#stack">我的组合</a>
+      <a href="#plan">落地执行包</a>
+      <a href="#news">AI 大事</a>
+      <a href="#impact">AI 冲击</a>
+      <a href="#roles">角色阶梯</a>
+      <a href="#evalset">AI 评测集</a>
+      <a href="#free">白嫖地图</a>
+      <a href="#health">数据健康</a>
+      <a href="#report">决策报告</a>
+      <a href="#changelog">更新日志</a>
+      <a href="#sources">数据源</a>
+      <span class="ddSoon">社区<b class="soon">规划中</b></span>
+    </nav>
+    <div class="sfcol sfmeta">
+      <div class="kv"><b>数据核验</b><span id="metaDate">—</span></div>
+      <div class="kv"><b>版本</b><span id="sfVer">v1.0.0</span></div>
+      <div class="kv"><b>快捷键</b><span><kbd>Ctrl</kbd> + <kbd>K</kbd> 搜索</span></div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== 移动端分层导航：主链接 → 模块 → 功能 ===================== -->
+<div id="mnav" role="dialog" aria-modal="true" aria-label="站内导航" hidden>
+  <div class="mnavHead">
+    <span class="logo sm" aria-hidden="true">AT</span><b>AI Test Stack</b>
+    <button class="mnavX" id="mnavX" aria-label="关闭导航菜单">×</button>
+  </div>
+  <div class="mnavPrim">
+    <a href="#home">◈ 首页</a>
+    <a href="#map">▦ 功能地图</a>
+    <a href="#all">▦ 完整工具站</a>
+    <a href="#persona">◌ 测试人诊断</a>
+    <a href="#report">▥ 决策报告</a>
+    <a href="#opinion">◇ 我的判断</a>
+    <a href="#stack">⊕ 我的组合</a>
+    <a href="#plan">▤ 执行包</a>
+    <a href="#roles">◈ 角色阶梯</a>
+    <a href="#evalset">◫ AI 评测集</a>
+    <a href="#news">◷ AI 大事</a>
+  </div>
+  <div class="mnavMods" id="mnavMods"></div>
+  <div class="mnavFoot">
+    <a href="#impact">AI 冲击</a>
+    <a href="#evalset">AI 评测集</a>
+    <a href="#free">白嫖地图</a>
+    <a href="#health">数据健康</a>
+    <a href="#report">决策报告</a>
+    <a href="#changelog">更新日志</a>
+    <a href="#sources">数据源</a>
+    <span class="ddSoon">社区<b class="soon">规划中</b></span>
+  </div>
+</div>
+
+<!-- ===================== DRAWER ===================== -->
+<div id="scrim"></div>
+<aside id="drawer" role="dialog" aria-modal="true" aria-label="工具详情" aria-hidden="true"><div id="dbody"></div></aside>
+
+<!-- ===================== PALETTE ===================== -->
+<div id="palette">
+  <div class="palbox">
+    <input type="text" id="palInput" placeholder="搜索工具、套餐、能力、阶段…（Esc 关闭）">
+    <div class="palres" id="palRes"></div>
+  </div>
+</div>
+
+<button id="backTop" type="button" aria-label="回到顶部" title="回到顶部">↑</button>
+
+<div id="toast"></div>
+
+<script>window.__DATA__ = /*__DATA__*/;</script>
+<script>/*__JS__*/</script>
+<script>
+/* 模板守卫（必须在 __DATA__ 之后：build 成品里 __DATA__ 已内联，这里静默返回；
+   误开 src/index.html 模板时 __DATA__ 未定义 → 整页换成指引页，避免"开错文件以为网站垃圾"） */
+(function () {
+  if (window.__DATA__) return;
+  document.documentElement.innerHTML =
+    '<body style="margin:0;font-family:system-ui,sans-serif;background:#0b0e14;color:#e9eef8;display:grid;place-items:center;min-height:100vh">'
+    + '<div style="max-width:540px;margin:24px;padding:42px 40px;border:1px solid rgba(255,255,255,.14);border-radius:14px;text-align:center;line-height:1.8">'
+    + '<div style="font-size:13px;letter-spacing:.24em;color:#2fe3d4;margin-bottom:14px">BUILD TEMPLATE</div>'
+    + '<h1 style="font-size:22px;margin:0 0 10px">你打开的是构建模板，不是网站</h1>'
+    + '<p style="font-size:14px;color:#95a3ba;margin:0 0 24px">成品是项目根目录的 <b style="color:#e9eef8">index.html</b>，双击即用（离线可开）。<br>'
+    + '若根目录还没有成品，先在项目目录跑一次：<b style="color:#e9eef8">node build.js</b></p>'
+    + '<a href="../index.html" style="display:inline-block;padding:11px 24px;border-radius:10px;background:#2fe3d4;color:#04121a;font-weight:700;text-decoration:none">打开成品 index.html →</a>'
+    + '</div>';
+})();
+</script>
+</body>
+</html>
