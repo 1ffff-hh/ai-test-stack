@@ -1,0 +1,32 @@
+# 依赖只有 playwright 一个（devDependency），但它驱动的是四道门禁里的两道。
+# 长期不更新，某天 CI 会因为浏览器版本和 Playwright 对不上而挂掉；
+# 更新得太勤，又会被无意义的 PR 淹没。每周一次、合并成一个 PR，是这两者之间的取值。
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:20"
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 3
+    groups:
+      dev-deps:
+        patterns: ["*"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "07:20"
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 3
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"

@@ -3,18 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Test Stack · AI 工具选型 × 测试角色 × AI 冲击</title>
-<meta name="description" content="面向测试工程师的 AI 工具选型与职业判断看板：29 款工具、57 档国内外套餐、34 条免费额度、30 条 AI 评测用例、测试角色阶梯、数据健康与可打印决策报告。">
+<!--__META__-->
 <meta name="theme-color" content="#070b12" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#eef2f8" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="dark light">
-<meta property="og:type" content="website">
-<meta property="og:title" content="AI Test Stack · AI Agent × Coding Plan 选型与能力图谱">
-<meta property="og:description" content="29 款 AI 工具 + 57 档国内外套餐 + 34 条免费额度 + 11 个测试角色 + 30 条评测用例 + 数据健康与决策报告。含决策矩阵、能力图谱、组合方案与 90 天应对。">
-<meta property="og:site_name" content="AI Test Stack">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="AI Test Stack · 为测试工程师选一套能一直用下去的组合">
-<meta name="twitter:description" content="29 款工具 × 57 档套餐 × 20 项能力。数据可下载，健康度可见，结论可打印。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%232fe3d4'/><text y='72' x='50' text-anchor='middle' font-size='54' font-family='monospace' font-weight='bold' fill='%230a0e14'>AT</text></svg>">
 <script>
 /* 主题：必须在首屏渲染前执行，否则会闪白/闪黑 */
@@ -31,6 +23,8 @@
 <body>
 
 <a class="skip" href="#main">跳到主内容</a>
+
+<!--__NOSCRIPT__-->
 
 <div class="staleBar" id="staleBar" role="status" hidden>
   <span class="sIco">!</span>
@@ -142,6 +136,8 @@
         <div class="sHead"><h2>七个模块，直接进</h2><span>每个模块是一组要一起办的事，不是分类文件夹</span></div>
         <div class="mods stagger homeMods" id="homeMods"></div>
       </div>
+
+      <div class="homeChg" id="homeChg" hidden></div>
 
       <div class="hfoot">
         <a class="btn primary" href="#all">全部功能一屏总览：进入完整工具站 →</a>
@@ -969,6 +965,11 @@
         </div>
       </div>
       <div class="panel" style="margin-top:22px">
+        <h3><span class="ic">⇢</span>发现哪条不对？</h3>
+        <div class="sub">这一页的用处是让「哪条可能过期」浮出来；真发现错了，就地报——比发邮件快，也比发邮件留得下证据。</div>
+        <div class="exportGrid" id="healthFix"></div>
+      </div>
+      <div class="panel" style="margin-top:22px">
         <h3><span class="ic">⌘</span>这些数字怎么来的</h3>
         <ul class="ul">
           <li><b>新鲜度</b>：取 <code>meta.lastVerified</code>；超过 <code>staleAfterDays</code> 标黄，超过两倍标红。</li>
@@ -988,6 +989,21 @@
         <p>每一次价格变动、档位调整、能力重估都记在这里。这个页面的存在意义是：<b>让你知道哪条信息可能已经过期了</b>。</p>
       </div>
       <div class="panel">
+        <div class="chBar">
+          <h3><span class="ic">⇄</span>最近变化</h3>
+          <div class="chChips" id="chChips" role="group" aria-label="按类型筛选变化">
+            <button class="chip on" type="button" data-ch="all">全部</button>
+            <button class="chip" type="button" data-ch="price">只看价格</button>
+            <button class="chip" type="button" data-ch="site">只看本站</button>
+          </div>
+        </div>
+        <div class="chSum" id="chSum"></div>
+        <div id="chFeed"></div>
+        <button class="chip chMore" id="chMore" type="button" hidden></button>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">≡</span>本站改动全记录</h3>
+        <div class="sub">下面这些是「站本身」改了什么（新增功能、修正 bug、校准评分）。顺手记一条，比事后翻提交记录便宜。</div>
         <div id="logList"></div>
       </div>
       <div class="panel">
@@ -1055,6 +1071,7 @@
       <div class="kv"><b>数据核验</b><span id="metaDate">—</span></div>
       <div class="kv"><b>版本</b><span id="sfVer">v1.0.0</span></div>
       <div class="kv"><b>快捷键</b><span><kbd>Ctrl</kbd> + <kbd>K</kbd> 搜索</span></div>
+      <div class="sfLinks" id="sfLinks"></div>
     </div>
   </footer>
 </div>
@@ -1107,6 +1124,7 @@
 
 <div id="toast"></div>
 
+<script>window.__SITE__ = /*__SITE__*/;</script>
 <script>window.__DATA__ = /*__DATA__*/;</script>
 <script>/*__JS__*/</script>
 <script>

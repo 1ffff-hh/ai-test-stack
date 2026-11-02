@@ -616,6 +616,83 @@ async function fresh(browser, hash = '') {
     await c.close();
   }
 
+  // ---------- 24. 对外可发现性 + 纠错闭环（v2.2.1） ----------
+  {
+    const fs = require('fs');
+    const { c, p, errs } = await fresh(browser);
+    const head = await p.evaluate(() => ({
+      canonical: (document.querySelector('link[rel="canonical"]') || {}).href || '',
+      ogImage: (document.querySelector('meta[property="og:image"]') || {}).content || '',
+      ogUrl: (document.querySelector('meta[property="og:url"]') || {}).content || '',
+      twitter: (document.querySelector('meta[name="twitter:card"]') || {}).content || '',
+      ld: (() => {
+        const s = document.querySelector('script[type="application/ld+json"]');
+        if (!s) return null;
+        try { const j = JSON.parse(s.textContent); return j['@graph'].map(x => x['@type']); } catch (e) { return 'parse-fail'; }
+      })(),
+      feed: (document.querySelector('link[rel="alternate"][type="application/atom+xml"]') || {}).href || '',
+      site: window.__SITE__ || null
+    }));
+
+    const home = await p.evaluate(() => {
+      const el = document.querySelector('#homeChg');
+      return { hidden: el.hidden, rows: el.querySelectorAll('.hcR').length };
+    });
+
+    await p.evaluate(() => { location.hash = '#changelog'; });
+    await p.waitForTimeout(300);
+    const ch = await p.evaluate(() => ({
+      rows: document.querySelectorAll('#chFeed .chRow').length,
+      sum: (document.querySelector('#chSum') || {}).textContent || '',
+      more: !document.querySelector('#chMore').hidden
+    }));
+    await p.click('#chChips button[data-ch="price"]');
+    await p.waitForTimeout(200);
+    const priceRows = await p.evaluate(() => ({
+      n: document.querySelectorAll('#chFeed .chRow').length,
+      fix: document.querySelectorAll('#chFeed [data-fix]').length
+    }));
+
+    // 纠错按钮必须真的拼出正确的 issue 表单地址（拦掉 window.open 看入参）
+    const opened = await p.evaluate(() => {
+      window.__opened = [];
+      window.open = u => { window.__opened.push(u); return null; };
+      const b = document.querySelector('#chFeed [data-fix]');
+      if (b) b.click();
+      return window.__opened;
+    });
+
+    const links = await p.evaluate(() => ({
+      footer: document.querySelectorAll('#sfLinks a, #sfLinks button').length
+    }));
+    await p.evaluate(() => { location.hash = '#health'; });
+    await p.waitForTimeout(300);
+    const fixBox = await p.evaluate(() => document.querySelectorAll('#healthFix a, #healthFix button').length);
+
+    // 时间序列导出：文件存在、行数与套餐数对得上
+    const histCsv = path.resolve(__dirname, '..', 'exports', 'plans-history.csv');
+    const histLines = fs.existsSync(histCsv)
+      ? fs.readFileSync(histCsv, 'utf8').trim().split('\n').length - 1
+      : -1;
+
+    out.site = { head, home, ch, priceRows, opened, links, fixBox, histLines };
+    out.siteOk = /ai-test-stack\/$|localhost/.test(head.canonical)
+      && /og\.png$/.test(head.ogImage)
+      && head.ogUrl === head.canonical
+      && head.twitter === 'summary_large_image'
+      && Array.isArray(head.ld) && head.ld.length === 3
+      && /feed\.xml$/.test(head.feed)
+      && head.site && /issues\/new$/.test(head.site.issue || '')
+      && home.hidden === false && home.rows === 3
+      && ch.rows === 8 && /价格变动/.test(ch.sum) && /本站改动/.test(ch.sum) && ch.more
+      && priceRows.n === 5 && priceRows.fix === 5
+      && opened.length === 1 && /data-correction\.yml/.test(opened[0]) && /%E4%BB%B7%E6%A0%BC%E4%B8%8D%E5%AF%B9/.test(opened[0])
+      && links.footer === 3 && fixBox === 3
+      && histLines === 63;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
   out.errs = allErrs;
   out.pass = out.viewsOk && out.themeOk && out.overflowOk
     && out.drawer.onOpen.open && out.drawer.afterEsc.open === false
@@ -625,7 +702,7 @@ async function fresh(browser, hash = '') {
     && out.flowOk && out.mobileNavOk && out.notFoundOk && out.consoleOk && out.diagOk
     && out.planOk && out.adoptOk
     && out.newsOk && out.impactOk && out.rolesOk && out.freeOk && out.plans2Ok && out.invOk
-    && out.healthOk && out.evalOk && out.reportOk
+    && out.healthOk && out.evalOk && out.reportOk && out.siteOk
     && allErrs.length === 0;
 
   console.log(JSON.stringify(out, null, 2));

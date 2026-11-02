@@ -5,6 +5,9 @@
   'use strict';
 
   const D = window.__DATA__ || {};
+  /* 站点身份由 build.js 注入（仓库地址、绝对 URL、版本）。
+     本地没有 git remote 时是空对象——纠错入口会退化成「复制模板」，不会指向错误地址。 */
+  const SITE = window.__SITE__ || {};
   const META = D.meta || {};
   const TOOLS = D.tools || [];
   const PLANS = D.plans || [];
@@ -3179,6 +3182,7 @@
      CHANGELOG / SOURCES
      ========================================================= */
   function renderChangelog() {
+    renderChanges();
     const el = $('#logList');
     if (!el) return;
     const KD = { add: '新增', chg: '变更', del: '下线', note: '备注' };
@@ -3192,6 +3196,190 @@
           ${e.items ? `<ul class="ul" style="margin-top:6px">${e.items.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
         </div>
       </div>`).join('');
+  }
+
+  /* =========================================================
+     变化时间线：价格变动 + 本站改动合成一条流
+     ---------------------------------------------------------
+     更新日志页的承诺是「让你知道哪条信息可能已经过期了」，
+     但价格变化以前只散落在每个套餐的 history 里，没人会逐条点开对照。
+     这里把它们按日期摊平：哪天、哪一档、从多少到多少、为什么。
+     ========================================================= */
+  function changeFeed() {
+    const out = [];
+    PLANS.forEach(p => {
+      const h = (p.history || []).filter(x => x && x.date)
+        .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+      for (let i = 1; i < h.length; i++) {
+        const cur = h[i], prev = h[i - 1];
+        const delta = (cur.price || 0) - (prev.price || 0);
+        const why = cur.note || '';
+        // 价格没动、也没有说明，就不算「变化」——否则时间线会被「维持」刷满
+        if (delta === 0 && (!why || why === '维持')) continue;
+        out.push({
+          date: cur.date, kind: 'price', planId: p.id,
+          title: p.name + ' ' + p.tier,
+          from: prev.price, to: cur.price, delta,
+          pct: prev.price ? delta / prev.price * 100 : null,
+          why
+        });
+      }
+    });
+    LOG.forEach(e => out.push({
+      date: e.date, kind: 'site', title: e.title, body: e.body, items: e.items
+    }));
+    out.sort((a, b) => String(b.date).localeCompare(String(a.date))
+      || (a.kind === 'price' ? -1 : 1));
+    return out;
+  }
+
+  const CH_STATE = { filter: 'all', limit: 8 };
+
+  function priceMove(x) {
+    const sign = x.delta > 0 ? '+' : '';
+    const cls = x.delta > 0 ? 'up' : x.delta < 0 ? 'down' : 'flat';
+    const pct = x.pct == null ? '' : `<span class="mvPct ${cls}">${sign}${x.pct.toFixed(1)}%</span>`;
+    return `<span class="mvFrom">¥${x.from}</span><span aria-hidden="true">→</span>`
+      + `<span class="mvTo">¥${x.to}</span>${pct}`
+      + (x.why ? `<span class="mvWhy">${esc(x.why)}</span>` : '');
+  }
+
+  function chRow(x) {
+    if (x.kind === 'price') {
+      const fix = {
+        title: '价格不对', entry: x.title,
+        current: '¥' + x.to + '（' + x.date + ' 起）'
+      };
+      return `<div class="cl chRow">
+        <div class="d">${esc(x.date)}</div>
+        <div class="b">
+          <div class="t"><span class="kd chg">价格</span>${esc(x.title)}</div>
+          <div class="mv">${priceMove(x)}</div>
+        </div>
+        <button class="chip fix" type="button" data-fix="${esc(JSON.stringify(fix))}"
+          aria-label="报告这一条价格有误">纠错</button>
+      </div>`;
+    }
+    return `<div class="cl chRow">
+      <div class="d">${esc(x.date)}</div>
+      <div class="b">
+        <div class="t"><span class="kd note">本站</span>${esc(x.title)}</div>
+        <div class="x">${esc(x.body)}</div>
+        ${x.items ? `<ul class="ul" style="margin-top:6px">${x.items.slice(0, 3).map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+      </div>
+    </div>`;
+  }
+
+  function renderChanges() {
+    const el = $('#chFeed');
+    if (!el) return;
+    const all = changeFeed();
+    const nPrice = all.filter(x => x.kind === 'price').length;
+    const sum = $('#chSum');
+    if (sum) {
+      sum.innerHTML = all.length
+        ? `共 <b>${all.length}</b> 条：价格变动 <b>${nPrice}</b> 条、本站改动 <b>${all.length - nPrice}</b> 条。最近一条在 <b>${esc(all[0].date)}</b>。`
+        : '还没有可展示的变化记录。';
+    }
+    const list = all.filter(x => CH_STATE.filter === 'all' || x.kind === CH_STATE.filter);
+    const show = list.slice(0, CH_STATE.limit);
+    el.innerHTML = show.length
+      ? show.map(chRow).join('')
+      : '<div class="empty">这个筛选下没有记录。</div>';
+    const more = $('#chMore');
+    if (more) {
+      const rest = list.length - show.length;
+      more.hidden = rest <= 0;
+      more.textContent = rest > 0 ? `再展开 ${Math.min(rest, 12)} 条（还有 ${rest} 条）` : '';
+    }
+    $$('#chChips button').forEach(b => b.classList.toggle('on', b.dataset.ch === CH_STATE.filter));
+  }
+
+  /* 首页那条精简版：只给最后三条，作用不是「看全」，是让人知道这站还活着 */
+  function renderHomeChanges() {
+    const el = $('#homeChg');
+    if (!el) return;
+    const all = changeFeed();
+    if (!all.length) { el.hidden = true; return; }
+    el.hidden = false;
+    el.innerHTML = `<div class="hcH"><b>最近变化</b><a href="#changelog">全部 ${all.length} 条 →</a></div>`
+      + all.slice(0, 3).map(x => `<div class="hcR">
+          <span class="hcD">${esc(String(x.date).slice(2))}</span>
+          <span>${x.kind === 'price' ? esc(x.title) + ' ' + priceMove(x) : esc(x.title)}</span>
+        </div>`).join('');
+  }
+
+  /* =========================================================
+     纠错入口：把「我觉得这条不对」变成一条能处理的 issue
+     ---------------------------------------------------------
+     GitHub 的 issue 表单（.yml）只支持预填 title，不支持预填正文。
+     所以点「纠错」进的是正确的表单 + 正确的标题，旁边再给一个「复制上下文」，
+     让用户不用在页面和表单之间手抄条目名和价格。
+     ========================================================= */
+  function fixIssueUrl(o) {
+    if (!SITE.issue) return '';
+    // 标题沿用模板的 [数据] 前缀，标签由模板自己声明，不在 URL 里重复指定
+    const t = '[数据] ' + (o.title || '数据纠错') + (o.entry ? '：' + o.entry : '');
+    return SITE.issue + '?template=data-correction.yml&title='
+      + encodeURIComponent(t.slice(0, 120));
+  }
+
+  function fixContext(o) {
+    const here = location.hash || '#home';
+    return [
+      '## 需要核对的数据', '',
+      o.entry ? '- 条目：' + o.entry : '',
+      o.current ? '- 页面当前显示：' + o.current : '',
+      o.expected ? '- 我认为应该是：' + o.expected : '',
+      '', '## 依据', '',
+      '- 官方页面：', '- 我看到的时间：' + todayStr(),
+      '', '## 页面', '',
+      (SITE.url ? SITE.url + here : here)
+    ].filter(x => x !== '').join('\n');
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-fix]');
+    if (!b) return;
+    e.preventDefault();
+    let o = {};
+    try { o = JSON.parse(b.dataset.fix || '{}'); } catch (err) { o = {}; }
+    const u = fixIssueUrl(o);
+    if (u) {
+      window.open(u, '_blank', 'noopener');
+      copyText(fixContext(o), '纠错模板已复制，没打开浏览器标签的话直接粘进 issue');
+      return;
+    }
+    copyText(fixContext(o), '已复制纠错模板（本地没有关联公开仓库）');
+  });
+
+  // 变化时间线的筛选与「再展开」：只重画这一段，不动整页
+  document.addEventListener('click', e => {
+    const c = e.target.closest('#chChips button');
+    if (c) { CH_STATE.filter = c.dataset.ch; CH_STATE.limit = 8; renderChanges(); return; }
+    if (e.target.closest('#chMore')) { CH_STATE.limit += 12; renderChanges(); }
+  });
+
+  /* 页脚与健康页的对外出口：纠错、订阅、源码。
+     没有公开仓库时（本地双击打开）只留「复制模板」——不给死链。 */
+  function renderSiteLinks() {
+    const feed = SITE.url && SITE.url.length > 1 ? SITE.url + 'feed.xml' : '';
+    const sf = $('#sfLinks');
+    if (sf) {
+      sf.innerHTML = [
+        `<button type="button" data-fix='{"title":"数据纠错"}'>报告数据错误</button>`,
+        feed ? `<a href="${esc(feed)}" target="_blank" rel="noopener">RSS 订阅</a>` : '',
+        SITE.repo ? `<a href="${esc(SITE.repo)}" target="_blank" rel="noopener">GitHub 源码</a>` : ''
+      ].filter(Boolean).join('');
+    }
+    const hf = $('#healthFix');
+    if (hf) {
+      hf.innerHTML = [
+        `<button class="chip" type="button" data-fix='{"title":"数据纠错"}'>报告一条数据错误</button>`,
+        SITE.repo ? `<a class="chip" href="${esc(SITE.repo + '/issues')}" target="_blank" rel="noopener">看已有的纠错</a>` : '',
+        feed ? `<a class="chip" href="${esc(feed)}" target="_blank" rel="noopener">订阅更新</a>` : ''
+      ].filter(Boolean).join('');
+    }
   }
 
   /* =========================================================
@@ -4114,6 +4302,23 @@
       if (v === '404') return;
       idx.push({ k: '页面', n: VIEW_NAME[v] || v, d: v.indexOf('mod-') === 0 ? '模块页' : '跳转', go: () => { location.hash = '#' + v; } });
     });
+    /* 两个「不是页面」的入口。纠错放在命令面板里，是因为它要在任何页面都能叫出来——
+       用户在套餐页看到一条错价时，不该先跑去更新日志页找按钮。 */
+    idx.push({
+      k: '操作', n: '报告数据错误', d: '当前页的数字不对？打开纠错表单',
+      go: () => {
+        const o = { title: '数据纠错' };
+        const u = fixIssueUrl(o);
+        if (u) { window.open(u, '_blank', 'noopener'); copyText(fixContext(o), '纠错模板已复制，可直接粘进 issue'); }
+        else copyText(fixContext(o), '已复制纠错模板（本地没有关联公开仓库）');
+      }
+    });
+    if (SITE.url && SITE.url.length > 1) {
+      idx.push({
+        k: '操作', n: '订阅更新（Atom）', d: '价格核验与本站改动，用阅读器订阅',
+        go: () => { window.open(SITE.url + 'feed.xml', '_blank', 'noopener'); }
+      });
+    }
     return idx;
   }
   let IDX = [];
@@ -4445,7 +4650,18 @@
     renderSources();
     renderRoadmap();
     renderChangelog();
+    renderHomeChanges();
+    renderSiteLinks();
     route();
+
+    /* 离线缓存：网页版也留一份，断网或地铁里还能看。
+       file:// 下浏览器不允许注册 SW —— 但那本来就是「文件全在硬盘上」的场景，不需要。
+       sw.js 由 scripts/build-site.js 生成，开发时（仓库根目录直接开）不存在，注册失败也无所谓。 */
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register((SITE.base || '') + '/sw.js').catch(() => {});
+      });
+    }
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

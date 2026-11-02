@@ -20,9 +20,11 @@
 ## 二、本地跑起来
 
 ```bash
-node build.js          # 重建 index.html（数据有问题会 exit 1）
-npm run check          # 四道门禁：数据校验 + 脱敏 + 对比度 + 功能验收
+node build.js          # 重建 index.html + exports/（数据有问题会 exit 1）
+npm run check          # 四道门禁 + 生成并自检 _site/ 发布物
 npm run preview        # 生成 _site/ 并用 http 端起来，模拟 Pages 访问
+npm run site           # 只生成 _site/（会把 feed.xml、sitemap.xml、sw.js 一起做出来）
+npm run og             # 重新渲染分享图 _site/og.png（图上数字来自 data/）
 ```
 
 `npm run check` 需要 Playwright（`npm install` 会装；本机装了 Chrome 也直接能跑）。
@@ -35,7 +37,10 @@ npm run preview        # 生成 _site/ 并用 http 端起来，模拟 Pages 访�
 | 数据校验 | `node build.js` | 字段缺失、来源等级非法、夺冠率 >40%、过期未下架的优惠 |
 | 脱敏扫描 | `node scripts/check-pii.js` | 本机绝对路径、会话 ID、密钥、私人邮箱 |
 | 对比度 | `node scripts/a11y-audit.js` | 35 视图 × 深/浅主题，WCAG AA 不达标 |
-| 功能验收 | `node scripts/verify.js` | 23 组断言：路由、打印、响应式、各页计数 |
+| 功能验收 | `node scripts/verify.js` | 24 组断言：路由、打印、响应式、各页计数、纠错入口、订阅源 |
+| 发布物自检 | `node scripts/build-site.js` | `_site/` 缺文件、head 缺 canonical / og:image / JSON-LD |
+
+`npm run check` 会把最后一道也跑了：**门禁绿 = 能直接发**。
 
 **不要提交本机路径、用户名、聊天会话 ID。** `check-pii.js` 会拦住，被拦住就改写成
 占位符（`<仓库路径>`、`<用户名>`），或把那份材料放进 `docs/internal/`（已被 gitignore）。

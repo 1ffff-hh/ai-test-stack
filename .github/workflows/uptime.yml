@@ -1,0 +1,46 @@
+name: uptime
+
+# 站点挂了、Pages 构建坏在半路、og.png 没生成 —— 这些都不会自己喊人。
+# 每天探一次线上，失败时 GitHub 会给仓库 owner 发邮件。
+# 只读，不写仓库；探到的内容只用来判断「是不是那个站」。
+
+on:
+  schedule:
+    # 每天 06:17（北京时间）。避开整点：整点是 GitHub 定时任务最挤的时候。
+    - cron: '17 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 探活与关键产物
+        run: |
+          set -euo pipefail
+          OWNER="${GITHUB_REPOSITORY_OWNER}"
+          REPO="${GITHUB_REPOSITORY#*/}"
+          # 用户/组织主页仓库在根路径，其余在 /<repo> 下 —— 和 scripts/site-base.js 同一套判断
+          if [ "$REPO" = "${OWNER}.github.io" ]; then BASE=""; else BASE="/${REPO}"; fi
+          URL="https://${OWNER}.github.io${BASE}/"
+          echo "探测 $URL"
+
+          code=$(curl -sS -o /tmp/index.html -w '%{http_code}' --max-time 25 "$URL")
+          echo "首页 HTTP $code"
+          [ "$code" = "200" ] || { echo "::error::首页返回 $code"; exit 1; }
+          grep -q 'AI Test Stack' /tmp/index.html || { echo "::error::首页内容不是这个站"; exit 1; }
+
+          fail=0
+          for f in feed.xml sitemap.xml og.png exports/plans.csv exports/plans-history.csv; do
+            c=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "$URL$f")
+            echo "$f → $c"
+            [ "$c" = "200" ] || { echo "::error::$f 返回 $c"; fail=1; }
+          done
+          # 404 页必须真的返回 404（不然搜索引擎会把随机路径当正常页收录）
+          c=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "$URLno-such-path-9f3a/")
+          echo "404 探测 → $c"
+          [ "$c" = "404" ] || { echo "::warning::未知路径返回 $c，期望 404"; }
+
+          exit $fail

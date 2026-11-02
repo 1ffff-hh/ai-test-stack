@@ -1,6 +1,6 @@
 {
   "site": "AI Test Stack",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "generatedAt": "2026-11-02",
   "lastVerified": "2026-11-01",
   "fx": {
@@ -21,6 +21,8 @@
     "plans.json",
     "plans.csv",
     "plans.md",
+    "plans-history.csv",
+    "plans-history.json",
     "evalset.json",
     "manifest.json"
   ]

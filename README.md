@@ -1,5 +1,10 @@
 # AI Test Stack · AI Agent × Coding Plan 对比站
 
+[![pages](https://github.com/1ffff-hh/ai-test-stack/actions/workflows/pages.yml/badge.svg)](https://github.com/1ffff-hh/ai-test-stack/actions/workflows/pages.yml)
+[![uptime](https://github.com/1ffff-hh/ai-test-stack/actions/workflows/uptime.yml/badge.svg)](https://github.com/1ffff-hh/ai-test-stack/actions/workflows/uptime.yml)
+[![license](https://img.shields.io/badge/license-MIT-2fe3d4)](LICENSE)
+[![single file](https://img.shields.io/badge/runtime%20deps-0-2fe3d4)](index.html)
+
 一个**可以长期用下去**的站点：对比 29 款 AI 工具、57 档国内外套餐、32 套组合方案，
 外加 20 项能力图谱、4 道题的测试人诊断、30 条 AI 评测用例、11 个测试角色，
 以及一份可打印的决策报告。数据健康可见、数据集可下载、结论可交付。
@@ -20,14 +25,14 @@
 
 单文件、零依赖、`file://` 直接能开，不需要服务器。
 
-在线版：<https://1ffff-hh.github.io/ai-test-stack/> ｜ 许可：[MIT](LICENSE)
+在线版：<https://1ffff-hh.github.io/ai-test-stack/> ｜ 订阅：[Atom](https://1ffff-hh.github.io/ai-test-stack/feed.xml) ｜ 许可：[MIT](LICENSE)
 ｜ 想纠一条价格：[数据纠错 Issue](https://github.com/1ffff-hh/ai-test-stack/issues/new?template=data-correction.yml)
 ｜ 想自己维护：[docs/MAINTAIN.md](docs/MAINTAIN.md) ｜ 想提 PR：[CONTRIBUTING.md](CONTRIBUTING.md)
 
 本地预览「部署后的样子」（http + 子路径，比双击更接近线上）：
 
 ```bash
-npm run preview        # 生成 _site/ 并端在 http://localhost:4173/
+npm run preview        # 生成 _site/ 并端在 http://localhost:4173/ai-test-stack/（带子路径）
 ```
 
 ---

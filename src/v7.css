@@ -828,3 +828,48 @@ code,kbd{background:rgba(255,255,255,.05);border-color:var(--line2);border-radiu
   .rpFoot{font-size:7.5px;margin-top:10px;padding-top:8px}
   .rpStamp{width:52px;height:52px;flex:0 0 52px;font-size:7px}
 }
+
+/* =========================================================
+   变化时间线（更新日志页 · v2.2.1）
+   「这周到底变了什么」——价格与本站改动合并成一条流，
+   不用在套餐页和日志页之间来回对照。
+   颜色一律用 -t 结尾变量：这是浅色主题下唯一能保证对比度的写法。
+   ========================================================= */
+.chBar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.chBar h3{margin:0}
+.chChips{display:flex;gap:6px;flex-wrap:wrap}
+.chChips button{cursor:pointer;font:inherit}
+.chChips button.on{background:rgba(34,211,238,.11);border-color:rgba(34,211,238,.28);color:var(--act)}
+.chSum{font-size:var(--fs-2);color:var(--dim2);margin:6px 0 12px}
+.chRow .mv{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:5px}
+.chRow .mvFrom{font-family:var(--mono);font-size:var(--fs-2);color:var(--dim2);text-decoration:line-through;text-decoration-thickness:1px}
+.chRow .mvTo{font-family:var(--mono);font-size:var(--fs-3);color:var(--ink);font-weight:700}
+.chRow .mvPct{font-family:var(--mono);font-size:var(--fs-1);font-weight:700;padding:1px 7px;border-radius:var(--r-sm)}
+.chRow .mvPct.up{color:var(--amber-t);background:rgba(255,200,87,.13)}
+.chRow .mvPct.down{color:var(--green-t);background:rgba(74,222,128,.13)}
+.chRow .mvPct.flat{color:var(--dim2);background:rgba(255,255,255,.05)}
+.chRow .mvWhy{font-size:var(--fs-1);color:var(--dim2)}
+.chRow .fix{flex:0 0 auto;align-self:flex-start}
+.chMore{display:block;width:100%;margin-top:12px;text-align:center;cursor:pointer;font:inherit}
+
+/* 首页「最近变化」条：只给最后三条，够让人知道这站还活着 */
+.homeChg{margin-top:22px;border:1px solid var(--line);background:rgba(255,255,255,.02);padding:14px 16px}
+.homeChg .hcH{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.homeChg .hcH b{font-size:var(--fs-2);color:var(--ink)}
+.homeChg .hcH a{font-size:var(--fs-1);color:var(--act)}
+.homeChg .hcR{display:flex;gap:10px;align-items:baseline;font-size:var(--fs-2);color:var(--dim);padding:4px 0;border-bottom:1px solid var(--line)}
+.homeChg .hcR:last-child{border-bottom:none}
+.homeChg .hcD{flex:0 0 78px;font-family:var(--mono);font-size:var(--fs-1);color:var(--dim2)}
+@media (max-width:640px){
+  .chRow .d{flex:none}
+  .homeChg .hcR{flex-direction:column;gap:2px}
+}
+
+/* 页脚的对外出口：纠错 / 订阅 / 源码 */
+.sfLinks{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:12px}
+.sfLinks a,.sfLinks button{
+  font:inherit;font-size:var(--fs-1);color:var(--act);
+  background:none;border:0;padding:0;cursor:pointer;text-decoration:none;
+}
+.sfLinks a:hover,.sfLinks button:hover{text-decoration:underline}
+.exportGrid a.chip,.exportGrid button.chip{text-decoration:none;display:inline-block;cursor:pointer}

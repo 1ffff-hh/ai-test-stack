@@ -24,6 +24,10 @@
 | **脱敏扫描** | 本机路径、会话 ID、密钥进不了公开仓库 | `scripts/check-pii.js`（含自检） |
 | **四道门禁一条命令** | 交接给下一个人时不用口头描述「要测什么」 | `npm run check` |
 | **每周一自动抓取 + 每次推送自动部署** | 没人管也会动；动了也不会发坏版本 | `.github/workflows/data-refresh.yml`、`pages.yml` |
+| **标题、分享卡、摘要由数据生成** | 条目数变了，meta 不会还写着「29 款」 | `build.js` 的 `/*__META__*/` 注入 |
+| **订阅源与站点地图构建期生成** | 站每周在变，但不该靠用户想起来才回来看 | `scripts/build-feed.js`、`scripts/build-site.js` |
+| **每日探活** | 站点挂了、产物缺了，不会自己喊人 | `.github/workflows/uptime.yml` |
+| **页面上就能报错** | 看到错价的人当场能说，不用先找到邮箱 | 命令面板 / 页脚 / 数据健康页，均带 `data-fix` |
 
 **这个项目最容易坏的地方不是代码，是数据信任。** 所以维护的重心永远在：一条价格错了，多久能被发现、被谁发现。
 
@@ -68,7 +72,10 @@ git add data/ index.html exports/
 git commit -m "data: 火山方舟 Lite 40 → 50（2026-11-02 核验）"
 ```
 
-价格历史顺手记进该条的 `history` 数组（页面上的走势图会用到）：
+价格历史顺手记进该条的 `history` 数组。这一处写入会同时喂到四个地方：
+套餐页的走势图、「更新日志」页的最近变化时间线、Atom 订阅源、
+以及 `exports/plans-history.csv`（一行一次记录）。所以**别只改 `price` 不写 `history`**：
+页面上的当前价会变，但「什么时候变成这样的」就没人知道了。
 
 ```json
 "history": [
@@ -134,8 +141,34 @@ npm run refresh:offline  # 不联网，只做新鲜度报告
 npm run preview
 ```
 
-它做三件事：重建 `index.html` → 生成 `_site/`（含 `exports/`、`robots.txt`、`404.html`、`.nojekyll`）
-→ 用 http 在 <http://localhost:4173/> 端起来。
+它做四件事：重建 `index.html` → 生成 `_site/`（见下表）→ 渲染分享图 → 用 http 在
+<http://localhost:4173/ai-test-stack/> 端起来——**带着子路径**，和 Pages 一致。
+
+（子路径从 `git remote origin` 推出来。根路径下预览会看不出相对链接、404 和
+Service Worker 作用域的问题，那样预览就只是「看起来像」。）
+
+`_site/` 里有什么，谁生成的：
+
+| 产物 | 作用 | 由谁生成 | 缺了会怎样 |
+|---|---|---|---|
+| `index.html` | 站点本体 | `build.js` | 什么都没了 |
+| `exports/*` | 6 个可下载数据集（含 `plans-history.*`） | `build.js` | 下载链接 404 |
+| `feed.xml` | Atom 订阅 | `scripts/build-feed.js` | 订阅者永远收不到更新 |
+| `sitemap.xml` | 站点地图 | `scripts/build-site.js` | 搜索收录变慢（不致命） |
+| `og.png` | 分享卡片大图 | `scripts/build-og.js` | 分享出去没有图，卡片退化成小卡 |
+| `sw.js` | 离线缓存 | `scripts/build-site.js` | 只有 `file://` 能离线，网页版不行 |
+| `404.html` | 未知路径兜底 | `scripts/build-site.js` | Pages 用默认 404，用户看到死路 |
+
+`build-site.js` 会自检：产物缺一个、`index.html` 里缺 `canonical` / `og:image` / JSON-LD、
+或找不到指向仓库的纠错入口，都直接 `exit 1`。**`npm run check` 的最后一步就是它**，
+所以门禁绿 = 发布物齐。
+
+`og.png` 是唯一可能被跳过的：它要起真浏览器。本地没装 Playwright 时它会打一行「已跳过」，
+不阻塞；线上工作流装了 Playwright，所以线上一定有图。想在本机补：
+`npm run og`（需要 `npx playwright install chromium`）。
+
+**为什么分享图要现渲染而不是放一张静态图**：图上的「29 款工具」这类数字必须跟数据同步。
+手写一张图，等于在图片里埋一个永远不会被校验发现的事实错误。
 
 **为什么不能只看 `file://`**：本地双击打开走的是 `file://`，Pages 走的是 `https://<user>.github.io/<repo>/`
 子路径。相对链接、下载路径、`404.html` 只有在 http + 子路径下才是真实表现。
@@ -259,6 +292,12 @@ git push -u origin main
 | 页面上数字和列表对不上 | 文案里写死了计数 | 把数字改成运行时计算，别手改数字 |
 | 下载链接 404 | `exports/` 没发布 | 确认 `scripts/build-site.js` 把 `exports` 拷进了 `_site/` |
 | 数据标黄（>30 天） | 到核验周期了 | 打开 `#health` 按待办核，改 `verified` |
+| 分享链接没有大图 | `og.png` 没生成 | `npm run og` 看报错；CI 上确认 Playwright 装了。改完记得重发链接（平台会缓存旧卡片） |
+| 订阅源里没有刚加的那条 | 只改了 `news.json` 没重建 | `node build.js` 后再 `npm run site`；`feed.xml` 只在构建期生成 |
+| 页面还是旧版（改完刷新没变） | Service Worker 命中缓存 | 硬刷新一次；正常发布后缓存名跟着 `meta.lastBuilt` 变，会自动失效 |
+| `npm run check` 报 `_site 自检失败` | 发布物缺件或 head 缺 meta | 看报错里的具体项：多半是占位符被误删（`<!--__META__-->` 等） |
+| 探活工作流红 | 线上真的挂了，或产物 404 | 看 `gh run view` 的日志；先确认 Pages 最近一次部署是不是失败 |
+| 纠错按钮点了没反应 | `window.open` 被拦 | 会退化成「复制纠错模板」并弹提示；本地没有远端仓库时行为就是这样 |
 
 ---
 
@@ -266,8 +305,10 @@ git push -u origin main
 
 | 周期 | 做什么 | 谁 |
 |---|---|---|
-| 每次推送 | 四道门禁 + 自动部署 | 机器（`pages.yml`） |
+| 每次推送 | 四道门禁 + 生成发布物 + 自动部署 | 机器（`pages.yml`） |
 | 每周一 09:10 | 抓 RSS 与价格指纹 + 重构建 + 有变化才提交 | 机器（`data-refresh.yml`） |
+| 每周一 07:20 | 检查 playwright 与 Actions 有没有新版本 | 机器（Dependabot） |
+| 每天 06:17 | 探活线上：首页、feed、sitemap、og.png、导出物、404 | 机器（`uptime.yml`） |
 | 看到告警时 | 人工核对官网，改 JSON，记 `history` | 人 |
 | 每周 1–2 条 | 人工新闻 + 「对测试的影响」 | 人 |
 | 每季度 | 复核角色渗透度 / 替代度这类编辑判断 | 人 |

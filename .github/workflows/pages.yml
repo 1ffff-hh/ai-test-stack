@@ -32,13 +32,12 @@ jobs:
           npm install --no-audit --no-fund
           npx playwright install --with-deps chromium
 
-      - name: 四道门禁
+      # npm run check 的最后一步就是 build-site.js：它会生成 _site/、
+      # feed.xml、sw.js、og.png，并自检产物齐不齐。少一个就失败，不会带着半个站在线。
+      - name: 四道门禁 + 生成发布目录
         run: npm run check
         env:
           PW_CHANNEL: chromium
-
-      - name: 生成发布目录 _site
-        run: node scripts/build-site.js
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

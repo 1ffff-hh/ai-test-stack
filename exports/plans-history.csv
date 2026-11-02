@@ -1,0 +1,64 @@
+id,name,vendor,tier,region,currency,date,price,prev,delta,note
+qoder,Qoder 专业版,阿里,Pro,cn,CNY,2026-03-01,59,,,专业版定价
+bailian,阿里云百炼 Token Plan,阿里云,Lite,cn,CNY,2026-03-20,40,,,旧 Coding Plan Lite 停新购
+kimip,Kimi 会员,月之暗面,Plus,cn,CNY,2026-04-01,99,,,旧 Moderato 档
+bailian,阿里云百炼 Token Plan,阿里云,Lite,cn,CNY,2026-04-13,40,40,0,旧 Coding Plan Lite 停续费
+glm,智谱 GLM Coding,智谱 BigModel,Lite,cn,CNY,2026-05-01,49,,,原 Lite 价
+ark_agent,火山方舟 Agent Plan,字节 · 火山引擎,Small,cn,CNY,2026-05-11,40,,,发布，业界首个 Agent 套餐包
+huoshan_pro,火山方舟 Coding Plan,字节 · 火山引擎,Pro,cn,CNY,2026-05-12,200,,,与 Lite 同期发布
+volc,火山方舟 Coding Plan,字节 · 火山引擎,Lite,cn,CNY,2026-05-12,40,,,首发价
+minimax,MiniMax M Plan,MiniMax,Go,cn,CNY,2026-07-15,49,,,首发 ¥49（首月 ¥24.5）
+mm_build,MiniMax M Plan,MiniMax,Build,cn,CNY,2026-07-15,469,,,首发
+glm,智谱 GLM Coding,智谱 BigModel,Lite,cn,CNY,2026-07-31,118,49,69,涨价 140.8%
+glm_pro,智谱 GLM Coding,智谱 BigModel,Pro,cn,CNY,2026-07-31,538,,,随 Lite 一同调价
+volc,火山方舟 Coding Plan,字节 · 火山引擎,Lite,cn,CNY,2026-08-01,40,40,0,维持
+mimo,小米 MiMo Token Plan,小米,Lite,cn,CNY,2026-08-20,39,,,首发 41 亿 Credits
+dsapi,DeepSeek API,DeepSeek,按量 · 中度用量,cn,CNY,2026-09-01,60,,,按量计费上线，此处为中度用量的折算值
+kimip,Kimi 会员,月之暗面,Plus,cn,CNY,2026-09-01,99,99,0,新 Plus 档
+bailian,阿里云百炼 Token Plan,阿里云,Lite,cn,CNY,2026-10-29,39,40,-1,改登记 Token Plan Lite（限时 ¥39 / 原价 ¥60）
+dsapi,DeepSeek API,DeepSeek,按量 · 中度用量,cn,CNY,2026-10-29,60,60,0,核对官方价格页，单价未变
+antigravity_pro,Google Antigravity,Google,AI Pro,global,USD,2026-11-01,145,,,当前价
+antigravity_ultra,Google Antigravity,Google,AI Ultra,global,USD,2026-11-01,1812,,,当前价
+applitools_starter,Applitools,Applitools,Eyes Starter,global,USD,2026-11-01,4836,,,当前价
+chatgpt_go,ChatGPT,OpenAI,Go,global,USD,2026-11-01,58,,,当前价
+chatgpt_plus,ChatGPT,OpenAI,Plus,global,USD,2026-11-01,145,,,当前价
+chatgpt_pro,ChatGPT,OpenAI,Pro $100,global,USD,2026-11-01,725,,,当前价
+chatgpt_pro200,ChatGPT,OpenAI,Pro $200,global,USD,2026-11-01,1450,,,当前价
+claude_max20,Claude,Anthropic,Max 20×,global,USD,2026-11-01,1450,,,当前价
+claude_max5,Claude,Anthropic,Max 5×,global,USD,2026-11-01,725,,,当前价
+claude_pro,Claude,Anthropic,Pro,global,USD,2026-11-01,145,,,当前价
+codebuddy_adv,CodeBuddy,腾讯云,高级版,cn,CNY,2026-11-01,199,,,当前价
+codebuddy_flag,CodeBuddy,腾讯云,旗舰版,cn,CNY,2026-11-01,999,,,当前价
+codebuddy_std,CodeBuddy,腾讯云,标准版,cn,CNY,2026-11-01,99,,,当前价
+codegeex_pro,CodeGeeX,智谱,Pro,cn,CNY,2026-11-01,49,,,当前价
+comate_flagship,文心快码 Comate,百度,旗舰版,cn,CNY,2026-11-01,299,,,当前价
+comate_pro,文心快码 Comate,百度,专业版,cn,CNY,2026-11-01,59,,,当前价
+copilot_max,GitHub Copilot,GitHub,Max,global,USD,2026-11-01,725,,,当前价
+copilot_pro,GitHub Copilot,GitHub,Pro,global,USD,2026-11-01,73,,,当前价
+copilot_proplus,GitHub Copilot,GitHub,Pro+,global,USD,2026-11-01,283,,,当前价
+cursor_plus,Cursor（X 订阅）,Anysphere / SpaceX,Plus,global,USD,2026-11-01,58,,,当前价
+cursor_premium,Cursor（X 订阅）,Anysphere / SpaceX,Premium,global,USD,2026-11-01,218,,,当前价
+cursor_super,Cursor（X 订阅）,Anysphere / SpaceX,Super,global,USD,2026-11-01,725,,,当前价
+cursor_ultra,Cursor（X 订阅）,Anysphere / SpaceX,Ultra,global,USD,2026-11-01,1450,,,当前价
+devin_max,Devin Desktop,Cognition,Max,global,USD,2026-11-01,1450,,,当前价
+devin_pro,Devin Desktop,Cognition,Pro,global,USD,2026-11-01,145,,,当前价
+grok_plus,Grok Build（X 订阅）,xAI,Plus,global,USD,2026-11-01,58,,,当前价
+grok_premium,Grok Build（X 订阅）,xAI,Premium,global,USD,2026-11-01,218,,,当前价
+grok_super,Grok Build（X 订阅）,xAI,Super,global,USD,2026-11-01,725,,,当前价
+grok_ultra,Grok Build（X 订阅）,xAI,Ultra,global,USD,2026-11-01,1450,,,当前价
+katalon_pro,Katalon,Katalon,Pro,global,USD,2026-11-01,602,,,当前价
+kimi_pro,Kimi Code,月之暗面,Professional,cn,CNY,2026-11-01,168,,,当前价
+kiro_power,Kiro,AWS,Power,global,USD,2026-11-01,1450,,,当前价
+kiro_pro,Kiro,AWS,Pro,global,USD,2026-11-01,145,,,当前价
+mabl_team,mabl,mabl,Team,global,USD,2026-11-01,3263,,,当前价
+muse_everyday,Muse Code,Meta,Everyday,global,USD,2026-11-01,36,,,当前价
+muse_high,Muse Code,Meta,High,global,USD,2026-11-01,109,,,当前价
+muse_max,Muse Code,Meta,Maximum,global,USD,2026-11-01,1450,,,当前价
+muse_power,Muse Code,Meta,Power,global,USD,2026-11-01,363,,,当前价
+qawolf_platform,QA Wolf,QA Wolf,Platform,global,USD,2026-11-01,0,,,当前价
+qoder_plus,Qoder CN,阿里云,Pro+,cn,CNY,2026-11-01,169,,,当前价
+testrigor_private,testRigor,testRigor,Private,global,USD,2026-11-01,2175,,,当前价
+trae_lite,Trae,字节跳动,Lite,cn,CNY,2026-11-01,49,,,当前价
+trae_pro,Trae,字节跳动,Pro,cn,CNY,2026-11-01,99,,,当前价
+trae_proplus,Trae,字节跳动,Pro+,cn,CNY,2026-11-01,239,,,当前价
+trae_ultra,Trae,字节跳动,Ultra,cn,CNY,2026-11-01,699,,,当前价

@@ -66,6 +66,9 @@ const data = {
 /* ---------- 2. 数据校验（构建期就把错拦下来） ---------- */
 const errors = [];
 const warns = [];
+/* errors 在「内联」之前就结算了（那时数据校验已跑完）。
+   导出阶段的检查跑在结算之后，放这里，末尾统一结算。 */
+const lateErrors = [];
 
 /* 日期字段是所有「新鲜度」判断的根：格式错了，页面上的「几天前核验」会算成 NaN。
    lastBuilt 用于导出文件的生成时间（见下方 BUILT_AT），不能早于 lastVerified。 */
@@ -615,9 +618,154 @@ const js = readText('app.js');
 
 const json = JSON.stringify(data);
 
+/* ---------- 3.1 头部元信息 ----------
+   全部由数据算出来，不写死。历史上「33 条免费额度」错了一轮，就是因为文案里的数字
+   和 data 里的条目数各写各的；分享卡片和搜索摘要更容易长期没人看，所以更不能手写。
+
+   站点身份（owner/repo/子路径）来自 git remote。本地没有 remote 时退化成相对路径：
+   页面照常能在 file:// 下打开，只是分享链接不成立——这本就是本地预览的语义。 */
+const SITE = require('./scripts/site-base').detect();
+const CNT = {
+  tools: data.tools.length,
+  plans: data.plans.length,
+  free: (data.freebies.items || []).length,
+  cases: (data.evalset.cases || []).length,
+  roles: (data.roles.roles || []).length,
+  caps: capIds.size,
+  log: (data.changelog || []).length
+};
+const SITE_NAME = data.meta.siteName || 'AI Test Stack';
+const TITLE_HOME = SITE_NAME + ' · AI 工具选型 × 测试角色 × AI 冲击';
+const DESC_HOME = `面向测试工程师的 AI 工具选型与职业判断看板：${CNT.tools} 款工具、`
+  + `${CNT.plans} 档国内外套餐、${CNT.free} 条免费额度、${CNT.cases} 条 AI 评测用例、`
+  + `${CNT.roles} 个测试角色、数据健康与可打印决策报告。`;
+const OG_DESC = `${CNT.tools} 款 AI 工具 + ${CNT.plans} 档国内外套餐 + ${CNT.free} 条免费额度 + `
+  + `${CNT.roles} 个测试角色 + ${CNT.cases} 条评测用例。含决策矩阵、能力图谱、组合方案与 90 天应对。`;
+const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+/* 分享图是构建产物（_site/og.png），必须给绝对地址：爬虫不会去猜相对路径。
+   本地没有站点地址时干脆不输出 og:image —— 指一个不存在的图比没有图更糟。 */
+const ogImage = SITE.url.length > 1 ? SITE.url + 'og.png' : '';
+const metaTags = [
+  `<title>${escAttr(TITLE_HOME)}</title>`,
+  `<meta name="description" content="${escAttr(DESC_HOME)}">`,
+  SITE.url.length > 1 ? `<link rel="canonical" href="${escAttr(SITE.url)}">` : '',
+  '<meta property="og:type" content="website">',
+  `<meta property="og:title" content="${escAttr(TITLE_HOME)}">`,
+  `<meta property="og:description" content="${escAttr(OG_DESC)}">`,
+  `<meta property="og:site_name" content="${escAttr(SITE_NAME)}">`,
+  SITE.url.length > 1 ? `<meta property="og:url" content="${escAttr(SITE.url)}">` : '',
+  ogImage ? `<meta property="og:image" content="${escAttr(ogImage)}">` : '',
+  ogImage ? '<meta property="og:image:width" content="1200">' : '',
+  ogImage ? '<meta property="og:image:height" content="630">' : '',
+  ogImage ? `<meta property="og:image:alt" content="${escAttr(SITE_NAME + '：' + CNT.tools + ' 款 AI 工具的选型对比与决策报告')}">` : '',
+  `<meta property="og:locale" content="zh_CN">`,
+  `<meta name="twitter:card" content="${ogImage ? 'summary_large_image' : 'summary'}">`,
+  `<meta name="twitter:title" content="${escAttr(TITLE_HOME)}">`,
+  `<meta name="twitter:description" content="${escAttr(`${CNT.tools} 款工具 × ${CNT.plans} 档套餐 × ${CNT.caps} 项能力。数据可下载，健康度可见，结论可打印。`)}">`,
+  ogImage ? `<meta name="twitter:image" content="${escAttr(ogImage)}">` : '',
+  `<link rel="alternate" type="application/atom+xml" title="${escAttr(SITE_NAME + ' · 更新与核验记录')}" href="feed.xml">`,
+  SITE.url.length > 1 ? `<link rel="sitemap" type="application/xml" href="${escAttr(SITE.url + 'sitemap.xml')}">` : ''
+].filter(Boolean).join('\n');
+
+/* 结构化数据：让搜索引擎知道这是个「数据集 + 列表」而不是一篇散文。
+   条目数与核验日期都在里面，搜索结果里能直接看到"什么时候核过的"。 */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: SITE_NAME,
+      description: OG_DESC,
+      inLanguage: 'zh-CN',
+      ...(SITE.url.length > 1 ? { url: SITE.url } : {}),
+      ...(SITE.repoUrl ? { codeRepository: SITE.repoUrl } : {}),
+      license: 'https://opensource.org/licenses/MIT'
+    },
+    {
+      '@type': 'Dataset',
+      name: `${SITE_NAME} · AI 工具与套餐数据集`,
+      description: `人工核验的 AI 工具能力评分（${CNT.tools} 款）、国内外套餐价格（${CNT.plans} 档）、免费额度（${CNT.free} 条）与 AI 评测用例（${CNT.cases} 条）。`,
+      inLanguage: 'zh-CN',
+      ...(SITE.url.length > 1 ? { url: SITE.url, distribution: ['plans.json', 'plans.csv', 'tools.json', 'evalset.json'].map(f => ({
+        '@type': 'DataDownload',
+        contentUrl: SITE.url + 'exports/' + f,
+        encodingFormat: f.endsWith('.csv') ? 'text/csv' : 'application/json'
+      })) } : {}),
+      dateModified: data.meta.lastVerified,
+      license: 'https://opensource.org/licenses/MIT',
+      creator: { '@type': 'Organization', name: SITE_NAME }
+    },
+    {
+      '@type': 'ItemList',
+      name: '功能页',
+      numberOfItems: FEATURE_VIEW_IDS.length,
+      itemListElement: FEATURE_VIEW_IDS.map((v, i) => ({
+        '@type': 'ListItem', position: i + 1, name: v,
+        ...(SITE.url.length > 1 ? { url: SITE.url + '#' + v } : {})
+      }))
+    }
+  ]
+};
+
+/* 注入给运行时的站点信息：纠错入口、分享链接、离线注册都要用，全站只有一个来源 */
+const siteGlobal = {
+  url: SITE.url,
+  base: SITE.base,
+  repo: SITE.repoUrl,
+  version: data.meta.version,
+  lastVerified: data.meta.lastVerified,
+  issue: SITE.repoUrl ? SITE.repoUrl + '/issues/new' : ''
+};
+
+/* 无 JS 时的兜底：这个站的内容全在 data 里、由 app.js 渲染，
+   搜索引擎能执行 JS，但不是所有抓取器都会。给一段由数据生成的摘要，
+   顺带说明「这不是坏掉了」。同样不写死数字。 */
+const noscript = `<noscript>
+  <div style="max-width:760px;margin:0 auto;padding:24px;font:16px/1.75 system-ui,-apple-system,'Segoe UI',sans-serif">
+    <h1 style="font-size:22px">${escAttr(SITE_NAME)}</h1>
+    <p>${escAttr(DESC_HOME)}</p>
+    <p><b>当前数据：</b>工具 ${CNT.tools} 款 · 套餐 ${CNT.plans} 档 · 免费额度 ${CNT.free} 条 ·
+      评测用例 ${CNT.cases} 条 · 测试角色 ${CNT.roles} 个 · 能力项 ${CNT.caps} 项。
+      数据核验日 ${escAttr(data.meta.lastVerified)}。</p>
+    <p>本站的表格与图表由 JavaScript 渲染，你的浏览器没有执行脚本，所以看到的是这段摘要。
+      数据本身可以直接下载：<a href="exports/plans.csv">套餐 CSV</a>、
+      <a href="exports/plans.json">套餐 JSON</a>、<a href="exports/tools.json">工具评分 JSON</a>、
+      <a href="exports/evalset.json">评测用例 JSON</a>${SITE.repoUrl ? `；
+      源码与纠错入口在 <a href="${escAttr(SITE.repoUrl)}">GitHub</a>` : ''}。</p>
+    ${SITE.url.length > 1 ? `<p>也可以直接读订阅源：<a href="feed.xml">Atom</a>。</p>` : ''}
+  </div>
+</noscript>`;
+
 html = html.replace('/*__CSS__*/', () => css);
 html = html.replace('/*__DATA__*/', () => json);
 html = html.replace('/*__JS__*/', () => js);
+html = html.replace('<!--__META__-->', () => metaTags
+  + `\n<script type="application/ld+json">${JSON.stringify(jsonLd, null, 1)}</script>`);
+html = html.replace('/*__SITE__*/', () => JSON.stringify(siteGlobal));
+// noscript 放在 <body> 紧跟跳转链接之后：脚本执行时它会被浏览器忽略，不占渲染
+html = html.replace('<!--__NOSCRIPT__-->', () => noscript);
+
+/* 占位符没命中 = 静默失效：页面照常构建、照常上线，只是没有 canonical、没有纠错入口。
+   这类问题只有搜索引擎和用户能发现，所以构建期直接失败。
+   （errors 数组在上面已经结算过了，这里用独立的数组，并放在写文件之前。） */
+const assetErrors = [];
+[
+  ['head 元信息', 'name="description"', 'src/index.html 的 <!--__META__--> 占位符'],
+  ['站点地址', 'window.__SITE__', 'src/index.html 的 /*__SITE__*/ 占位符'],
+  ['无 JS 兜底', '<noscript>', 'src/index.html 的 <!--__NOSCRIPT__--> 占位符'],
+  ['结构化数据', 'application/ld+json', 'build.js 的 jsonLd 生成']
+].forEach(([what, needle, where]) => {
+  if (!html.includes(needle)) assetErrors.push(`${what}没有注入（找的是 ${needle}），检查 ${where}`);
+});
+if (SITE.url.length > 1 && !html.includes(SITE.url + 'og.png')) {
+  assetErrors.push('站点地址已知却没有 og:image，检查 build.js 里的 ogImage');
+}
+if (assetErrors.length) {
+  console.error('\n✗ 构建失败，注入有 ' + assetErrors.length + ' 处问题：');
+  assetErrors.forEach(e => console.error('  · ' + e));
+  process.exit(1);
+}
 
 /* ---------- 4. 写出 ---------- */
 fs.writeFileSync(OUT, html, 'utf8');
@@ -681,14 +829,62 @@ const manifest = {
     roles: (data.roles.roles || []).length,
     evalsetCases: (data.evalset.cases || []).length
   },
-  files: ['tools.json', 'plans.json', 'plans.csv', 'plans.md', 'evalset.json', 'manifest.json']
+  files: ['tools.json', 'plans.json', 'plans.csv', 'plans.md', 'plans-history.csv',
+    'plans-history.json', 'evalset.json', 'manifest.json']
 };
 fs.writeFileSync(path.join(EXPORT_DIR, 'tools.json'), JSON.stringify(data.tools, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.json'), JSON.stringify(data.plans, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'evalset.json'), JSON.stringify(data.evalset, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.csv'), planCsv, 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.md'), planMd, 'utf8');
+
+/* ---------- 4.2 价格时间序列 ----------
+   每档套餐的 history 只活在自己那一行里，跨套餐、跨时间就没法看了。
+   导出一份长表：一行 = 一次价格记录。三个月后要回答「6 月这档多少钱」，
+   不用去翻 git 提交——这是 git 给不了的形状。 */
+const histRows = [];
+data.plans.forEach(p => {
+  const h = (p.history || []).filter(x => x && x.date && typeof x.price === 'number')
+    .slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  h.forEach((e, i) => {
+    const prev = i > 0 ? h[i - 1].price : null;
+    histRows.push({
+      id: p.id, name: p.name, vendor: p.vendor, tier: p.tier,
+      region: p.region, currency: p.currency || 'CNY',
+      date: e.date, price: e.price,
+      prev: prev == null ? '' : prev,
+      delta: prev == null ? '' : e.price - prev,
+      note: e.note || ''
+    });
+  });
+});
+histRows.sort((a, b) => String(a.date).localeCompare(String(b.date)) || a.id.localeCompare(b.id));
+const histCsv = [
+  'id,name,vendor,tier,region,currency,date,price,prev,delta,note',
+  ...histRows.map(r => [r.id, r.name, r.vendor, r.tier, r.region, r.currency, r.date, r.price, r.prev, r.delta, r.note]
+    .map(csvCell).join(','))
+].join('\n') + '\n';
+fs.writeFileSync(path.join(EXPORT_DIR, 'plans-history.csv'), histCsv, 'utf8');
+fs.writeFileSync(path.join(EXPORT_DIR, 'plans-history.json'), JSON.stringify({
+  generatedAt: BUILT_AT,
+  lastVerified: data.meta.lastVerified,
+  note: '一行 = 一次价格记录；prev/delta 为空表示这是该套餐的第一个记录点。',
+  rows: histRows
+}, null, 2) + '\n', 'utf8');
+
+/* 导出物没有行数下限就等着某天悄悄变空：套餐全丢了构建照样绿。
+   这里只做基本的下限校验，精确计数交给 verify.js。 */
+/* 导出物没有行数下限就等着某天悄悄变空：数据丢光了构建照样绿。
+   这一段跑在 errors 结算之后，所以用 lateErrors，在文件末尾统一结算。 */
+if (!histRows.length) lateErrors.push('价格时间序列为空：plans.json 的 history 一条都没读出来');
+if (histRows.length < data.plans.length) warns.push(`价格时间序列只有 ${histRows.length} 行，少于套餐数 ${data.plans.length}（有新套餐没写 history）`);
 fs.writeFileSync(path.join(EXPORT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n', 'utf8');
+
+if (lateErrors.length) {
+  console.error('\n✗ 构建失败，导出阶段有 ' + lateErrors.length + ' 处错误：');
+  lateErrors.forEach(e => console.error('  · ' + e));
+  process.exit(1);
+}
 
 const kb = (Buffer.byteLength(html, 'utf8') / 1024).toFixed(1);
 const stat = {
@@ -708,5 +904,6 @@ console.log(`  能力 ${stat.caps} · 维度 ${stat.crit} · 阶段 ${stat.phase
 console.log(`  优惠：免费额度 ${PR.freeTier.length} · 首购 ${(PR.firstBuy || []).length} · 时段 ${(PR.offpeak || []).length}`);
 console.log(`  数据核验日：${data.meta.lastVerified}`);
 console.log(`  新闻 ${allNews.length}（人工 ${(data.news.events || []).length} + 自动 ${(data.newsAuto.events || []).length}） · 免费额度 ${(data.freebies.items || []).length} · 角色 ${(data.roles.roles || []).length} · 评测集 ${(data.evalset.cases || []).length}`);
-console.log(`  数据导出 ${manifest.files.length} 个 → exports/（tools / plans / evalset / manifest）`);
+console.log(`  数据导出 ${manifest.files.length} 个 → exports/（tools / plans / plans-history / evalset / manifest）`);
+console.log(`  价格时间序列 ${histRows.length} 行（${data.plans.length} 档套餐）`);
 console.log(`  自动更新：${data.refreshReport ? data.refreshReport.at + '（' + ((data.renderReport || data.refreshReport).news ? (data.refreshReport.news.fetched || 0) + ' 条新增' : '无新闻') + '）' : '尚未运行'} `);
