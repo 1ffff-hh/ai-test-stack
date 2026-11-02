@@ -17,6 +17,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+
+      # 门禁要开真浏览器。没有这一步，下面 a11y / verify 会因为找不到 playwright 直接失败。
+      - name: 装 Playwright
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
       - name: 抓取 RSS 与价格指纹
         run: node scripts/refresh.js || true
       - name: 重新构建并跑门禁
@@ -26,6 +33,8 @@ jobs:
           node scripts/check-pii.js
           node scripts/a11y-audit.js
           node scripts/verify.js > verify.json || (cat verify.json && exit 1)
+        env:
+          PW_CHANNEL: chromium
       - name: 有变化才提交
         run: |
           git config user.name "ai-test-stack-bot"
