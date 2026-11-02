@@ -1,0 +1,51 @@
+name: 反馈（报错 / 建议 / 提问）
+description: 页面坏了、想加什么、或者有个问题。价格与额度错误请用「数据纠错」模板。
+title: "[反馈] "
+labels: ["feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢。写清「你在哪一页、想做什么、发生了什么」，比一句「不好用」有用得多。
+        **价格、额度、限制写错了**请改用 [数据纠错](?template=data-correction.yml) 模板——那个模板会强制要来源链接。
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 类型
+      options:
+        - 页面报错（打不开、按钮没反应、显示错位）
+        - 功能建议（缺什么、哪里不好用）
+        - 使用提问（怎么用、为什么这么判断）
+        - 内容讨论（我不同意某个结论）
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: 在哪一页
+      description: 页面名，或地址栏里 # 后面那段
+      placeholder: 例如：完整工具站 / #all / 套餐对比
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: 具体是什么
+      description: 看到什么、期望什么。能附截图更好。
+      placeholder: |
+        我点了「组合方案」里的「采纳」，期望……
+        实际……
+    validations:
+      required: true
+
+  - type: textarea
+    id: env
+    attributes:
+      label: 环境（可留空）
+      description: 浏览器、是否离线打开、页面右下角的版本号
+      placeholder: Chrome 131 / 网页版 / v2.3.0
+    validations:
+      required: false

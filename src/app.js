@@ -30,8 +30,12 @@
   const IMP = D.impact || { numbers: [], shifts: [], matrix: { rows: [] }, playbook: { phases: [] }, antiPatterns: [], selfCheck: { qs: [] }, sources: [] };
   const EVS = D.evalset || { categories: [], cases: [], howto: [], metrics: [], scoring: { bands: [] }, intro: {} };
   const RR = D.refreshReport || null;
-  /* 信息架构配置：6 个模块把 16 个功能页组织成「地图 → 模块 → 功能」的引导路径 */
+  /* 信息架构配置：6 个模块把 24 个功能页组织成「地图 → 模块 → 功能」的引导路径 */
   const MODS = (D.modules && D.modules.modules) || [];
+  /* 导航与站务页内容：从 data/nav.json / data/pages.json 读。
+     以前顶栏、页脚、移动导航三处各写一份，加一页要改三处；现在只改配置。 */
+  const NAV = D.nav || { primary: [], footer: [], mobile: { primary: [], more: [] }, redirects: {}, reserved: [] };
+  const PAGES = D.pages || {};
   const PROV = (CRIT && CRIT.provenanceLevels) || {};
   // 短别名：这两个在后面出现频率太高，每次写 CRIT.criteria 太吵
   const CRITERIA = CRIT.criteria || [];
@@ -96,6 +100,7 @@
     view: 'home',
     allQuery: '',
     allMod: 'all',
+    allTab: 'feat',
     weights: {},
     profile: 'aitest',
     cnOnly: false,
@@ -169,16 +174,21 @@
      新增：home（默认落地页）、map、all、mod-*（模块页）、404。
      ========================================================= */
   const FEATURE_VIEWS = ['overview', 'report', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'evalset', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'health'];
+  /* 站务页：不属于任何内容模块（它们不是「事」，是「站」本身）。
+     和功能页一样是一级页面，但没有模块归属，所以面包屑只到「首页 › 页名」。 */
+  const SITE_PAGES = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
   const MOD_VIEWS = MODS.map(m => 'mod-' + m.id);
-  const VIEWS = ['home', ...FEATURE_VIEWS, 'map', 'all', ...MOD_VIEWS, '404'];
+  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, 'map', 'all', ...MOD_VIEWS, '404', 'error'];
   const VIEW_NAME = {
-    home: '首页', map: '功能地图', all: '完整工具站', '404': '页面不存在',
+    home: '首页', map: '功能地图', all: '完整工具站', '404': '页面不存在', error: '页面出错',
     overview: '总览', matrix: '决策矩阵', tools: '工具库', capabilities: '能力图谱',
     plans: '套餐对比', promos: '优惠白嫖', bundles: '组合方案', aitest: 'AI 测试专项',
     events: '市场变动', versus: '两两 PK', persona: '测试人诊断', opinion: '我的判断',
     roadmap: '成长路线', stack: '我的组合', plan: '落地执行包', changelog: '更新日志', sources: '数据源',
     free: '白嫖地图', news: 'AI 大事', roles: '测试角色阶梯', impact: 'AI 对测试的冲击',
-    report: '决策报告', evalset: 'AI 评测集', health: '数据健康'
+    report: '决策报告', evalset: 'AI 评测集', health: '数据健康',
+    search: '全站搜索', mine: '个人中心', feedback: '反馈',
+    about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式'
   };
   MODS.forEach(m => { VIEW_NAME['mod-' + m.id] = m.name; });
   const MOD_OF = {};   // 功能页 → 所属模块
@@ -196,16 +206,78 @@
   window.atsTrackDump = () => { try { return JSON.parse(localStorage.getItem('ats_events') || '[]'); } catch (e) { return []; } };
   window.atsTrackClear = () => { try { localStorage.removeItem('ats_events'); } catch (e) {} };
 
+  /* ---------- 本地收藏 / 浏览历史 ----------
+     没有账号，所以「我的」不是服务端的一份档案，而是这台设备上的几个 key。
+     好处是不会有任何数据离开浏览器；代价是换设备要自己导出。
+     这里把读写集中成两个函数：一处 try/catch，免得无痕模式下每次点收藏都抛。 */
+  const LS = {
+    fav: 'ats_fav', recent: 'ats_recent', fb: 'ats_fb',
+    theme: 'ats_theme', stack: 'ats_stack', picked: 'ats_picked',
+    diag: 'ats_diag', events: 'ats_events', plan: 'ats_plan', planprog: 'ats_planprog'
+  };
+  function lsGet(k, dflt) {
+    try { const raw = localStorage.getItem(k); return raw == null ? dflt : JSON.parse(raw); } catch (e) { return dflt; }
+  }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+
+  let FAV = lsGet(LS.fav, []);
+  if (!Array.isArray(FAV)) FAV = [];
+  let RECENT = lsGet(LS.recent, []);
+  if (!Array.isArray(RECENT)) RECENT = [];
+
+  function favHas(k, id) { return FAV.some(x => x.k === k && x.id === id); }
+  function favToggle(item) {
+    const i = FAV.findIndex(x => x.k === item.k && x.id === item.id);
+    if (i >= 0) { FAV.splice(i, 1); lsSet(LS.fav, FAV); return false; }
+    FAV.unshift(Object.assign({ t: Date.now() }, item));
+    if (FAV.length > 120) FAV.length = 120;
+    lsSet(LS.fav, FAV);
+    return true;
+  }
+  /* 收藏按钮：一个模板函数，工具卡 / 组合卡 / 功能页底部共用，
+     免得三处各写一份 aria 与状态同步逻辑。 */
+  function favBtn(kind, id, name) {
+    const on = favHas(kind, id);
+    return `<button class="favb${on ? ' on' : ''}" type="button" data-fav="${kind}" data-fav-id="${esc(id)}" data-fav-n="${esc(name)}" aria-pressed="${on}" aria-label="${on ? '取消收藏' : '收藏'} ${esc(name)}" title="${on ? '取消收藏' : '收藏'}"><span aria-hidden="true">${on ? '★' : '☆'}</span></button>`;
+  }
+  function syncFavButtons() {
+    $$('[data-fav]').forEach(b => {
+      const on = favHas(b.dataset.fav, b.dataset.favId);
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', String(on));
+      const s = b.querySelector('span'); if (s) s.textContent = on ? '★' : '☆';
+      b.title = on ? '取消收藏' : '收藏';
+      b.setAttribute('aria-label', (on ? '取消收藏 ' : '收藏 ') + (b.dataset.favN || ''));
+    });
+  }
+
+  function pushRecent(v) {
+    if (!v || v === '404' || v === 'error') return;
+    const i = RECENT.findIndex(x => x.v === v);
+    if (i >= 0) RECENT.splice(i, 1);
+    RECENT.unshift({ v: v, t: Date.now() });
+    if (RECENT.length > 50) RECENT.length = 50;
+    lsSet(LS.recent, RECENT);
+  }
+
   /* ---------- 顶部子导航：面包屑 + 模块内功能切换（进模块才出现） ---------- */
   function chromeFor(v) {
     const sub = $('#subnav');
     if (!sub) return;
     const modView = v.indexOf('mod-') === 0 ? MODS.find(m => 'mod-' + m.id === v) : null;
     const m = modView || MOD_OF[v];
-    if (!m) { sub.hidden = true; sub.innerHTML = ''; return; }
+    if (!m) {
+      // 站务页没有模块归属，但仍要有面包屑——否则用户在任何一页都不知道自己在哪一层
+      if (SITE_PAGES.indexOf(v) >= 0) {
+        sub.innerHTML = `<div class="crumbs" aria-label="面包屑"><a href="#home">首页</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b></div><div class="sibnav"><a href="#map" class="">▦ 功能地图</a><a href="#all">▤ 完整工具站</a><a href="#mine">◍ 个人中心</a></div>`;
+        sub.hidden = false;
+        return;
+      }
+      sub.hidden = true; sub.innerHTML = ''; return;
+    }
     const crumb = modView
-      ? `<a href="#map">功能地图</a><span class="csep">›</span><b>${esc(m.name)}</b>`
-      : `<a href="#map">功能地图</a><span class="csep">›</span><a href="#mod-${m.id}">${esc(m.name)}</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b>`;
+      ? `<a href="#home">首页</a><span class="csep">›</span><a href="#map">功能地图</a><span class="csep">›</span><b>${esc(m.name)}</b>`
+      : `<a href="#home">首页</a><span class="csep">›</span><a href="#map">功能地图</a><span class="csep">›</span><a href="#mod-${m.id}">${esc(m.name)}</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b>`;
     const sibs = (m.features || []).map(f =>
       `<a href="#${f.v}" class="${f.v === v ? 'on' : ''}" ${f.v === v ? 'aria-current="page"' : ''}>${f.icon || ''} ${esc(f.name)}</a>`).join('');
     sub.innerHTML = `<div class="crumbs" aria-label="面包屑">${crumb}</div><div class="sibnav">${sibs}</div>`;
@@ -238,8 +310,12 @@
           </div>
         </div>
         <div class="gcol">
-          <div class="gk">直接要答案</div>
-          <div class="gchips"><a class="gchip" href="#bundles">⊞ 全部组合方案</a></div>
+          <div class="gk">这一页</div>
+          <div class="gchips">
+            <a class="gchip" href="#bundles">⊞ 全部组合方案</a>
+            ${favBtn('page', v, VIEW_NAME[v] || v)}
+            <a class="gchip" href="#feedback" data-fb-page="${esc(v)}">✉ 这一页有问题</a>
+          </div>
         </div>
       </div>
       <div class="gmore"><a class="btn primary" href="#all">查看更多：进入完整工具站 →</a></div>`;
@@ -865,6 +941,7 @@
     const hv = $('#hVerify'); if (hv) hv.textContent = META.lastVerified || '—';
     const hc = $('#hCounts'); if (hc) hc.textContent = `${TOOLS.length} 工具 · ${PLANS.length} 档套餐 · ${BUNDLES.length} 套组合`;
     countUp();
+    startHeroRot();
     diagHtml();
   }
 
@@ -929,35 +1006,106 @@
     ].map(x => `<a class="akpi" href="${x.go}"><b>${x.t ? esc(x.t) : x.n}</b><span>${esc(x.k)}</span></a>`).join('');
   }
 
+  /* 完整工具站 = 五个分类全部平铺，切分类只是换一张表，不产生中间层。
+     这是对「一眼看全」的兑现：功能、工具、套餐、组合、站务页都在同一张规格表里。 */
+  const ALL_TABS = [
+    { k: 'feat', n: '功能', icon: '▦' },
+    { k: 'tool', n: '工具', icon: '▤' },
+    { k: 'plan', n: '套餐', icon: '▣' },
+    { k: 'bundle', n: '组合', icon: '⊞' },
+    { k: 'site', n: '站务', icon: '⌘' }
+  ];
+
   function allModFilter() {
+    const tabs = $('#allTabs');
+    if (tabs) {
+      tabs.innerHTML = ALL_TABS.map(t => {
+        const n = t.k === 'feat' ? FEATURE_VIEWS.length : t.k === 'tool' ? TOOLS.length
+          : t.k === 'plan' ? PLANS.length : t.k === 'bundle' ? BUNDLES.length : SITE_PAGES.length;
+        return `<button class="allTab${state.allTab === t.k ? ' on' : ''}" type="button" role="tab" aria-selected="${state.allTab === t.k}" data-at="${t.k}">
+          <i aria-hidden="true">${t.icon}</i><b>${t.n}</b><span>${n}</span></button>`;
+      }).join('');
+      $$('#allTabs .allTab').forEach(b => b.onclick = () => {
+        state.allTab = b.dataset.at; state.allQuery = '';
+        const s = $('#allSearch'); if (s) s.value = '';
+        allModFilter(); renderAllList(); track('all_tab', { t: state.allTab });
+      });
+    }
     const el = $('#allMods');
     if (!el) return;
-    const opts = [{ id: 'all', n: '全部' }].concat(MODS.map(m => ({ id: m.id, n: (m.icon || '') + ' ' + m.name })));
+    // 模块筛选只在「功能」分类下有意义——其他分类没有模块归属
+    if (state.allTab !== 'feat') { el.innerHTML = ''; el.hidden = true; return; }
+    el.hidden = false;
+    const opts = [{ id: 'all', n: '全部模块' }].concat(MODS.map(m => ({ id: m.id, n: (m.icon || '') + ' ' + m.name })));
     el.innerHTML = opts.map(o =>
       `<button class="preset ${state.allMod === o.id ? 'on' : ''}" data-am="${o.id}">${esc(o.n)}</button>`).join('');
     $$('#allMods .preset').forEach(b => b.onclick = () => { state.allMod = b.dataset.am; allModFilter(); renderAllList(); });
   }
 
+  function allRows() {
+    const q = (state.allQuery || '').trim().toLowerCase();
+    const hit = (s) => !q || String(s || '').toLowerCase().indexOf(q) >= 0;
+    const out = [];
+    if (state.allTab === 'feat') {
+      MODS.forEach(m => {
+        if (state.allMod !== 'all' && state.allMod !== m.id) return;
+        (m.features || []).forEach(f => {
+          if (!hit(f.name + ' ' + (f.line || ''))) return;
+          out.push(`<a class="srow" href="#${f.v}">
+            <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
+            <span class="sname"><i aria-hidden="true">${f.icon || '▸'}</i>${esc(f.name)}</span>
+            <span class="sdesc">${esc(f.line || '')}</span>
+            <span class="smod">${esc(m.name)}</span>
+            <span class="sar" aria-hidden="true">→</span></a>`);
+        });
+      });
+    } else if (state.allTab === 'tool') {
+      TOOLS.filter(t => hit(t.name + ' ' + (t.vendor || '') + ' ' + (t.tagline || '') + ' ' + (t.tags || []).join(' '))).forEach(t => {
+        out.push(`<button class="srow srowBtn" type="button" data-tool-open="${esc(t.id)}">
+          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
+          <span class="sname"><i aria-hidden="true">${esc(t.letter || '▸')}</i>${esc(t.name)}</span>
+          <span class="sdesc">${esc(t.tagline || '')}</span>
+          <span class="smod">${esc(t.cnDirect ? '国内直连' : '需境外')} · ${esc(t.license || '')}</span>
+          <span class="sar" aria-hidden="true">打开 →</span></button>`);
+      });
+    } else if (state.allTab === 'plan') {
+      PLANS.filter(p => hit(p.name + ' ' + (p.vendor || '') + ' ' + (p.tier || '') + ' ' + (p.formName || ''))).forEach(p => {
+        out.push(`<a class="srow" href="#plans">
+          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
+          <span class="sname"><i aria-hidden="true">${p.region === 'cn' ? '¥' : '$'}</i>${esc(p.name)} <em>${esc(p.tier || '')}</em></span>
+          <span class="sdesc">${esc(p.quota || '')}</span>
+          <span class="smod">${esc(p.vendor || '')} · ${esc(p.formName || '')}</span>
+          <span class="sar" aria-hidden="true">${p.currency === 'USD' ? '$' : '¥'}${esc(p.price)} →</span></a>`);
+      });
+    } else if (state.allTab === 'bundle') {
+      BUNDLES.filter(b => hit(b.name + ' ' + (b.summary || '') + ' ' + (b.tags || []).join(' '))).forEach(b => {
+        out.push(`<a class="srow" href="#bundles">
+          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
+          <span class="sname"><i aria-hidden="true">⊞</i>${esc(b.name)}</span>
+          <span class="sdesc">${esc(b.summary || '')}</span>
+          <span class="smod">¥${esc(b.monthlyCost)}/月</span>
+          <span class="sar" aria-hidden="true">→</span></a>`);
+      });
+    } else {
+      SITE_PAGES.filter(v => hit((VIEW_NAME[v] || v) + ' ' + ((PAGES[v] && PAGES[v].lede) || ''))).forEach(v => {
+        out.push(`<a class="srow" href="#${v}">
+          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
+          <span class="sname"><i aria-hidden="true">⌘</i>${esc(VIEW_NAME[v] || v)}</span>
+          <span class="sdesc">${esc((PAGES[v] && PAGES[v].lede) || '')}</span>
+          <span class="smod">站务</span>
+          <span class="sar" aria-hidden="true">→</span></a>`);
+      });
+    }
+    return out;
+  }
+
   function renderAllList() {
     const body = $('#allBody');
     if (!body) return;
-    const q = (state.allQuery || '').trim().toLowerCase();
-    const rows = [];
-    MODS.forEach(m => {
-      if (state.allMod !== 'all' && state.allMod !== m.id) return;
-      (m.features || []).forEach(f => {
-        if (!q || ((f.name || '') + ' ' + (f.line || '')).toLowerCase().indexOf(q) >= 0) rows.push({ f, m });
-      });
-    });
-    // v4：从「16 张截断的小卡」改成规格表——一行一个功能，描述完整显示，序号可数
-    body.innerHTML = rows.map(({ f, m }, i) => `
-      <a class="srow" href="#${f.v}">
-        <span class="sidx">${String(i + 1).padStart(2, '0')}</span>
-        <span class="sname"><i aria-hidden="true">${f.icon || '▸'}</i>${esc(f.name)}</span>
-        <span class="sdesc">${esc(f.line || '')}</span>
-        <span class="smod">${esc(m.name)}</span>
-        <span class="sar" aria-hidden="true">→</span>
-      </a>`).join('') || '<div class="empty">没有匹配的功能，换个词试试（比如「价格」「诊断」「组合」）</div>';
+    const rows = allRows();
+    body.innerHTML = rows.length
+      ? rows.join('')
+      : '<div class="empty">这个分类下没有匹配项，换个词试试（比如「价格」「诊断」「国内直连」）</div>';
   }
 
   /* 数据速览：把站内最有用的三个数字直接摆在控制台上 */
@@ -981,23 +1129,474 @@
     const b = $('#nfLinks');
     if (!b || b.dataset.done) return;
     b.dataset.done = '1';
-    b.innerHTML = FEATURE_VIEWS.map(v => `<a class="gchip" href="#${v}">${esc(VIEW_NAME[v] || v)}</a>`).join('');
+    // 404 要把全部入口摆出来，包括新加的站务页——死路上至少能看见所有岔口
+    b.innerHTML = FEATURE_VIEWS.map(v => `<a class="gchip" href="#${v}">${esc(VIEW_NAME[v] || v)}</a>`).join('')
+      + SITE_PAGES.map(v => `<a class="gchip" href="#${v}">⌘ ${esc(VIEW_NAME[v] || v)}</a>`).join('');
   }
 
-  /* ---------- 主路由 ---------- */
+  /* =========================================================
+     站务层：关于 / 帮助 / 隐私 / 联系 / 搜索 / 个人中心 / 反馈 / 出错兜底
+     ---------------------------------------------------------
+     这几页服务「站」本身，不属于任何内容模块。文案全部来自 data/pages.json，
+     逻辑集中在这里——加一个静态页只需要改 JSON + 一个 <section>，不用碰模块体系。
+     ========================================================= */
+
+  /* ---------- 文案里的可点标记 ----------
+     写法 `{feedback}` 会在渲染时换成当前环境真实的链接（有仓库就指 issue，没有就指站内页）。
+     先 esc 再替换，所以配置里写不了内联 HTML——这是有意的：文案不该能带脚本。 */
+  function linkTokens() {
+    return {
+      repo: { h: SITE.repoUrl || '', n: '公开仓库' },
+      issue: { h: SITE.issue || '#feedback', n: '开一条 Issue' },
+      feedback: { h: '#feedback', n: '反馈页' },
+      contact: { h: '#contact', n: '联系方式' },
+      search: { h: '#search', n: '全站搜索' },
+      mine: { h: '#mine', n: '个人中心' },
+      home: { h: '#home', n: '首页诊断台' },
+      all: { h: '#all', n: '完整工具站' },
+      map: { h: '#map', n: '功能地图' },
+      src: { h: '#sources', n: '数据源与口径' },
+      health: { h: '#health', n: '数据健康' },
+      chg: { h: '#changelog', n: '更新日志' },
+      stack: { h: '#stack', n: '我的组合' },
+      plan: { h: '#plan', n: '落地执行包' },
+      report: { h: '#report', n: '决策报告' },
+      persona: { h: '#persona', n: '测试人诊断' },
+      roles: { h: '#roles', n: '角色阶梯' },
+      evalset: { h: '#evalset', n: 'AI 评测集' },
+      plans: { h: '#plans', n: '套餐对比' },
+      news: { h: '#news', n: 'AI 大事' },
+      privacy: { h: '#privacy', n: '隐私与条款' }
+    };
+  }
+  function inlineLinks(s) {
+    const T = linkTokens();
+    let h = esc(s)
+      .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>');
+    return h.replace(/\{([a-z]+)\}/g, (m, k) => {
+      const t = T[k];
+      if (!t || !t.h) return m;
+      const ext = /^https?:/.test(t.h) ? ' target="_blank" rel="noopener"' : '';
+      return `<a href="${esc(t.h)}"${ext}>${esc(t.n)}</a>`;
+    });
+  }
+
+  function pageBlocks(blocks) {
+    return (blocks || []).map(b => {
+      if (b.t === 'h') return `<h3 class="pgH">${inlineLinks(b.x)}</h3>`;
+      if (b.t === 'p') return `<p class="pgP">${inlineLinks(b.x)}</p>`;
+      if (b.t === 'note') {
+        const tone = b.tone === 'warn' ? 'warn' : b.tone === 'bad' ? 'bad' : 'good';
+        return `<div class="note ${tone}">${inlineLinks(b.x)}</div>`;
+      }
+      if (b.t === 'ul') return `<ul class="ul${b.tone === 'bad' ? ' bad' : ''}">${(b.items || []).map(x => `<li>${inlineLinks(x)}</li>`).join('')}</ul>`;
+      if (b.t === 'dl') return `<dl class="pgDL">${(b.items || []).map(p => `<dt>${inlineLinks(p[0])}</dt><dd>${inlineLinks(p[1])}</dd>`).join('')}</dl>`;
+      if (b.t === 'kv') return `<div class="kvList">${(b.items || []).map(p => `<div class="kv"><b>${esc(p[0])}</b><span>${inlineLinks(p[1])}</span></div>`).join('')}</div>`;
+      if (b.t === 'faq') return `<div class="faqList">${(b.items || []).map((p, i) => `<details class="faq"${i === 0 ? ' open' : ''}><summary>${inlineLinks(p[0])}</summary><div class="faqA">${inlineLinks(p[1])}</div></details>`).join('')}</div>`;
+      return '';
+    }).join('');
+  }
+
+  function backRow() {
+    return `<div class="panel pback">
+      <div class="gk">继续</div>
+      <div class="gchips">
+        <a class="gchip" href="#home">← 首页</a>
+        <a class="gchip" href="#map">功能地图</a>
+        <a class="gchip" href="#all">完整工具站</a>
+        <a class="gchip" href="#search">⌕ 搜索</a>
+        <a class="gchip" href="#mine">◍ 个人中心</a>
+      </div>
+    </div>`;
+  }
+
+  function renderStaticPage(key) {
+    const pg = PAGES[key];
+    const head = document.getElementById(key + 'Head');
+    const body = document.getElementById(key + 'Body');
+    if (!head || !body) return;
+    if (!pg) {
+      head.innerHTML = `<div class="kick">Missing</div><h1>内容缺失</h1><p>data/pages.json 里没有 <code>${esc(key)}</code>。构建期本该拦下这种问题。</p>`;
+      body.innerHTML = backRow();
+      return;
+    }
+    head.innerHTML = `<div class="kick">${esc(pg.kick)}</div><h1>${esc(pg.title)}</h1><p>${inlineLinks(pg.lede)}</p>`
+      + (pg.lede2 ? `<p class="mini">${inlineLinks(pg.lede2)}</p>` : '');
+    body.innerHTML = `<div class="panel pagePanel">${pageBlocks(pg.blocks)}</div>`
+      + `<div class="panel"><h3><span class="ic">✉</span>这一页有错、或者没讲清？</h3>
+        <div class="sub">直接说，比猜有用。反馈会落到公开仓库，留得下记录。</div>
+        <div class="gchips"><a class="btn primary" href="#feedback">去反馈 →</a><a class="btn" href="#contact">其他联系方式</a></div></div>`
+      + backRow();
+  }
+
+  /* ---------- 全站搜索 ----------
+     索引在第一次进搜索页时构一次（约 400 条），之后只做过滤。
+     不预建在 init 里：首页不需要它，没必要为一次搜索拖慢首屏。 */
+  const SEARCH_KIND = { feat: '功能', tool: '工具', plan: '套餐', bundle: '组合', news: '大事', cap: '能力', src: '来源', page: '站务' };
+  let SIDX = null;
+  function searchIndex() {
+    if (SIDX) return SIDX;
+    const out = [];
+    MODS.forEach(m => (m.features || []).forEach(f =>
+      out.push({ k: 'feat', id: f.v, n: f.name, d: f.line || '', go: '#' + f.v, tag: m.name })));
+    SITE_PAGES.forEach(v => out.push({ k: 'page', id: v, n: VIEW_NAME[v] || v, d: (PAGES[v] && PAGES[v].lede) || '', go: '#' + v, tag: '站务' }));
+    TOOLS.forEach(t => out.push({ k: 'tool', id: t.id, n: t.name, d: (t.tagline || '') + ' · ' + (t.vendor || ''), go: '#tools', tag: t.kind === 'qa' ? 'AI 测试平台' : '编程外壳' }));
+    PLANS.forEach(p => out.push({ k: 'plan', id: p.id, n: p.name + ' · ' + (p.tier || ''), d: (p.vendor || '') + ' · ' + (p.currency === 'USD' ? '$' : '¥') + p.price, go: '#plans', tag: p.region === 'cn' ? '国内' : '国际' }));
+    BUNDLES.forEach(b => out.push({ k: 'bundle', id: b.id, n: b.name, d: b.summary || '', go: '#bundles', tag: '¥' + b.monthlyCost + '/月' }));
+    (NEWS.events || []).forEach(e => out.push({ k: 'news', id: e.id, n: e.title || '', d: (e.impact || e.body || '').slice(0, 110), go: '#news', tag: e.date || '' }));
+    CAP_LIST.forEach(c => out.push({ k: 'cap', id: c.id, n: c.name, d: c.desc || '', go: '#capabilities', tag: c.groupName || '' }));
+    (SRC.groups || []).forEach(g => (g.items || []).forEach((s, i) => out.push({ k: 'src', id: g.id + ':' + i, n: s.n || '', d: s.d || '', go: '#sources', tag: g.name || '' })));
+    SIDX = out;
+    return out;
+  }
+
+  const SQ = { q: '', cat: 'all' };
+
+  function searchHits() {
+    const q = SQ.q.trim().toLowerCase();
+    let list = searchIndex().filter(x => SQ.cat === 'all' || x.k === SQ.cat);
+    if (q) {
+      const terms = q.split(/\s+/).filter(Boolean);
+      list = list.filter(x => {
+        const hay = (x.n + ' ' + x.d + ' ' + x.tag + ' ' + x.id).toLowerCase();
+        return terms.every(t => hay.indexOf(t) >= 0);
+      });
+      // 名称命中排前面：搜「价格」时，"价格"叫这个名字的条目比正文提到它的更相关
+      list = list.map(x => {
+        const n = (x.n || '').toLowerCase();
+        const score = n.indexOf(q) === 0 ? 3 : n.indexOf(q) >= 0 ? 2 : 1;
+        return { x, score };
+      }).sort((a, b) => b.score - a.score).map(o => o.x);
+    }
+    return list;
+  }
+
+  function sresRow(x) {
+    if (x.k === 'tool') {
+      return `<button class="sresRow" type="button" data-tool-open="${esc(x.id)}">
+        <span class="srk">工具</span><b>${esc(x.n)}</b><span class="srd">${esc(x.d)}</span><i aria-hidden="true">打开 →</i></button>`;
+    }
+    return `<a class="sresRow" href="${esc(x.go)}">
+      <span class="srk">${esc(SEARCH_KIND[x.k] || x.k)}</span><b>${esc(x.n)}</b><span class="srd">${esc(x.d)}</span><i aria-hidden="true">→</i></a>`;
+  }
+
+  function renderSearch() {
+    const cats = $('#siteQCats'), meta = $('#siteQMeta'), body = $('#siteQBody');
+    if (!cats || !body) return;
+    cats.innerHTML = [{ k: 'all', n: '全部' }].concat(Object.keys(SEARCH_KIND).map(k => ({ k, n: SEARCH_KIND[k] })))
+      .map(c => `<button class="chip${SQ.cat === c.k ? ' on' : ''}" type="button" data-sq="${c.k}" aria-pressed="${SQ.cat === c.k}">${c.n}</button>`).join('');
+
+    const all = searchIndex();
+    const hits = searchHits();
+    const q = SQ.q.trim();
+    if (meta) {
+      meta.innerHTML = q
+        ? `「<b>${esc(q)}</b>」命中 <b>${hits.length}</b> 条${SQ.cat === 'all' ? '' : '（限定：' + SEARCH_KIND[SQ.cat] + '）'}`
+        : `索引里共 <b>${all.length}</b> 条：功能页、工具、套餐、组合、大事、能力、来源、站务页。输入关键词开始筛。`;
+    }
+
+    if (!hits.length) {
+      body.innerHTML = `<div class="empty">${
+        q ? `没有命中「${esc(q)}」。换个说法试试：价格 / 诊断 / 国内直连 / 组合` : '这个分类下还没有条目'
+      }</div>`;
+      return;
+    }
+
+    // 分组：不限分类时按类型分块，同类型排在一起；每类最多 8 条，避免一屏 200 行
+    const groups = {};
+    hits.forEach(x => { (groups[x.k] = groups[x.k] || []).push(x); });
+    const order = Object.keys(SEARCH_KIND).filter(k => groups[k]);
+    body.innerHTML = order.map(k => {
+      const list = groups[k];
+      const cap = (SQ.more && SQ.more[k]) ? 80 : (q ? 8 : 5);
+      const shown = list.slice(0, cap);
+      const more = list.length - shown.length;
+      return `<div class="panel sresGrp">
+        <div class="sgHead"><b>${SEARCH_KIND[k]}</b><span>${list.length} 条</span></div>
+        ${shown.map(sresRow).join('')}
+        ${more > 0 ? `<button class="chip chMore" type="button" data-sq-more="${k}">还有 ${more} 条</button>` : ''}
+      </div>`;
+    }).join('');
+  }
+
+  /* ---------- 我的 ---------- */
+  function planCost() {
+    let c = 0;
+    (state.pickedPlans || []).forEach(id => {
+      const p = PLANS.find(x => x.id === id);
+      if (!p) return;
+      c += p.currency === 'USD' ? (p.price || 0) * 7.25 : (p.price || 0);
+    });
+    return Math.round(c);
+  }
+
+  function renderMine() {
+    const g = $('#mineGrid');
+    if (!g) return;
+    const meta = $('#mineMeta');
+    const diag = lsGet(LS.diag, []) || [];
+    const stack = state.pickedTools || [];
+    const plans = state.pickedPlans || [];
+
+    if (meta) meta.textContent = `收藏 ${FAV.length} 项 · 浏览记录 ${RECENT.length} 条 · 诊断 ${diag.length} 次`;
+
+    const favList = FAV.length
+      ? FAV.map(f => `<div class="mrow">
+          <a class="mgo2" href="${esc(f.go || '#home')}"><b>${esc(f.n)}</b><span>${esc(f.k === 'tool' ? '工具' : f.k === 'plan' ? '套餐' : f.k === 'bundle' ? '组合' : '页面')}</span></a>
+          <button class="mx" type="button" data-mfav="${esc(f.k)}" data-fav-id="${esc(f.id)}" aria-label="取消收藏 ${esc(f.n)}">×</button>
+        </div>`).join('')
+      : '<div class="empty">还没有收藏。工具卡、组合卡、功能页底部都有 ☆，点一下就在这里。</div>';
+
+    const recList = RECENT.length
+      ? RECENT.slice(0, 12).map(r => {
+          const name = VIEW_NAME[r.v] || (r.v.indexOf('mod-') === 0 ? (MODS.find(m => 'mod-' + m.id === r.v) || {}).name || r.v : r.v);
+          return `<a class="mrow mrec" href="#${esc(r.v)}"><b>${esc(name)}</b><span>${ago(r.t)}</span></a>`;
+        }).join('')
+      : '<div class="empty">还没有浏览记录。这一栏只在你的浏览器里，不会上传。</div>';
+
+    const stackHtml = (stack.length || plans.length)
+      ? `<div class="mstat"><b>${stack.length}</b><span>个壳</span><b>${plans.length}</b><span>档套餐</span><b>¥${planCost()}</b><span>/ 月</span></div>
+         <div class="mnames">${stack.map(id => (TOOLS.find(t => t.id === id) || {}).name || id).concat(plans.map(id => (PLANS.find(p => p.id === id) || {}).name || id)).map(n => `<span class="tag c">${esc(n)}</span>`).join('')}</div>
+         <a class="btn sm" href="#stack">打开我的组合 →</a>`
+      : '<div class="empty">还没选组合。去<a href="#bundles">组合方案</a>照抄一套，或回<a href="#home">首页诊断台</a>让引擎给你一套。</div>';
+
+    const diagHtml = diag.length
+      ? diag.slice().reverse().slice(0, 5).map(d => {
+          const b = BUNDLES.find(x => x.id === d.bId) || {};
+          return `<div class="mrow"><a class="mgo2" href="#plan"><b>${esc(b.name || d.bId || '方案')}</b><span>${esc([d.q && d.q.goal, d.q && d.q.budget, d.q && d.q.cstr].filter(Boolean).join(' · '))}</span></a><span class="mt">${ago(d.t)}</span></div>`;
+        }).join('')
+      : '<div class="empty">还没有诊断记录。回<a href="#home">首页诊断台</a>跑一次，3 个问题出一份组合方案。</div>';
+
+    g.innerHTML = `
+      <div class="mcard2"><div class="mc2h"><b>我的收藏</b><span>${FAV.length}</span></div><div class="mc2b">${favList}</div></div>
+      <div class="mcard2"><div class="mc2h"><b>最近浏览</b><span>${RECENT.length}</span></div><div class="mc2b">${recList}</div></div>
+      <div class="mcard2"><div class="mc2h"><b>我的组合</b><span>${stack.length + plans.length}</span></div><div class="mc2b">${stackHtml}</div></div>
+      <div class="mcard2"><div class="mc2h"><b>诊断记录</b><span>${diag.length}</span></div><div class="mc2b">${diagHtml}</div></div>`;
+
+    const acts = $('#mineActions');
+    if (acts) acts.innerHTML = `
+      <button class="btn" type="button" id="mineExport">⇩ 导出我的数据（JSON）</button>
+      <a class="btn" href="#report">▥ 生成决策报告</a>
+      <button class="btn danger" type="button" id="mineClear">清空本机数据</button>`;
+
+    const store = $('#mineStore');
+    if (store) {
+      const keys = [
+        [LS.theme, '主题偏好'], [LS.fav, '收藏'], [LS.recent, '浏览历史'],
+        [LS.stack, '勾选的工具壳'], [LS.picked, '勾选的套餐'], [LS.diag, '诊断记录'],
+        [LS.events, '匿名使用路径'], [LS.plan, '当前执行包'], [LS.planprog, '执行包进度']
+      ];
+      store.innerHTML = keys.map(([k, label]) => {
+        let v = null;
+        try { v = localStorage.getItem(k); } catch (e) { v = null; }
+        const size = v == null ? '—' : (v.length > 120 ? v.slice(0, 120) + '…' : v);
+        return `<div class="kv"><b>${esc(k)}</b><span class="kvlab">${esc(label)}</span><code>${esc(size)}</code></div>`;
+      }).join('');
+    }
+  }
+
+  function ago(t) {
+    if (!t) return '';
+    const d = Date.now() - t;
+    if (d < 6e4) return '刚刚';
+    if (d < 36e5) return Math.round(d / 6e4) + ' 分钟前';
+    if (d < 864e5) return Math.round(d / 36e5) + ' 小时前';
+    if (d < 2592e6) return Math.round(d / 864e5) + ' 天前';
+    return new Date(t).toISOString().slice(0, 10);
+  }
+
+  /* ---------- 反馈 ----------
+     四类反馈共用一套表单：类型决定标题前缀、模板正文和落到哪个 Issue 模板。
+     GitHub 的 issue 表单只支持预填 title/labels/assignees/milestone，不支持 body，
+     所以正文一律「复制到剪贴板 + 让用户粘贴」——这是平台限制，不是偷懒。 */
+  const FB_KINDS = [
+    { k: 'bug', n: '报错', icon: '!', line: '页面坏了、按钮没反应、显示错位', prefix: '[报错] ', tpl: 'feedback.yml', hint: '写清：哪个页面、点了什么、期望什么、实际什么。能截图更好。' },
+    { k: 'data', n: '数据纠错', icon: '≠', line: '价格、额度、限制写错了', prefix: '[数据] ', tpl: 'data-correction.yml', hint: '价格类必须给四样：哪一条、现在是什么、应该是什么、官网链接 + 核验日期。' },
+    { k: 'idea', n: '建议', icon: '+', line: '缺什么功能、哪里不好用', prefix: '[建议] ', tpl: 'feedback.yml', hint: '说清「你想解决什么问题」，比「加个 XX」有用得多。' },
+    { k: 'ask', n: '提问', icon: '?', line: '怎么用、为什么这么判', prefix: '[提问] ', tpl: 'feedback.yml', hint: '先说你在哪一页、想做什么。很多问题在「帮助与说明」里已经有答案。' }
+  ];
+  /* 反馈表单的当前状态。注意别叫 FB —— 那个名字已经被 freebies 数据占了，
+     重名会在整包脚本里直接抛 SyntaxError，整个站白屏（这个错犯过一次）。 */
+  const FBST = { kind: 'bug' };
+
+  function fbText() {
+    const f = FB_KINDS.find(x => x.k === FBST.kind) || FB_KINDS[0];
+    const where = ($('#fbWhere') && $('#fbWhere').value.trim()) || '（未填）';
+    const body = ($('#fbText') && $('#fbText').value.trim()) || '（未填）';
+    return [
+      '### ' + f.n,
+      '',
+      '**位置**：' + where,
+      '',
+      '**具体是什么**',
+      '',
+      body,
+      '',
+      '---',
+      '- 页面：' + (location.hash || '#home'),
+      '- 版本：v' + (META.version || '—'),
+      '- 数据核验日：' + (META.lastVerified || '—'),
+      '- 浏览器：' + (navigator.userAgent || '—').slice(0, 120)
+    ].join('\n');
+  }
+
+  function fbUrl() {
+    const f = FB_KINDS.find(x => x.k === FBST.kind) || FB_KINDS[0];
+    if (!SITE.issue) return '';
+    const where = ($('#fbWhere') && $('#fbWhere').value.trim()) || '';
+    const title = f.prefix + (where || f.n);
+    return SITE.issue + '?template=' + encodeURIComponent(f.tpl) + '&title=' + encodeURIComponent(title.slice(0, 120));
+  }
+
+  function renderFeedback() {
+    const kinds = $('#fbKinds');
+    if (kinds) {
+      kinds.innerHTML = FB_KINDS.map(f => `<button class="fbk${FBST.kind === f.k ? ' on' : ''}" type="button" data-fb="${f.k}" aria-pressed="${FBST.kind === f.k}">
+        <i aria-hidden="true">${f.icon}</i><b>${f.n}</b><span>${f.line}</span></button>`).join('');
+    }
+    const pg = PAGES.feedback || {};
+    const h = $('#fbTitle'), l = $('#fbLede'), l2 = $('#fbLede2');
+    if (h && pg.title) h.textContent = pg.title;
+    if (l && pg.lede) l.innerHTML = inlineLinks(pg.lede);
+    if (l2) l2.innerHTML = pg.lede2 ? inlineLinks(pg.lede2) : '';
+    const hint = $('#fbHint');
+    const cur = FB_KINDS.find(x => x.k === FBST.kind) || FB_KINDS[0];
+    if (hint) hint.textContent = cur.hint;
+    // 从某个功能页点「这一页有问题」过来：把页名带进「位置」，只带一次
+    if (FBST.prefill) {
+      const w = $('#fbWhere');
+      if (w && !w.value.trim()) w.value = FBST.prefill;
+      FBST.prefill = '';
+    }
+    const prev = $('#fbPreview');
+    if (prev) prev.textContent = fbText();
+    const note = $('#fbNote');
+    if (note) note.innerHTML = SITE.issue
+      ? '会打开 <b>' + esc(cur.tpl) + '</b> 表单，标题已预填。GitHub 不支持预填正文，模板已复制到剪贴板，粘进去即可。'
+      : '当前没有关联的公开仓库（本地预览就是这样），所以只会复制模板。发布后会自动指向 issue。';
+    renderFbSaved();
+  }
+
+  function renderFbSaved() {
+    const box = $('#fbSaved');
+    if (!box) return;
+    const list = lsGet(LS.fb, []) || [];
+    if (!list.length) { box.innerHTML = '<div class="empty">本机还没有留档。网络不通时可以先存着，等能开 GitHub 再复制出去。</div>'; return; }
+    box.innerHTML = list.map((f, i) => `<div class="fbSavedRow">
+      <div class="fsrH"><b>${esc(f.kindName)}</b><span>${ago(f.t)}</span></div>
+      <pre class="fsrB">${esc(f.text)}</pre>
+      <div class="gchips"><button class="chip" type="button" data-fb-copy="${i}">复制</button><button class="chip" type="button" data-fb-del="${i}">删除</button></div>
+    </div>`).join('');
+  }
+
+  /* ---------- 出错兜底 ----------
+     静态站没有 500，但「某个渲染函数抛异常」同样会让用户看到白屏。
+     这里把异常接住，显示一页能自救的东西，并把堆栈摆出来方便开 issue。 */
+  /* 出错页的岔口清单。直接访问 #error 时也要有——否则手动进来看到的是一片空 */
+  function fillErrLinks() {
+    const el = $('#errLinks');
+    if (!el || el.dataset.done) return;
+    el.dataset.done = '1';
+    el.innerHTML = FEATURE_VIEWS.map(v => `<a class="gchip" href="#${v}">${esc(VIEW_NAME[v] || v)}</a>`).join('')
+      + SITE_PAGES.map(v => `<a class="gchip" href="#${v}">⌘ ${esc(VIEW_NAME[v] || v)}</a>`).join('');
+  }
+
+  function showError(err) {
+    const msg = (err && err.message) || String(err || '未知错误');
+    const trace = (err && err.stack) || msg;
+    state.view = 'error';
+    $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-error'));
+    const em = $('#errMsg');
+    if (em) em.textContent = '渲染时抛了一个异常：' + msg + '。站点的其他部分不受影响——数据全在本地。';
+    const et = $('#errTrace');
+    if (et) et.textContent = trace + '\n\nlocation: ' + (location.hash || '#home') + '\nversion: v' + (META.version || '—');
+    fillErrLinks();
+    const sub = $('#subnav');
+    if (sub) { sub.hidden = true; sub.innerHTML = ''; }
+    document.title = '页面出错 · AI Test Stack';
+    document.documentElement.classList.add('ready');
+    try { track('render_error', { m: msg.slice(0, 120), v: location.hash }); } catch (e) {}
+  }
+
+  /* ---------- 导航渲染（配置驱动） ---------- */
+  function navItemHtml(x) {
+    const ext = x.ext ? ' target="_blank" rel="noopener"' : '';
+    const href = x.go === 'issue' ? (SITE.repoUrl ? SITE.repoUrl + '/issues/new' : '#feedback') : x.go;
+    return `<a href="${esc(href)}"${ext}>${x.icon ? esc(x.icon) + ' ' : ''}${esc(x.n)}</a>`;
+  }
+  function reservedHtml() {
+    return (NAV.reserved || []).map(r =>
+      `<span class="ddSoon" title="${esc(r.why || '')}">◌ ${esc(r.n)}<b class="soon">${esc(r.note || '规划中')}</b></span>`).join('');
+  }
+  function renderNav() {
+    const tn = $('#tnav');
+    if (tn && NAV.primary && NAV.primary.length) {
+      tn.innerHTML = NAV.primary.map(it => {
+        if (it.group) {
+          return `<span class="tdd">
+            <button class="tddBtn" type="button" data-nav="${esc(it.key || '')}" aria-expanded="false" aria-haspopup="true">${esc(it.group)} <i aria-hidden="true">▾</i></button>
+            <span class="tddMenu" hidden>${(it.items || []).map(navItemHtml).join('')}${it.key === 'more' ? reservedHtml() : ''}</span>
+          </span>`;
+        }
+        return `<a href="${esc(it.go)}" data-nav="${esc(it.key || '')}">${esc(it.n)}</a>`;
+      }).join('');
+    }
+    const sf = $('#sfNav');
+    if (sf && NAV.footer) {
+      // 社区预留位要三处一致（顶栏「更多」/ 页脚 / 移动端），所以这里也注入一次，
+      // 而不是只在顶栏放一个 —— 声明了 slots 就要真的落在那些位置。
+      sf.innerHTML = NAV.footer.map((col, i) =>
+        `<div class="sfgrp"><b class="sfgt">${esc(col.n)}</b>${(col.items || []).map(navItemHtml).join('')}${i === NAV.footer.length - 1 ? reservedHtml() : ''}</div>`).join('');
+    }
+    const mp = $('#mnavPrim'), mf = $('#mnavFoot');
+    if (mp && NAV.mobile) mp.innerHTML = (NAV.mobile.primary || []).map(x => navItemHtml(x)).join('');
+    if (mf && NAV.mobile) mf.innerHTML = (NAV.mobile.more || []).map(x => navItemHtml(x)).join('') + reservedHtml();
+  }
+
+  /* ---------- 首页：一句话轮播（动效服务于「这站能解决什么」，不是装饰） ---------- */
+  let ROT_T = null;
+  function startHeroRot() {
+    const el = $('#hRotT');
+    if (!el || ROT_T) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const items = ['日常回归自动化', '写用例 / 测试设计', '先学 AI 测试', '团队协作共享', '合规、代码不出境', '把预算压到最低'];
+    let i = 0;
+    ROT_T = setInterval(() => {
+      if (state.view !== 'home' || document.hidden) return;
+      i = (i + 1) % items.length;
+      el.classList.add('flip');
+      setTimeout(() => { el.textContent = items[i]; el.classList.remove('flip'); }, 200);
+    }, 2800);
+  }
+
+  /* ---------- 主路由 ----------
+     route() 只做一件事：把渲染异常接住；真正分派在 routeInner()。
+     这样任何一个页面渲染抛错，用户看到的是「出错页 + 堆栈」，而不是白屏。 */
   function route() {
+    try { routeInner(); }
+    catch (err) { showError(err); }
+  }
+
+  function routeInner() {
     // hash 可能是 #matrix?w=... 这种带参数的形态，取 ? 之前那段当视图名
     let v = (location.hash || '#home').replace('#', '').split('?')[0];
-    // 未知地址不再静默回落到首页——给 404 页，把 16 个入口摆出来
+    // 旧地址重定向：模块 7→6 合并后 #mod-start 已不存在，但别人分享的旧链接还在
+    const rd = (NAV.redirects || {})[v];
+    if (rd) { history.replaceState(null, '', '#' + rd); v = rd; }
+    // 未知地址不再静默回落到首页——给 404 页，把全部入口摆出来
     if (v && VIEWS.indexOf(v) < 0) v = '404';
     if (!v) v = 'home';
     const from = state.view;
     state.view = v;
+    pushRecent(v);
 
     // 顶部主导航高亮（下拉按钮也算一项：我的 / 更多）
-    const navKey = v === 'home' ? 'home' : v === 'map' ? 'map' : v === 'all' ? 'all'
-      : (v === 'opinion' || v === 'stack' || v === 'plan' || v === 'report') ? 'mine'
-      : (v === 'changelog' || v === 'sources' || v === 'health' || v === 'evalset') ? 'more' : '';
+    const navKey = v === 'home' ? 'home' : v === 'map' ? 'map' : v === 'all' ? 'all' : v === 'search' ? 'search'
+      : (v === 'mine' || v === 'opinion' || v === 'stack' || v === 'plan' || v === 'report') ? 'mine'
+      : (v === 'changelog' || v === 'sources' || v === 'health' || v === 'evalset'
+        || v === 'about' || v === 'help' || v === 'privacy' || v === 'contact' || v === 'feedback') ? 'more' : '';
     $$('.tnav a, .tnav .tddBtn').forEach(el => el.classList.toggle('on', el.dataset.nav === navKey));
 
     $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
@@ -1010,6 +1609,11 @@
     if (v === 'map') renderMap();
     if (v === 'all') renderAll();
     if (v === '404') render404();
+    if (v === 'error') fillErrLinks();
+    if (v === 'search') renderSearch();
+    if (v === 'mine') renderMine();
+    if (v === 'feedback') renderFeedback();
+    if (v === 'about' || v === 'help' || v === 'privacy' || v === 'contact') renderStaticPage(v);
     if (v.indexOf('mod-') === 0) renderModule(v.slice(4));
     if (v === 'overview') renderOverview();
     if (v === 'matrix') renderMatrix();
@@ -1451,6 +2055,7 @@
           <div class="logo" style="background:${esc(t.grad)}">${esc(t.letter)}</div>
           <div><div class="tn">${esc(t.name)}</div><div class="tv">${esc(t.vendor)}</div></div>
           <span class="tkind ${t.kind === 'qa' ? 'qa' : ''}">${t.kind === 'qa' ? '测试平台' : '编程外壳'}</span>
+          ${favBtn('tool', t.id, t.name)}
         </div>
         <div class="td">${esc(t.tagline)}。${esc(String(t.what).split('。')[0])}。</div>
         <div class="tfoot">
@@ -1923,6 +2528,7 @@
             <div class="bname">${esc(b.name)}</div>
           </div>
           <div class="bscore"><div class="n">${pct}</div><div class="c">score</div></div>
+          ${favBtn('bundle', b.id, b.name)}
         </div>
         <div class="bcost">¥${esc(b.monthlyCost)}<small>/ 月</small>
           <span class="bform">${esc(b.planForm || '')}</span>
@@ -4556,10 +5162,145 @@
   }
 
   /* =========================================================
+     站务层事件绑定
+     ---------------------------------------------------------
+     全部走 document 上的委托：页面上这些块会被反复重渲染，
+     逐个 .onclick 会在第二次渲染后失效（元素已经是新的了）。
+     ========================================================= */
+  function favGo(b) {
+    const k = b.dataset.fav, id = b.dataset.favId;
+    return k === 'page' ? '#' + id : k === 'tool' ? '#tools' : k === 'bundle' ? '#bundles' : '#home';
+  }
+
+  function bindSitePages() {
+    /* 收藏按钮在**捕获阶段**处理：工具卡的点击处理器直接绑在卡元素上，
+       冒泡阶段再拦已经晚了——点收藏会连带把抽屉打开。捕获阶段先吃下事件并断掉传播，
+       卡片就收不到这次点击。这个坑只有真的点过才知道。 */
+    document.addEventListener('click', (e) => {
+      const fv = e.target.closest('[data-fav]');
+      if (!fv) return;
+      e.preventDefault(); e.stopPropagation();
+      const on = favToggle({ k: fv.dataset.fav, id: fv.dataset.favId, n: fv.dataset.favN || fv.dataset.favId, go: favGo(fv) });
+      syncFavButtons();
+      toast(on ? '已收藏：' + (fv.dataset.favN || '') : '已取消收藏');
+      track('fav', { k: fv.dataset.fav, id: fv.dataset.favId, on: on });
+    }, true);
+    document.addEventListener('click', (e) => {
+      const mf = e.target.closest('[data-mfav]');
+      if (mf) { e.stopPropagation(); favToggle({ k: mf.dataset.mfav, id: mf.dataset.favId }); renderMine(); return; }
+      // 搜索结果 / 总览里的工具行：直接开抽屉，不跳页
+      const to = e.target.closest('[data-tool-open]');
+      if (to) { openTool(to.dataset.toolOpen); return; }
+      // 搜索页分类
+      const sq = e.target.closest('[data-sq]');
+      if (sq) { SQ.cat = sq.dataset.sq; SQ.more = {}; renderSearch(); return; }
+      const sm = e.target.closest('[data-sq-more]');
+      if (sm) { SQ.more = SQ.more || {}; SQ.more[sm.dataset.sqMore] = true; renderSearch(); return; }
+      // 反馈：类型切换 / 复制 / 删除 / 从某个功能页带过来
+      const fk = e.target.closest('[data-fb]');
+      if (fk) { FBST.kind = fk.dataset.fb; renderFeedback(); return; }
+      const fc = e.target.closest('[data-fb-copy]');
+      if (fc) {
+        const l = lsGet(LS.fb, []) || [];
+        const it = l[+fc.dataset.fbCopy];
+        if (it) copyText(it.text, '已复制这一条');
+        return;
+      }
+      const fd = e.target.closest('[data-fb-del]');
+      if (fd) {
+        const l = lsGet(LS.fb, []) || [];
+        l.splice(+fd.dataset.fbDel, 1); lsSet(LS.fb, l); renderFbSaved();
+        return;
+      }
+      const fp = e.target.closest('[data-fb-page]');
+      if (fp) {
+        // 从功能页底部过来：类型设成「报错」，并把页名带进「位置」
+        FBST.kind = 'bug';
+        FBST.prefill = VIEW_NAME[fp.dataset.fbPage] || fp.dataset.fbPage;
+        return;
+      }
+      // 个人中心：导出 / 清空
+      if (e.target.closest('#mineExport')) {
+        const payload = {
+          exportedAt: new Date().toISOString(),
+          site: { version: META.version, url: SITE.url || '', verified: META.lastVerified || '' },
+          fav: FAV, recent: RECENT,
+          stack: state.pickedTools, plans: state.pickedPlans,
+          diag: lsGet(LS.diag, []), fb: lsGet(LS.fb, [])
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 1)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'ats-my-data.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        toast('已导出 ats-my-data.json');
+        track('mine_export');
+        return;
+      }
+      if (e.target.closest('#mineClear')) {
+        if (!window.confirm('清空这台设备上的收藏、浏览历史、组合与诊断记录？\n\n这个动作不能撤销——站点没有任何你的副本，所以也没有云端备份可恢复。')) return;
+        [LS.fav, LS.recent, LS.stack, LS.picked, LS.diag, LS.events, LS.fb, LS.plan, LS.planprog]
+          .forEach(k => { try { localStorage.removeItem(k); } catch (err) {} });
+        FAV.length = 0; RECENT.length = 0;
+        state.pickedTools = []; state.pickedPlans = [];
+        renderMine(); toast('已清空本机数据');
+        track('mine_clear');
+        return;
+      }
+      if (e.target.closest('#errCopy')) {
+        const et = $('#errTrace');
+        copyText(et ? et.textContent : '', '技术细节已复制，贴进 issue 即可');
+      }
+    });
+
+    // 搜索输入
+    const sqi = $('#siteQ');
+    if (sqi) {
+      let tmr;
+      sqi.oninput = () => {
+        SQ.q = sqi.value; SQ.more = {};
+        clearTimeout(tmr);
+        tmr = setTimeout(() => { renderSearch(); if (SQ.q.trim()) track('search', { q: SQ.q.slice(0, 24) }); }, 90);
+      };
+      sqi.onkeydown = (e) => {
+        if (e.key === 'Escape') { sqi.value = ''; SQ.q = ''; renderSearch(); }
+        if (e.key === 'Enter') { const f = $('#siteQBody .sresRow'); if (f) f.click(); }
+      };
+    }
+
+    // 反馈表单：输入即更新预览
+    ['fbWhere', 'fbText'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.oninput = () => { const p = $('#fbPreview'); if (p) p.textContent = fbText(); };
+    });
+    const fbo = $('#fbOpen');
+    if (fbo) fbo.onclick = () => {
+      const u = fbUrl();
+      copyText(fbText(), u ? '模板已复制，粘进打开的 issue 即可' : '本地没有关联仓库，模板已复制');
+      if (u) { window.open(u, '_blank', 'noopener'); track('feedback_open', { k: FBST.kind }); }
+    };
+    const fbc = $('#fbCopy');
+    if (fbc) fbc.onclick = () => { copyText(fbText(), '反馈模板已复制'); track('feedback_copy', { k: FBST.kind }); };
+    const fbs = $('#fbSave');
+    if (fbs) fbs.onclick = () => {
+      const list = lsGet(LS.fb, []) || [];
+      const cur = FB_KINDS.find(x => x.k === FBST.kind) || FB_KINDS[0];
+      list.unshift({ kind: FBST.kind, kindName: cur.n, t: Date.now(), text: fbText() });
+      while (list.length > 30) list.pop();
+      lsSet(LS.fb, list); renderFbSaved(); toast('已在这台设备上留一份');
+    };
+  }
+
+  /* =========================================================
      INIT
      ========================================================= */
   function init() {
     IDX = buildIndex();
+    // 导航先渲染：顶栏/页脚/移动端的结构由 data/nav.json 决定，
+    // 必须在首次 route 之前替换，否则第一次进站看到的是模板里的旧结构。
+    renderNav();
+    bindSitePages();
 
     // 这三个必须在首次渲染之前跑：
     // initShare 从 URL 恢复权重/画像/诊断答案/选中套餐，
@@ -4662,6 +5403,10 @@
         navigator.serviceWorker.register((SITE.base || '') + '/sw.js').catch(() => {});
       });
     }
+
+    // 首屏已渲染完，揭开骨架；淡出结束后把节点摘掉，免得它一直挂在 DOM 里
+    document.documentElement.classList.add('ready');
+    setTimeout(() => { const b = document.getElementById('boot'); if (b) b.remove(); }, 320);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

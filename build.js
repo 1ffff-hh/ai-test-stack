@@ -52,6 +52,8 @@ const data = {
   changelog: readJSON('changelog.json'),
   sources: readJSON('sources.json'),
   modules: readJSON('modules.json'),
+  nav: readJSON('nav.json'),
+  pages: readJSON('pages.json'),
   planpack: readJSON('planpack.json'),
   news: readJSON('news.json'),
   newsAuto: readJSONSafe('news-auto.json', { updated: null, events: [] }),
@@ -195,9 +197,16 @@ data.bundles.forEach(b => {
    缺了某个功能页、一个功能页归进两个模块、引用了不存在的组合——都会在构建期拦下来，
    不等上线后用户点进空模块才发现。 */
 const FEATURE_VIEW_IDS = ['overview', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'report', 'evalset', 'health'];
+/* 站务页：不属于任何一个内容模块（它们不属于「事」，是「站」本身）。
+   导航、页脚、404、JSON-LD 都要认得它们，所以在这里单独登记一次。 */
+const SITE_PAGE_IDS = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
+const SYS_VIEW_IDS = ['home', 'map', 'all', '404', 'error'];
+const ALL_VIEW_IDS = [...SYS_VIEW_IDS, ...FEATURE_VIEW_IDS, ...SITE_PAGE_IDS];
 const moduleList = data.modules && data.modules.modules;
-if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 9) {
-  errors.push(`modules.json 应有 5–9 个模块，现在是 ${moduleList ? moduleList.length : '缺失'}`);
+/* 上界钉在 6：功能地图一屏放得下 6 个大模块，第 7 个开始用户就要做「扫描 + 排除」而不是「一眼扫过」。
+   这是信息架构的硬约束，不是随口定的——要加模块，先合掉一个。 */
+if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 6) {
+  errors.push(`modules.json 应有 5–6 个模块（功能地图一屏的上限），现在是 ${moduleList ? moduleList.length : '缺失'}`);
 } else {
   const modIds = new Set();
   const seenViews = [];
@@ -235,6 +244,87 @@ if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 9
     const n = seenViews.filter(x => x === v).length;
     if (n === 0) errors.push(`功能页 ${v} 没有归入任何模块（功能地图会出现漏页）`);
     if (n > 1) errors.push(`功能页 ${v} 被归入了 ${n} 个模块（只能归一个）`);
+  });
+}
+
+/* ---------- 导航配置校验（nav.json） ----------
+   顶栏、页脚、移动导航、重定向全部由 nav.json 驱动——以前这些是写死在 index.html 里的，
+   加一页要改 HTML + JS 两处，改漏一处就是「页脚有、顶栏没有」这种不一致。
+   这里把它变成构建期可验证的数据：指向不存在的页面、页面没有入口，都在构建期拦下。 */
+const navList = [];
+{
+  const N = data.nav || {};
+  const modIdsForNav = new Set((moduleList || []).map(m => m.id));
+  const goOk = (g) => {
+    if (typeof g !== 'string' || !g) return false;
+    if (g[0] !== '#') return true;              // feed.xml / issue 这类站外或构建期才存在的目标
+    const v = g.slice(1);
+    return ALL_VIEW_IDS.includes(v) || (v.indexOf('mod-') === 0 && modIdsForNav.has(v.slice(4)));
+  };
+  const checkItems = (items, where) => {
+    if (!Array.isArray(items)) { errors.push(`nav.json ${where} 不是数组`); return; }
+    items.forEach((it, i) => {
+      if (it.group) {
+        if (!it.key) errors.push(`nav.json ${where}[${i}] 的分组「${it.group}」缺少 key`);
+        checkItems(it.items, `${where}[${i}].items`);
+        return;
+      }
+      if (!it.n) errors.push(`nav.json ${where}[${i}] 缺少显示名 n`);
+      if (!it.go) {
+        errors.push(`nav.json ${where}[${i}]「${it.n || '?'}」既没有 go 也没有 items`);
+      } else if (!goOk(it.go)) {
+        errors.push(`nav.json ${where}[${i}]「${it.n || '?'}」指向不存在的页面 ${it.go}`);
+      }
+      navList.push(it);
+    });
+  };
+  checkItems(N.primary, 'primary');
+  if (!Array.isArray(N.footer) || !N.footer.length) errors.push('nav.json 缺少 footer');
+  else N.footer.forEach((col, i) => { if (!col.n) errors.push(`nav.json footer[${i}] 缺少分组名`); checkItems(col.items, `footer[${i}].items`); });
+  if (!N.mobile || !N.mobile.primary) errors.push('nav.json 缺少 mobile.primary');
+  else { checkItems(N.mobile.primary, 'mobile.primary'); checkItems(N.mobile.more || [], 'mobile.more'); }
+
+  // 重定向表：键必须不是当前有效的视图（否则永远命中不了），值必须是有效视图
+  Object.keys(N.redirects || {}).forEach(k => {
+    if (ALL_VIEW_IDS.includes(k) || (k.indexOf('mod-') === 0 && modIdsForNav.has(k.slice(4)))) {
+      errors.push(`nav.json redirects 的键 ${k} 本身是有效视图，重定向永远不会触发`);
+    }
+    const to = N.redirects[k];
+    if (!ALL_VIEW_IDS.includes(to) && !(to && to.indexOf('mod-') === 0 && modIdsForNav.has(to.slice(4)))) {
+      errors.push(`nav.json redirects 的 ${k} 指向不存在的视图 ${to}`);
+    }
+  });
+
+  // 站务页必须能从导航走到：新加的页面最容易被漏在导航外，变成「只能靠猜 URL」
+  const reach = new Set(navList.map(x => x.go).filter(g => typeof g === 'string' && g[0] === '#').map(g => g.slice(1)));
+  SITE_PAGE_IDS.forEach(v => {
+    if (!reach.has(v)) errors.push(`站务页 ${v} 没有出现在任何导航里（用户只能靠猜地址）`);
+  });
+  if (!Array.isArray(N.reserved) || !N.reserved.length) warns.push('nav.json 没有预留位：后期做社区时要改多处导航');
+}
+
+/* ---------- 静态页内容校验（pages.json） ----------
+   页面由配置渲染，所以文案缺字段 = 页面上出现空白块。这里把每种块的必填字段都列出来。 */
+{
+  const P = data.pages || {};
+  const BLOCK_T = new Set(['h', 'p', 'ul', 'dl', 'kv', 'faq', 'note']);
+  const PAGE_KEYS = ['about', 'help', 'privacy', 'contact', 'feedback'];
+  PAGE_KEYS.forEach(k => {
+    const pg = P[k];
+    if (!pg) { errors.push(`pages.json 缺少页面 ${k}`); return; }
+    ['kick', 'title', 'lede'].forEach(f => { if (!pg[f]) errors.push(`pages.json ${k} 缺少 ${f}`); });
+    if (!Array.isArray(pg.blocks) || !pg.blocks.length) { errors.push(`pages.json ${k} 没有任何内容块`); return; }
+    pg.blocks.forEach((b, i) => {
+      if (!BLOCK_T.has(b.t)) { errors.push(`pages.json ${k} blocks[${i}] 的块类型 ${b.t} 未知`); return; }
+      if (b.t === 'h' || b.t === 'p' || b.t === 'note') { if (!b.x) errors.push(`pages.json ${k} blocks[${i}] (${b.t}) 缺少 x`); return; }
+      const list = b.items;
+      if (!Array.isArray(list) || !list.length) { errors.push(`pages.json ${k} blocks[${i}] (${b.t}) 缺少 items`); return; }
+      if (b.t === 'dl' || b.t === 'kv' || b.t === 'faq') {
+        list.forEach((p, j) => {
+          if (!Array.isArray(p) || p.length !== 2 || !p[0] || !p[1]) errors.push(`pages.json ${k} blocks[${i}].items[${j}] 必须是 [术语, 说明] 两元素数组`);
+        });
+      }
+    });
   });
 }
 
@@ -612,7 +702,8 @@ const css = [
   readText('v4-responsive.css'),
   readText('v5.css'),
   readText('v6.css'),
-  readText('v7.css')
+  readText('v7.css'),
+  readText('v8.css')
 ].join('\n\n');
 const js = readText('app.js');
 
@@ -670,6 +761,14 @@ const metaTags = [
 
 /* 结构化数据：让搜索引擎知道这是个「数据集 + 列表」而不是一篇散文。
    条目数与核验日期都在里面，搜索结果里能直接看到"什么时候核过的"。 */
+/* 全站可索引页面清单。名字取中文（`persona` 这种 id 进搜索结果没有意义），
+   顺序按模块走一遍 + 站务页收尾，和用户在功能地图上看到的顺序一致。 */
+const SITE_PAGE_LABEL = { search: '搜索', mine: '个人中心', feedback: '反馈', about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式' };
+const SITE_LABEL = {};
+(moduleList || []).forEach(m => (m.features || []).forEach(f => { SITE_LABEL[f.v] = f.name; }));
+Object.keys(SITE_PAGE_LABEL).forEach(k => { SITE_LABEL[k] = SITE_PAGE_LABEL[k]; });
+const SITE_LIST = [...(moduleList || []).flatMap(m => (m.features || []).map(f => f.v)), ...SITE_PAGE_IDS];
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -699,9 +798,9 @@ const jsonLd = {
     {
       '@type': 'ItemList',
       name: '功能页',
-      numberOfItems: FEATURE_VIEW_IDS.length,
-      itemListElement: FEATURE_VIEW_IDS.map((v, i) => ({
-        '@type': 'ListItem', position: i + 1, name: v,
+      numberOfItems: SITE_LIST.length,
+      itemListElement: SITE_LIST.map((v, i) => ({
+        '@type': 'ListItem', position: i + 1, name: SITE_LABEL[v] || v,
         ...(SITE.url.length > 1 ? { url: SITE.url + '#' + v } : {})
       }))
     }

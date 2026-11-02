@@ -16,6 +16,10 @@
     // v7 是深色数据台优先；用户手动切过浅色才用浅色
     document.documentElement.dataset.theme = saved || 'dark';
   }catch(e){ document.documentElement.dataset.theme = 'dark'; }
+  // 首屏骨架：只有「JS 能跑」时才显示，所以禁用 JS 的用户不会看到一块永远不消失的灰板
+  document.documentElement.classList.add('js');
+  // 兜底：万一初始化抛错在加 ready 之前，4 秒后强制揭开，绝不把人锁在骨架里
+  setTimeout(function(){ document.documentElement.classList.add('ready'); }, 4000);
 })();
 </script>
 <style>/*__CSS__*/</style>
@@ -23,6 +27,17 @@
 <body>
 
 <a class="skip" href="#main">跳到主内容</a>
+
+<!-- 首屏骨架：只在这一段（HTML 已解析、首屏还没渲染）出现。
+     没有 JS 时被 html.js 关掉，所以不会挡住禁用脚本的用户。 -->
+<div id="boot" aria-hidden="true">
+  <div class="bwrap">
+    <span class="blogo">AT</span>
+    <div class="bline w1"></div>
+    <div class="bline w2"></div>
+    <div class="bgrid"><i></i><i></i><i></i><i></i></div>
+  </div>
+</div>
 
 <!--__NOSCRIPT__-->
 
@@ -40,13 +55,15 @@
       <span class="logo" aria-hidden="true">AT</span>
       <span class="bwrap"><span class="bn">AI Test Stack</span><span class="bv" id="metaVer">v1.0.0</span></span>
     </a>
-    <nav class="tnav" aria-label="主导航">
+    <nav class="tnav" id="tnav" aria-label="主导航">
       <a href="#home" data-nav="home">首页</a>
       <a href="#map" data-nav="map">功能地图</a>
       <a href="#all" data-nav="all">完整工具站</a>
+      <a href="#search" data-nav="search">搜索</a>
       <span class="tdd">
         <button class="tddBtn" type="button" data-nav="mine" aria-expanded="false" aria-haspopup="true">我的 <i aria-hidden="true">▾</i></button>
         <span class="tddMenu" hidden>
+          <a href="#mine">个人中心</a>
           <a href="#report">决策报告</a>
           <a href="#opinion">我的判断</a>
           <a href="#stack">我的组合</a>
@@ -64,6 +81,11 @@
           <a href="#health">数据健康</a>
           <a href="#changelog">更新日志</a>
           <a href="#sources">数据源</a>
+          <a href="#help">帮助与说明</a>
+          <a href="#about">关于本站</a>
+          <a href="#feedback">反馈</a>
+          <a href="#privacy">隐私与条款</a>
+          <a href="#contact">联系方式</a>
           <!-- 后期规划位：测试社区（技能/MCP/插件推荐、实时数据、反馈入口）。本次只预留位置，不实现 -->
           <span class="ddSoon">◌ 测试社区<b class="soon">规划中</b></span>
         </span>
@@ -94,10 +116,14 @@
     <!-- ============ 第一层 · 首页 = 诊断台：少字、当场出结果 ============ -->
     <section class="view" id="v-home">
       <div class="hero">
+        <div class="hglow" aria-hidden="true"></div>
         <div class="heroCopy">
           <div class="eyebrow">For test engineers · 数据可离线核</div>
           <h1>别再逛清单了。<br><span class="q">三问，</span><em>当场出方案</em></h1>
-          <p class="heroSub">右边的诊断台按<b>核过的实价</b>、20 项能力和你的红线，现场比对全部组合，产出一份能直接交上去的方案：多少钱、为什么、坑在哪、第一周干什么。</p>
+          <p class="heroSub"><b>核过的实价</b> × 20 项能力 × 你的红线，现场把全部组合比完。</p>
+          <div class="hRot" id="hRot" aria-live="polite">
+            <span class="hRotK">你要解决</span><b id="hRotT">日常回归自动化</b><i aria-hidden="true"></i>
+          </div>
           <div class="ctaRow">
             <a class="btn primary lg" href="#persona">开始深度诊断 <span class="ar" aria-hidden="true">→</span></a>
             <a class="btn ghost lg" href="#plan">先看执行包</a>
@@ -163,8 +189,9 @@
         <p>全部功能直接铺开，点任何一个立刻进入，不用再进下一层。</p>
       </div>
       <div class="kpiRow" id="allKpis"></div>
+      <div class="allTabs" id="allTabs" role="tablist" aria-label="总览分类"></div>
       <div class="toolbar allToolbar">
-        <div class="search"><input type="text" id="allSearch" placeholder="搜功能，例如「诊断」「涨价」「组合」"></div>
+        <div class="search"><input type="text" id="allSearch" placeholder="搜当前分类下的条目，例如「诊断」「涨价」「组合」"></div>
         <div class="presets" id="allMods"></div>
       </div>
       <div class="acgrid" id="allBody"></div>
@@ -199,6 +226,139 @@
         </div>
         <div class="hr"></div>
         <div class="gchips" id="nfLinks"></div>
+      </div>
+    </section>
+
+    <!-- ============ SEARCH · 全站搜索（独立页，不是命令面板的替代品而是补充） ============ -->
+    <section class="view" id="v-search">
+      <div class="phead">
+        <div class="kick">Search</div>
+        <h1>全站搜索</h1>
+        <p>功能、工具、套餐、组合、数据源、站务页，一处搜完。结果按类型分组，点一下直接进——不产生中间层。</p>
+      </div>
+      <div class="panel sp">
+        <div class="sbig">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l4 4"/></svg>
+          <input type="search" id="siteQ" placeholder="搜功能、工具、套餐、组合…（例如「涨价」「开源」「国内直连」）" autocomplete="off" aria-label="全站搜索，输入关键词" spellcheck="false">
+          <span class="skbd" aria-hidden="true"><kbd>Ctrl</kbd><kbd>K</kbd></span>
+        </div>
+        <div class="schips" id="siteQCats" role="group" aria-label="按类型筛选搜索结果"></div>
+        <div class="smeta" id="siteQMeta"></div>
+      </div>
+      <div class="sres" id="siteQBody" aria-live="polite"></div>
+      <div class="panel">
+        <h3><span class="ic">⌕</span>搜不到？</h3>
+        <ul class="ul">
+          <li><b>换个说法。</b>「便宜」搜不到时试「价格」，「翻墙」试「国内直连」——站内用的是后者的术语。</li>
+          <li><b>直接进完整工具站。</b><a href="#all">24 个功能页平铺成一张规格表</a>，按模块扫一遍通常比搜更快。</li>
+          <li><b>没有收录的条目。</b><a href="#feedback">提一条反馈</a>，收录标准是「做测试的人会真的用到」。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ MINE · 个人中心（本地存储，无账号） ============ -->
+    <section class="view" id="v-mine">
+      <div class="phead">
+        <div class="kick">My Space</div>
+        <h1>个人中心</h1>
+        <p>收藏、浏览历史、我的组合、诊断记录。全部存在<b>这台设备</b>上——没有账号，也没有云端同步，所以不会有任何数据离开你。</p>
+        <div class="phMeta" id="mineMeta"></div>
+      </div>
+      <div class="mineGrid" id="mineGrid"></div>
+      <div class="panel">
+        <h3><span class="ic">⇩</span>带走 / 清空</h3>
+        <div class="sub">导出成 JSON 存档；清空只影响本机，站点本身没有任何你的副本。</div>
+        <div class="exportGrid" id="mineActions"></div>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">◷</span>本地存储里到底有什么</h3>
+        <div class="sub">照实列出来，不藏。每一行的值都可以在上面「清空」里删掉。</div>
+        <div class="kvList" id="mineStore"></div>
+      </div>
+    </section>
+
+    <!-- ============ FEEDBACK · 反馈（四类 + 模板生成 + 本地留档） ============ -->
+    <section class="view" id="v-feedback">
+      <div class="phead">
+        <div class="kick">Feedback</div>
+        <h1 id="fbTitle">反馈</h1>
+        <p id="fbLede"></p>
+        <p class="mini" id="fbLede2"></p>
+      </div>
+      <div class="fbKinds" id="fbKinds" role="group" aria-label="反馈类型"></div>
+      <div class="grid2">
+        <div class="panel">
+          <h3><span class="ic">✎</span>写一句就够了</h3>
+          <div class="sub" id="fbHint">选上面任意一类，这里会给出对应的模板。</div>
+          <div class="fbForm">
+            <label class="fbLab" for="fbWhere">哪一页 / 哪一条（可留空）</label>
+            <input type="text" id="fbWhere" placeholder="例如：套餐对比 · GLM Coding Lite，或 #plans">
+            <label class="fbLab" for="fbText">具体是什么</label>
+            <textarea id="fbText" rows="6" placeholder="看到什么、期望什么。价格类请附官网链接和你核对的日期。"></textarea>
+          </div>
+          <div class="gchips" style="margin-top:14px">
+            <button class="btn primary" id="fbOpen" type="button">生成模板并打开 GitHub</button>
+            <button class="btn" id="fbCopy" type="button">只复制模板</button>
+            <button class="btn" id="fbSave" type="button">在本地留一份</button>
+          </div>
+          <div class="note" style="margin-top:14px" id="fbNote"></div>
+        </div>
+        <div class="panel">
+          <h3><span class="ic">▤</span>模板预览</h3>
+          <div class="sub">改完上面的字，这里会跟着变。复制走的内容和预览完全一致。</div>
+          <pre class="fbPrev" id="fbPreview"></pre>
+        </div>
+      </div>
+      <div class="panel">
+        <h3><span class="ic">◷</span>本机留档</h3>
+        <div class="sub">点「在本地留一份」会存进这台设备（最多 30 条）。网络不通时先留着，等能开 GitHub 再复制出去。</div>
+        <div id="fbSaved"></div>
+      </div>
+    </section>
+
+    <!-- ============ 站务页：关于 / 帮助 / 隐私 / 联系（内容来自 data/pages.json） ============ -->
+    <section class="view" id="v-about">
+      <div class="phead" id="aboutHead"></div>
+      <div class="pageBody" id="aboutBody"></div>
+    </section>
+    <section class="view" id="v-help">
+      <div class="phead" id="helpHead"></div>
+      <div class="pageBody" id="helpBody"></div>
+    </section>
+    <section class="view" id="v-privacy">
+      <div class="phead" id="privacyHead"></div>
+      <div class="pageBody" id="privacyBody"></div>
+    </section>
+    <section class="view" id="v-contact">
+      <div class="phead" id="contactHead"></div>
+      <div class="pageBody" id="contactBody"></div>
+    </section>
+
+    <!-- ============ ERROR · 渲染出错兜底（静态站没有 500，但有「这一页没渲染出来」） ============ -->
+    <section class="view" id="v-error">
+      <div class="phead">
+        <div class="kick">Something broke</div>
+        <h1>这一页没能渲染出来</h1>
+        <p id="errMsg">某个渲染步骤抛了异常。站点的其他部分不受影响——数据全在本地，刷新或换个入口通常就好了。</p>
+      </div>
+      <div class="panel">
+        <div class="gchips">
+          <a class="btn primary" href="#home">回首页 →</a>
+          <a class="btn" href="#map">功能地图</a>
+          <a class="btn" href="#all">完整工具站</a>
+          <a class="btn" href="#feedback">报告这个问题</a>
+        </div>
+        <div class="hr"></div>
+        <!-- 出错时也要看得见所有岔口：功能和 404 一样，不能因为一页崩了就困在原地 -->
+        <div class="gk">或者从这里继续</div>
+        <div class="gchips" id="errLinks"></div>
+        <div class="hr"></div>
+        <div class="sub">技术细节（提 issue 时贴上，能省一轮来回）：</div>
+        <pre class="errTrace" id="errTrace"></pre>
+        <div class="gchips" style="margin-top:12px">
+          <button class="btn" type="button" id="errCopy">复制技术细节</button>
+          <a class="btn" href="#home" id="errRetry">重试</a>
+        </div>
       </div>
     </section>
 
@@ -1049,28 +1209,13 @@
       <div class="sfb"><span class="logo sm" aria-hidden="true">AT</span>AI Test Stack</div>
       <p class="sfdis">价格为公开页面核验值，下单前以官网为准。评分是编辑判断，依据见「数据源」。</p>
     </div>
-    <nav class="sfcol" aria-label="页脚导航">
-      <a href="#map">功能地图</a>
-      <a href="#all">完整工具站</a>
-      <a href="#persona">测试人诊断</a>
-      <a href="#opinion">我的判断</a>
-      <a href="#stack">我的组合</a>
-      <a href="#plan">落地执行包</a>
-      <a href="#news">AI 大事</a>
-      <a href="#impact">AI 冲击</a>
-      <a href="#roles">角色阶梯</a>
-      <a href="#evalset">AI 评测集</a>
-      <a href="#free">白嫖地图</a>
-      <a href="#health">数据健康</a>
-      <a href="#report">决策报告</a>
-      <a href="#changelog">更新日志</a>
-      <a href="#sources">数据源</a>
-      <span class="ddSoon">社区<b class="soon">规划中</b></span>
-    </nav>
+    <!-- 页脚导航由 data/nav.json 渲染：加一页只改配置，不用再改三处 HTML -->
+    <nav id="sfNav" aria-label="页脚导航"></nav>
     <div class="sfcol sfmeta">
       <div class="kv"><b>数据核验</b><span id="metaDate">—</span></div>
       <div class="kv"><b>版本</b><span id="sfVer">v1.0.0</span></div>
       <div class="kv"><b>快捷键</b><span><kbd>Ctrl</kbd> + <kbd>K</kbd> 搜索</span></div>
+      <div class="kv"><b>许可</b><span>MIT（代码与数据）</span></div>
       <div class="sfLinks" id="sfLinks"></div>
     </div>
   </footer>
@@ -1082,30 +1227,9 @@
     <span class="logo sm" aria-hidden="true">AT</span><b>AI Test Stack</b>
     <button class="mnavX" id="mnavX" aria-label="关闭导航菜单">×</button>
   </div>
-  <div class="mnavPrim">
-    <a href="#home">◈ 首页</a>
-    <a href="#map">▦ 功能地图</a>
-    <a href="#all">▦ 完整工具站</a>
-    <a href="#persona">◌ 测试人诊断</a>
-    <a href="#report">▥ 决策报告</a>
-    <a href="#opinion">◇ 我的判断</a>
-    <a href="#stack">⊕ 我的组合</a>
-    <a href="#plan">▤ 执行包</a>
-    <a href="#roles">◈ 角色阶梯</a>
-    <a href="#evalset">◫ AI 评测集</a>
-    <a href="#news">◷ AI 大事</a>
-  </div>
+  <div class="mnavPrim" id="mnavPrim"></div>
   <div class="mnavMods" id="mnavMods"></div>
-  <div class="mnavFoot">
-    <a href="#impact">AI 冲击</a>
-    <a href="#evalset">AI 评测集</a>
-    <a href="#free">白嫖地图</a>
-    <a href="#health">数据健康</a>
-    <a href="#report">决策报告</a>
-    <a href="#changelog">更新日志</a>
-    <a href="#sources">数据源</a>
-    <span class="ddSoon">社区<b class="soon">规划中</b></span>
-  </div>
+  <div class="mnavFoot" id="mnavFoot"></div>
 </div>
 
 <!-- ===================== DRAWER ===================== -->

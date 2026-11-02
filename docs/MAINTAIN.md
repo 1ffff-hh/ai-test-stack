@@ -37,7 +37,7 @@
 
 ```
 data/*.json      ← 内容。价格、额度、新闻、角色、评测用例、来源
-src/*            ← 模板。index.html 骨架 + 6 层 CSS + app.js 渲染逻辑
+src/*            ← 模板。index.html 骨架 + 7 层 CSS + app.js 渲染逻辑
 build.js         ← 构建。读 data、校验、把 CSS+数据+JS 内联进根目录 index.html
 ```
 
@@ -48,8 +48,10 @@ build.js         ← 构建。读 data、校验、把 CSS+数据+JS 内联进根
 | `data/plans.json` 的某个价格 | 改 `price`、`verified` → `node build.js` | 会自动反映到套餐页、组合页、诊断报告、导出文件 |
 | 加一款工具 | `data/tools.json` 追加 → 见 `README.md` 的必填字段表 | 工具库、矩阵、PK、诊断、导出全都会多一条 |
 | 加一条新闻 | `data/news.json` 追加，**必须写「对测试的影响」** | 只影响 AI 大事页 |
-| 改样式 | `src/v7.css`（或对应层）→ `node build.js` | 全站，必须重跑对比度审计 |
+| 改样式 | `src/v8.css`（或对应层）→ `node build.js` | 全站，必须重跑对比度审计 |
 | 加一个功能页 | `data/modules.json` 挂到某个模块 + `src/app.js` 注册视图 + `build.js` 的 `FEATURE_VIEW_IDS` | 导航、地图、404 页、验收断言都要同步 |
+| 加一个站务页 | `data/pages.json` 写文案 + `src/index.html` 加一个 `<section class="view">` + `build.js` 的 `SITE_PAGE_IDS` + `data/nav.json` 挂到某处导航 | 不挂导航**构建会直接失败**（防止「只能靠猜地址」）；`scripts/a11y-audit.js` 与 `scripts/verify.js` 的视图清单也要跟着加 |
+| 改导航 | 只改 `data/nav.json` | 顶栏 / 页脚 / 移动端三处一起变；指向不存在的页面会在构建期报错 |
 
 **数字不要写死在文案里。** 模板里凡是「29 款工具」这类数字都应当来自数据；历史上的
 「33 条免费额度」文案错了一轮，就是因为写死了。
@@ -98,7 +100,7 @@ git commit -m "data: 火山方舟 Lite 40 → 50（2026-11-02 核验）"
 ### 3.4 改文案与样式
 
 - 文案：动 `src/index.html` 或 `src/app.js` 里的字符串；**不要动根目录 `index.html`**，它是产物，会被覆盖。
-- 样式：动 `src/v7.css`。规矩只有一条——写 `color` 用 `-t` 结尾或 `--cN` 变量，
+- 样式：动 `src/v8.css`。规矩只有一条——写 `color` 用 `-t` 结尾或 `--cN` 变量，
   写 `background` / `border` / `gradient` 用不带后缀的主色。违反就会在浅色主题下糊成一片，
   `a11y-audit.js` 会拦下来。
 

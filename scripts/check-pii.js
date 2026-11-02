@@ -13,6 +13,11 @@ const SKIP_DIRS = new Set([
   '.git', 'node_modules', '.shots', '_site', 'dist',
   'docs/internal'          // 内部材料，本来就不发布
 ]);
+// 不扫描的单文件：这些是本机运行产物，已被 .gitignore 挡住，进不了公开仓库。
+// 它们会记下 `file:///` 解析出来的本机路径——那是正常的运行结果，不是泄密。
+const SKIP_FILES = new Set([
+  'verify.json'
+]);
 // 不扫描的二进制扩展名
 const SKIP_EXT = new Set([
   '.png', '.jpg', '.jpeg', '.gif', '.webp', '.ico', '.pdf',
@@ -54,6 +59,7 @@ function walk(dir, out = []) {
       if (SKIP_DIRS.has(rel) || SKIP_DIRS.has(name)) continue;
       walk(abs, out);
     } else {
+      if (SKIP_FILES.has(rel)) continue;
       if (SKIP_EXT.has(path.extname(name).toLowerCase())) continue;
       if (st.size > 4 * 1024 * 1024) continue;   // 超大文件跳过
       out.push({ abs, rel });

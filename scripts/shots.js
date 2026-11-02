@@ -88,6 +88,50 @@ if (!fs.existsSync(OUT)) fs.mkdirSync(OUT, { recursive: true });
     await c.close();
   }
 
+  /* v2.3 站务层：7 个站务页 + 出错兜底页。
+     个人中心要先塞一份收藏与浏览记录，否则截出来是四个空态——那不是这页想给人看的样子。 */
+  {
+    const { c, p } = await ctx(1440, 1050, 'dark');
+    await p.addInitScript(() => {
+      try {
+        localStorage.setItem('ats_fav', JSON.stringify([
+          { k: 'tool', id: 'dsh', n: 'DeepSeek Harness', go: '#tools', t: Date.now() - 6e5 },
+          { k: 'bundle', id: 'b_dsh_volc', n: 'DSH + 火山方舟 Lite', go: '#bundles', t: Date.now() - 3e6 },
+          { k: 'page', id: 'plans', n: '套餐对比', go: '#plans', t: Date.now() - 9e6 }
+        ]));
+        localStorage.setItem('ats_recent', JSON.stringify([
+          { v: 'plans', t: Date.now() - 4e5 }, { v: 'tools', t: Date.now() - 2e6 },
+          { v: 'bundles', t: Date.now() - 5e6 }, { v: 'map', t: Date.now() - 8e6 }
+        ]));
+        localStorage.setItem('ats_stack', JSON.stringify(['dsh']));
+        localStorage.setItem('ats_picked', JSON.stringify(['volc']));
+        localStorage.setItem('ats_diag', JSON.stringify([
+          { bId: 'b_dsh_volc', q: { goal: '日常回归自动化', budget: '¥100 以内', cstr: '必须国内直连' }, t: Date.now() - 7e5 }
+        ]));
+      } catch (e) {}
+    });
+    await shot(p, '#search', '22-search.png');
+    await shot(p, '#mine', '23-mine.png');
+    await shot(p, '#feedback', '24-feedback.png');
+    await shot(p, '#about', '25-about.png');
+    await shot(p, '#help', '26-help.png');
+    await shot(p, '#privacy', '27-privacy.png');
+    await shot(p, '#contact', '28-contact.png');
+    await c.close();
+  }
+
+  /* 出错兜底页：得先真的让它出错，直接开 #error 只有半页空壳。
+     塞一条 null 进数据（渲染函数引用的是同一个数组），再跳到 #overview。 */
+  {
+    const { c, p } = await ctx(1440, 900, 'dark');
+    await p.goto(BASE, { waitUntil: 'load' });
+    await p.waitForTimeout(600);
+    await p.evaluate(() => { window.__DATA__.tools.push(null); location.hash = '#overview'; });
+    await p.waitForTimeout(700);
+    await p.screenshot({ path: path.join(OUT, '29-error.png') });
+    await c.close();
+  }
+
   await browser.close();
   console.log('✓ docs/shots 已更新');
 })();

@@ -1,8 +1,10 @@
 const { launch } = require('./browser');
 const path = require('path');
 const BASE = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
-// 26 个视图 = 16 个功能页 + home/map/all + 6 个模块页 + 404
-const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','mod-start','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
+// 42 个视图 = 24 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
+const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
+// 站务页：不属于任何模块，面包屑只到「首页 › 页名」
+const SITE_PAGES = ['search','mine','feedback','about','help','privacy','contact'];
 
 async function fresh(browser, hash = '') {
   const c = await browser.newContext({ viewport: { width: 1440, height: 900 } });
@@ -156,7 +158,7 @@ async function fresh(browser, hash = '') {
     await p.click('#mapBody .mcard');
     await p.waitForTimeout(300);
     const modHash = await p.evaluate(() => location.hash);
-    await p.click('#v-mod-start .fgrid .fcard');
+    await p.click('#v-mod-diagnose .fgrid .fcard');
     await p.waitForTimeout(300);
     const feat = await p.evaluate(() => ({
       hash: location.hash,
@@ -168,10 +170,11 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(300);
     const more = await p.evaluate(() => location.hash);
     out.flow = { home, step1, mapCards, modHash, feat, more };
-    out.flowOk = home.on && home.ctas === 2 && home.mods === 8
-      && step1 === '#persona' && mapCards.total === 8 && mapCards.modLinks === 7
-      && modHash === '#mod-start' && feat.hash === '#overview'
-      && feat.subnav && feat.crumbs >= 3 && feat.guide && more === '#all';
+    // 6 个模块 = 6 张模块卡；首页多一张「全部功能」CTA 所以是 7；地图多一张「不确定从哪开始」所以是 7 卡 / 6 个模块链接
+    out.flowOk = home.on && home.ctas === 2 && home.mods === 7
+      && step1 === '#persona' && mapCards.total === 7 && mapCards.modLinks === 6
+      && modHash === '#mod-diagnose' && feat.hash === '#overview'
+      && feat.subnav && feat.crumbs >= 4 && feat.guide && more === '#all';
     allErrs.push(...errs);
     await c.close();
   }
@@ -186,13 +189,13 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(300);
     const opened = await p.evaluate(() => !document.querySelector('#mnav').hidden);
     const mods = await p.evaluate(() => document.querySelectorAll('#mnavMods .mmod').length);
-    await p.click('#mnavMods .mmod:nth-child(2) summary');
+    await p.click('#mnavMods .mmod:nth-child(1) summary');
     await p.waitForTimeout(200);
-    await p.click('#mnavMods .mmod:nth-child(2) .mmodLinks a');
+    await p.click('#mnavMods .mmod:nth-child(1) .mmodLinks a');
     await p.waitForTimeout(300);
     const after = await p.evaluate(() => ({ hash: location.hash, closed: document.querySelector('#mnav').hidden }));
     out.mobileNav = { burgerVisible, opened, mods, ...after };
-    out.mobileNavOk = burgerVisible && opened && mods === 7 && after.closed && after.hash === '#persona';
+    out.mobileNavOk = burgerVisible && opened && mods === 6 && after.closed && after.hash === '#overview';
     allErrs.push(...errs);
     await c.close();
   }
@@ -209,7 +212,8 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(250);
     const t2 = await p.evaluate(() => document.title);
     out.notFound = { ...nf, toolsTitle: t2 };
-    out.notFoundOk = nf.on && nf.links === 24 && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具库') >= 0;
+    // 24 个功能页 + 7 个站务页：死路上也得能看见全部岔口
+    out.notFoundOk = nf.on && nf.links === 31 && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具库') >= 0;
     allErrs.push(...errs);
     await c.close();
   }
@@ -241,8 +245,8 @@ async function fresh(browser, hash = '') {
     const jump = await p.evaluate(() => location.hash);
     out.console = { base, afterQ, afterMod, jump };
     out.consoleOk = base.kpi >= 5 && base.cards === 24 && base.direct && base.data >= 2
-      && afterQ > 0 && afterQ < 24 && afterMod.n === 4 && afterMod.on === 'diagnose'
-      && jump === '#persona';
+      && afterQ > 0 && afterQ < 24 && afterMod.n === 6 && afterMod.on === 'diagnose'
+      && jump === '#overview';
     allErrs.push(...errs);
     await c.close();
   }
@@ -630,7 +634,9 @@ async function fresh(browser, hash = '') {
         if (!s) return null;
         try { const j = JSON.parse(s.textContent); return j['@graph'].map(x => x['@type']); } catch (e) { return 'parse-fail'; }
       })(),
-      feed: (document.querySelector('link[rel="alternate"][type="application/atom+xml"]') || {}).href || '',
+      // href 会把相对路径解析成绝对 URL，本地跑就是 file:///…——只留末尾的文件名，
+      // 断言只关心它指向 feed.xml，没必要把本机路径写进产物
+      feed: ((document.querySelector('link[rel="alternate"][type="application/atom+xml"]') || {}).href || '').split('/').pop(),
       site: window.__SITE__ || null
     }));
 
@@ -693,6 +699,199 @@ async function fresh(browser, hash = '') {
     await c.close();
   }
 
+  // ---------- 25. 站务层：7 个站务页 + 配置驱动导航 + 旧地址重定向 ----------
+  {
+    const { c, p, errs } = await fresh(browser);
+    const crumbs = {};
+    const blocks = {};
+    for (const v of SITE_PAGES) {
+      await p.evaluate(v => { location.hash = '#' + v; }, v);
+      await p.waitForTimeout(200);
+      // 站务页不属于任何模块，但仍然必须有面包屑与返回路径
+      crumbs[v] = await p.evaluate(() => {
+        const sub = document.querySelector('#subnav');
+        return { shown: !sub.hidden, items: sub.querySelectorAll('.crumbs a, .crumbs b').length, back: sub.querySelectorAll('.sibnav a').length };
+      });
+      blocks[v] = await p.evaluate(() => document.querySelectorAll('.view.on .panel, .view.on .mcard2, .view.on .fbk').length);
+    }
+    // 模块 7 → 6 合并后，旧地址必须重定向，而不是掉进 404
+    await p.evaluate(() => { location.hash = '#mod-start'; });
+    await p.waitForTimeout(300);
+    const redirect = await p.evaluate(() => ({ hash: location.hash, on: (document.querySelector('.view.on') || {}).id || '' }));
+    // 导航配置驱动：顶栏 4 个链接 + 2 个下拉；页脚 4 组；社区预留位 3 处
+    const nav = await p.evaluate(() => ({
+      top: document.querySelectorAll('#tnav > a').length,
+      groups: document.querySelectorAll('#tnav .tdd').length,
+      mobilePrim: document.querySelectorAll('#mnavPrim a').length,
+      footGroups: document.querySelectorAll('#sfNav .sfgrp').length,
+      footLinks: document.querySelectorAll('#sfNav a').length,
+      reserved: document.querySelectorAll('.ddSoon').length,
+      reachable: ['about', 'help', 'privacy', 'contact', 'feedback', 'search', 'mine']
+        .every(v => document.querySelector('#sfNav a[href="#' + v + '"], #tnav a[href="#' + v + '"]'))
+    }));
+    out.sitePages = { crumbs, blocks, redirect, nav };
+    out.sitePagesOk = Object.values(crumbs).every(x => x.shown && x.items >= 2 && x.back >= 3)
+      && Object.values(blocks).every(n => n >= 1)
+      && redirect.hash === '#mod-diagnose' && redirect.on === 'v-mod-diagnose'
+      && nav.top === 4 && nav.groups === 2 && nav.mobilePrim >= 8
+      && nav.footGroups === 4 && nav.footLinks >= 25 && nav.reserved === 3 && nav.reachable;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
+  // ---------- 26. 全站搜索：命中分组 / 分类筛选 / 工具行直接开抽屉 ----------
+  {
+    const { c, p, errs } = await fresh(browser, '#search');
+    await p.fill('#siteQ', '诊断');
+    await p.waitForTimeout(400);
+    const hit = await p.evaluate(() => ({
+      groups: document.querySelectorAll('#siteQBody .sresGrp').length,
+      rows: document.querySelectorAll('#siteQBody .sresRow').length,
+      meta: (document.querySelector('#siteQMeta') || {}).textContent || ''
+    }));
+    await p.fill('#siteQ', '');
+    await p.waitForTimeout(300);
+    await p.click('#siteQCats [data-sq="tool"]');
+    await p.waitForTimeout(300);
+    const cat = await p.evaluate(() => ({
+      rows: document.querySelectorAll('#siteQBody .sresRow').length,
+      btns: document.querySelectorAll('#siteQBody button.sresRow').length,
+      groups: document.querySelectorAll('#siteQBody .sresGrp').length,
+      // 无查询词时每组只展示 5 条，剩下的靠「还有 N 条」展开——29 款工具必然有多余
+      more: document.querySelectorAll('#siteQBody [data-sq-more]').length
+    }));
+    // 工具行是按钮：点了直接开抽屉，不跳页
+    await p.click('#siteQBody button.sresRow');
+    await p.waitForTimeout(450);
+    const drawer = await p.evaluate(() => ({
+      open: document.querySelector('#drawer').classList.contains('on'),
+      name: (document.querySelector('#dbody .dn') || {}).textContent || ''
+    }));
+    // 搜不到时要有出路
+    await p.keyboard.press('Escape');
+    await p.click('#siteQCats [data-sq="all"]');
+    await p.fill('#siteQ', 'zzz-no-such-thing');
+    await p.waitForTimeout(400);
+    const empty = await p.evaluate(() => ({
+      n: document.querySelectorAll('#siteQBody .sresRow').length,
+      text: (document.querySelector('#siteQBody .empty') || {}).textContent || ''
+    }));
+    out.search = { hit, cat, drawer, empty };
+    out.searchOk = hit.groups >= 1 && hit.rows > 0 && /命中/.test(hit.meta)
+      && cat.rows === 5 && cat.btns === cat.rows && cat.groups === 1 && cat.more === 1
+      && drawer.open && drawer.name.length > 0
+      && empty.n === 0 && empty.text.length > 0;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
+  // ---------- 27. 个人中心：收藏 / 浏览历史 / 导出 / 二次确认清空 ----------
+  {
+    const { c, p, errs } = await fresh(browser, '#tools');
+    // 点收藏不能顺带把工具抽屉打开（捕获阶段拦截的那条逻辑）
+    await p.click('#tgrid .tcard .favb');
+    await p.waitForTimeout(350);
+    const fav = await p.evaluate(() => ({
+      pressed: document.querySelector('#tgrid .tcard .favb').getAttribute('aria-pressed'),
+      stored: JSON.parse(localStorage.getItem('ats_fav') || '[]').length,
+      drawer: document.querySelector('#drawer').classList.contains('on')
+    }));
+    await p.evaluate(() => { location.hash = '#mine'; });
+    await p.waitForTimeout(400);
+    const mine = await p.evaluate(() => ({
+      cards: document.querySelectorAll('#mineGrid .mcard2').length,
+      favRows: document.querySelectorAll('#mineGrid .mcard2:first-child .mrow').length,
+      recRows: document.querySelectorAll('#mineGrid .mrec').length,
+      store: document.querySelectorAll('#mineStore .kv').length,
+      acts: document.querySelectorAll('#mineActions a, #mineActions button').length,
+      meta: (document.querySelector('#mineMeta') || {}).textContent || ''
+    }));
+    // 清空必须走二次确认：先确认「取消」不删，再确认会删
+    await p.evaluate(() => { window.__asked = 0; window.confirm = () => { window.__asked++; return false; }; });
+    await p.click('#mineClear');
+    await p.waitForTimeout(250);
+    const afterCancel = await p.evaluate(() => ({ asked: window.__asked, stored: JSON.parse(localStorage.getItem('ats_fav') || '[]').length }));
+    await p.evaluate(() => { window.confirm = () => true; });
+    await p.click('#mineClear');
+    await p.waitForTimeout(350);
+    const cleared = await p.evaluate(() => ({
+      fav: JSON.parse(localStorage.getItem('ats_fav') || '[]').length,
+      recent: JSON.parse(localStorage.getItem('ats_recent') || '[]').length,
+      rows: document.querySelectorAll('#mineGrid .mrow').length
+    }));
+    out.mine = { fav, mine, afterCancel, cleared };
+    out.mineOk = fav.pressed === 'true' && fav.stored === 1 && fav.drawer === false
+      && mine.cards === 4 && mine.favRows >= 1 && mine.recRows >= 2 && mine.store === 9 && mine.acts === 3
+      && /收藏 1 项/.test(mine.meta)
+      && afterCancel.asked === 1 && afterCancel.stored === 1
+      && cleared.fav === 0 && cleared.recent === 0;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
+  // ---------- 28. 反馈闭环 + 渲染出错兜底 ----------
+  {
+    const { c, p, errs } = await fresh(browser, '#feedback');
+    const kinds = await p.evaluate(() => document.querySelectorAll('#fbKinds .fbk').length);
+    // 切到「数据纠错」：模板与 issue 模板都要跟着换
+    await p.click('#fbKinds [data-fb="data"]');
+    await p.waitForTimeout(250);
+    await p.fill('#fbWhere', '套餐对比 · GLM Coding Lite');
+    await p.fill('#fbText', '官网写的是 ¥138，页面是 ¥128。');
+    await p.waitForTimeout(250);
+    const dataForm = await p.evaluate(() => ({
+      hint: (document.querySelector('#fbHint') || {}).textContent || '',
+      note: (document.querySelector('#fbNote') || {}).textContent || '',
+      prev: (document.querySelector('#fbPreview') || {}).textContent || ''
+    }));
+    const opened = await p.evaluate(() => {
+      window.__opened = [];
+      window.open = u => { window.__opened.push(u); return null; };
+      document.querySelector('#fbOpen').click();
+      return window.__opened;
+    });
+    // 从功能页底部「这一页有问题」跳过来：类型应为报错，且页名被带进「位置」
+    // （先把输入框清空——不清空的话会保留用户已填的内容，那是刻意的行为）
+    await p.evaluate(() => { location.hash = '#plans'; });
+    await p.waitForTimeout(300);
+    await p.evaluate(() => { const w = document.querySelector('#fbWhere'); if (w) w.value = ''; });
+    await p.click('.pguide [data-fb-page]');
+    await p.waitForTimeout(400);
+    const carried = await p.evaluate(() => ({
+      on: (document.querySelector('.view.on') || {}).id || '',
+      kind: (document.querySelector('#fbKinds .fbk.on') || {}).dataset ? document.querySelector('#fbKinds .fbk.on').dataset.fb : '',
+      where: (document.querySelector('#fbWhere') || {}).value || ''
+    }));
+    /* 渲染兜底：往数据里塞一条坏记录（`window.__DATA__` 和渲染函数引用的是同一个数组），
+       让 #overview 的渲染真的抛一个 TypeError，验证路由接住它并切到 #error。
+       这比调一个测试专用的假接口更接近真实故障。 */
+    await p.evaluate(() => {
+      window.__DATA__.tools.push(null);
+      location.hash = '#overview';
+    });
+    await p.waitForTimeout(500);
+    const errView = await p.evaluate(() => ({
+      on: (document.querySelector('.view.on') || {}).id || '',
+      links: document.querySelectorAll('#errLinks a').length,
+      title: document.title,
+      // 只留堆栈第一行：完整堆栈里每帧都带本机 file:// 路径，记进产物没有价值
+      trace: (((document.querySelector('#errTrace') || {}).textContent || '').split('\n')[0] || ''),
+      msg: ((document.querySelector('#errMsg') || {}).textContent || '')
+    }));
+    out.feedback = { kinds, dataForm, opened, carried, errView };
+    out.feedbackOk = kinds === 4
+      && /价格类|四样|来源/.test(dataForm.hint)
+      && /data-correction\.yml/.test(dataForm.note)
+      && /GLM Coding Lite/.test(dataForm.prev) && /¥138/.test(dataForm.prev)
+      && opened.length === 1 && /data-correction\.yml/.test(opened[0])
+      && carried.on === 'v-feedback' && carried.kind === 'bug' && carried.where === '套餐对比'
+      && errView.on === 'v-error' && errView.links === 31
+      && /出错/.test(errView.title) && /TypeError|cannot read/i.test(errView.trace)
+      && /渲染时抛了一个异常/.test(errView.msg);
+    allErrs.push(...errs);
+    await c.close();
+  }
+
   out.errs = allErrs;
   out.pass = out.viewsOk && out.themeOk && out.overflowOk
     && out.drawer.onOpen.open && out.drawer.afterEsc.open === false
@@ -703,6 +902,7 @@ async function fresh(browser, hash = '') {
     && out.planOk && out.adoptOk
     && out.newsOk && out.impactOk && out.rolesOk && out.freeOk && out.plans2Ok && out.invOk
     && out.healthOk && out.evalOk && out.reportOk && out.siteOk
+    && out.sitePagesOk && out.searchOk && out.mineOk && out.feedbackOk
     && allErrs.length === 0;
 
   console.log(JSON.stringify(out, null, 2));
