@@ -146,27 +146,35 @@ npm run preview
 # 1) 确认门禁全绿
 npm run check
 
-# 2) 建公开仓库（本地仓库已经有提交历史，这里只创建远端，不推）
-gh repo create ai-test-stack --public \
+# 2) 先开一条干净的公开历史（怎么做、为什么，见第 6 节）
+git checkout --orphan main
+git rm -r --cached docs/internal
+git add -A
+git commit -m "public release: v2.2.0"
+
+# 3) 建公开仓库并关联远端（--push 不要加，先不推）
+gh repo create ai-test-stack --public --source=. --remote=origin \
   --description "AI 工具选型 × 测试角色 × AI 冲击决策站：单文件、零依赖、可离线打开"
 
-# 3) 关联远程并推送当前分支
-git remote add origin https://github.com/1ffff-hh/ai-test-stack.git
-git branch -M main
-git push -u origin main
-
 # 4) 打开 Pages，来源选 GitHub Actions
+#    空仓库也能开 —— 先开再推，第一次部署就能成功，不用事后补跑
 gh api --method POST repos/1ffff-hh/ai-test-stack/pages \
   -f build_type=workflow
 
-# 5) 触发一次部署（首次推送时 Pages 还没开，需要重跑）
-gh workflow run pages.yml
+# 5) 推送。这一下就自动触发 pages.yml：门禁 → 构建 _site → 部署
+git -c credential.helper='!gh auth git-credential' push -u origin main
+gh run list --limit 3          # 看这次部署
 ```
 
 站点地址：<https://1ffff-hh.github.io/ai-test-stack/>
 
-> **脱敏提醒**：公开仓库的历史里不能有本机路径和会话 ID。本地已有的历史提交是**私有开发记录**，
-> 发布时用一条干净历史推送，见第 6 节。
+> **第 5 步为什么带 `-c credential.helper=...`**：机器上装了 Git Credential Manager 时，
+> 它会想弹一个图形窗口要账号，命令行里会直接卡住。临时指定用 `gh` 的凭据就绕过去了。
+> 想以后 `git push` 都不用带这一串，装一次凭据助手即可：
+>
+> ```bash
+> gh auth setup-git
+> ```
 
 ### 5.3 之后每次发布
 
@@ -211,18 +219,31 @@ git push
 内部材料（交接报告、错误日志、验收草稿）放 `docs/internal/`，该目录已被 `.gitignore` 忽略，
 公开仓库里不出现，本地文件保留。
 
-**历史也是内容。** 本地开发过程中的提交可能带着个人信息，所以公开发布时不要直接推旧历史：
+**历史也是内容。** 本地开发过程中的提交可能带着个人信息，所以公开发布时不要直接推旧历史，
+而要用一条干净的初始提交开线：
 
 ```bash
-# 用一条干净的初始提交发布（本地历史保持不变）
-git checkout --orphan publish
+# 1) 确认当前工作区就是要发布的内容，且 npm run check 全绿
+# 2) 另开一条没有父提交的分支
+git checkout --orphan main
+
+# 3) 内部材料已经被 .gitignore 忽略，但索引里可能还留着，显式摘掉
+git rm -r --cached docs/internal
+
+# 4) 一次提交，就是公开仓库的全部历史
 git add -A
 git commit -m "public release: v2.2.0"
-git push -u origin publish:main
+
+# 5) 建远端仓库并推送
+gh repo create ai-test-stack --public --source=. --remote=origin
+git push -u origin main
 ```
 
-之后正常在 `main` 上提交。`publish` 分支用完可删（`git branch -D publish`），
-本地老历史留在原来的分支上，谁也不会看到。
+**这个仓库就是这么开的**：公开历史从 `public release: v2.2.0` 这一条开始。发布后，
+原来那条含个人信息的本地分支已经删掉——如果哪天需要回头看，`git reflog` 还能找到它的 tip
+（本仓库删除时的 tip 是 `606d4f2`），但**不要把那条分支再 push 出去**。
+
+开线之后，`main` 就是唯一的开发分支：本地提交、CI、Pages 都认它。
 
 ---
 
