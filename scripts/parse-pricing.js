@@ -151,6 +151,33 @@ const fixtureOut = {};
   const mismatch = results.filter(r => r.status === 'mismatch').length;
   const fail = results.filter(r => ['parse-fail', 'fetch-fail', 'no-fixture', 'no-plan'].includes(r.status)).length;
 
+  /* 指纹变了、但解析出来的价格一个没变 —— 多半是文案、日期、计数器变了。
+     这类不该每周打扰人：直接把指纹更新到新值，记一笔 auto-ok 留在审计里。
+     只对「该源所有已配置的档位都解析成功且与库内一致」的才这么办；
+     少解析出一档就不动，宁可多报一次。 */
+  let autoOk = 0;
+  if (!OFFLINE) {
+    const pendingFile = readJSON('_pending.json', { items: [] });
+    const snap = readJSON('_price-snapshots.json', { pages: {} });
+    for (const it of pendingFile.items || []) {
+      if (it.status !== 'pending') continue;
+      const src = cfg.sources.find(s => s.id === it.id);
+      if (!src || src.mode === 'manual' || !src.plans || !Object.keys(src.plans).length) continue;
+      const ids = Object.keys(src.plans);
+      const rows = results.filter(r => r.source === it.id && ids.includes(r.planId));
+      if (!rows.length || rows.length !== ids.length || rows.some(r => r.status !== 'ok')) continue;
+      it.status = 'auto-ok';
+      it.note = '解析出的价格与库内一致，判定为文案 / 结构变化';
+      it.resolvedAt = today();
+      snap.pages[it.id] = { name: it.name, url: it.url, hash: it.newHash, prices: it.newPrices, at: today() };
+      autoOk++;
+    }
+    if (autoOk) {
+      writeJSON('_pending.json', pendingFile);
+      writeJSON('_price-snapshots.json', snap);
+    }
+  }
+
   const out = { updated: today(), checked: results.length, ok, mismatch, failed: fail, items: results };
   if (!OFFLINE) writeJSON('_price-check.json', out);
   if (SAVE_FIXTURES && !OFFLINE) {
@@ -162,6 +189,7 @@ const fixtureOut = {};
 
   console.log(`价格解析 · ${today()}${OFFLINE ? '（offline）' : ''}`);
   console.log(`  ${results.length} 条规则：${ok} 命中一致 · ${mismatch} 与库内不符 · ${fail} 失败`);
+  if (autoOk) console.log(`  指纹变了但价格没变，已自动销掉 ${autoOk} 条待办`);
   if (mismatch) {
     console.log('\n  与 plans.json 不符（先确认官网是不是真变了）：');
     results.filter(r => r.status === 'mismatch').forEach(r => console.log(`   · ${r.planId}  ${r.name}  库内 ${r.expected} → 官网 ${r.parsed}`));

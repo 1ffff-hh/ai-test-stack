@@ -4,7 +4,7 @@
   "anthropic": {
    "name": "Anthropic Pricing",
    "url": "https://www.anthropic.com/pricing",
-   "hash": "f9e9aaa6d1385ece",
+   "hash": "a0fcd5ee7c19b97a",
    "prices": [
     "$0",
     "$17",
@@ -246,7 +246,7 @@
   "kimi": {
    "name": "Kimi 会员价格",
    "url": "https://www.kimi.com/help/membership/membership-pricing",
-   "hash": "a39c2ca249935abd",
+   "hash": "0fd89cd084564ea4",
    "prices": [
     "¥49",
     "¥468",
