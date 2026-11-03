@@ -115,15 +115,24 @@ git commit -m "data: 火山方舟 Lite 40 → 50（2026-11-02 核验）"
 |---|---|---|---|
 | L1 新鲜度 | 每个数据集最后核验日、距今天数、是否 >30 天 | 100% | 否 |
 | L2 新闻 RSS | 12 个源，去重 + 标题过滤 + 标题党过滤 | 高 | 只写 `news-auto.json` |
-| L3 价格指纹 | 14 个定价页的文本哈希与价格串快照 | 尽力而为 | **只告警，不改价** |
+| L3 价格指纹 | 29 个定价页的文本哈希与价格串快照 | 尽力而为 | **只告警，不改价** |
+| L4 价格解析 | 锚点 + 正则把价格抽出来，与 `plans.json` 逐档比对 | 中（页面改版即失效，失效会报错） | **只比对，不改价** |
 
 跑一次：
 
 ```bash
-npm run refresh          # 抓 RSS + 价格指纹，写盘
-npm run refresh:dry      # 只看差异
-npm run refresh:offline  # 不联网，只做新鲜度报告
+npm run refresh            # 抓 RSS + 价格指纹，写盘
+npm run refresh:dry        # 只看差异
+npm run refresh:offline    # 不联网，只做新鲜度报告
+npm run data:parse         # 按规则解析官网价格，与库内逐档比对
+npm run data:parse:fixtures# 抓取并保存命中窗口（fixture）
+npm run data:parse:test    # 离线跑 fixture，验证规则没坏
+npm run data:triage        # 列出待处置：页面变了 / 价格变成多少
 ```
+
+L4 的规则写在 `data/pricing-sources.json`：锚点定位到那一行，窗口内取数。
+分不清的**不猜**——CodeBuddy 旗舰版卡片同时有推广价 700、标准价 999、划线价 1399，
+这种就不给规则，留人工；火山文档站是 SPA，抓不到价格表，标 `manual`。
 
 抓失败是正常的（403 / timeout / TLS 都会发生），`#health` 页会**照实列出来，不隐藏**。
 维护动作就一句话：**打开 `#health`，看「核价与抓取待办」，按它列的顺序核。** 待办可以一键复制成 Markdown。
