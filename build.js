@@ -703,7 +703,8 @@ const css = [
   readText('v5.css'),
   readText('v6.css'),
   readText('v7.css'),
-  readText('v8.css')
+  readText('v8.css'),
+  readText('v9.css')
 ].join('\n\n');
 const js = readText('app.js');
 

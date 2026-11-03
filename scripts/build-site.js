@@ -77,7 +77,59 @@ fs.writeFileSync(path.join(OUT, '.nojekyll'), '', 'utf8');
    导航请求走 network-first（宁可慢一点也要拿新版），静态资源走 stale-while-revalidate。 */
 const meta = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'meta.json'), 'utf8'));
 const CACHE = `ats-${meta.version || '0'}-${meta.lastBuilt || '0'}`;
-const precache = ['.', 'index.html', 'sitemap.xml', '404.html', ...exportFiles];
+
+/* 9.5) llms.txt：给 AI 代理读的站点说明书。
+   2026 年同类站（llmrates、models.dev、pricepertoken）都被接进代理/IDE，
+   一个纯静态站想被引用，就得有一份机器能直接吃下的入口。
+   里面的数字全部从 data/ 现算，遵守「页面上的计数不写死」这条站规。 */
+const readJson = (rel) => {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, rel), 'utf8')); } catch (e) { return null; }
+};
+const cnt = (rel, fallback) => {
+  const j = readJson(rel);
+  if (Array.isArray(j)) return j.length;
+  if (j && Array.isArray(j.items)) return j.items.length;
+  return fallback;
+};
+const dTools = readJson('data/tools.json') || [];
+const dPlans = readJson('data/plans.json') || [];
+const dBundles = readJson('data/bundles.json') || [];
+const dNews = readJson('data/news.json') || [];
+const dNewsAuto = readJson('data/news-auto.json') || [];
+const dChangelog = readJson('data/changelog.json') || [];
+const dRoles = readJson('data/roles.json') || [];
+const dEval = readJson('data/evalset.json') || [];
+const n = (x, fb) => (Array.isArray(x) ? x.length : fb);
+const llms = `# AI Test Stack
+
+> 给测试工程师的 AI 工具与套餐选型决策站。单文件、零后端、零第三方请求，可离线打开。
+> 版本 ${meta.version} ｜ 数据核验日 ${meta.lastVerified} ｜ 许可 MIT（代码与数据同许可）
+
+## 这个站回答四个问题
+- 买什么：${n(dTools, 0)} 款工具 × ${n(dPlans, 0)} 档套餐 × ${n(dBundles, 0)} 套组合，每个价格带出处与核验日，每个分数署编辑的名
+- 我在哪：${n(dRoles, 0)} 个测试角色阶梯、能力图谱、AI 测试专项与 ${n(dEval, 0)} 个评测集
+- 行业在变什么：${n(dNews, 0) + n(dNewsAuto, 0)} 条大事与对测试岗位的具体冲击
+- 下一步：30 天落地执行包，以及可打印成 A4 的决策报告
+
+## 机器可读数据（本仓库 exports/，线上同路径）
+- exports/tools.json — 工具档案：九维评分、来源等级、适配模型、工具白名单
+- exports/plans.json — 套餐档位：价格、额度口径、核验日、形态、限制
+- exports/plans.csv — 同上的表格版
+- exports/plans-history.csv · plans-history.json — 价格时间序列
+- exports/evalset.json — 评测集清单
+- exports/manifest.json — 本次导出的清单与计数
+- feed.xml — 更新订阅源（${n(dChangelog, 0)} 条）
+
+## 使用约束（引用本站数据时请一并保留）
+- 所有价格是公开页面核验值，市场变动极快，下单前以厂商官网为准。
+- 评分是编辑判断，不是跑分，不是厂商口径。
+- 四种订阅形态的计费单位不可互相换算（请求次数 / Credits / AFP 积分 / 共享额度池），跨形态比价会得出错误结论。
+- 本站不收集任何信息：无后端、无 cookie、无统计，用户数据只存在其浏览器 localStorage。
+`;
+fs.writeFileSync(path.join(OUT, 'llms.txt'), llms, 'utf8');
+copied.push('llms.txt');
+
+const precache = ['.', 'index.html', 'sitemap.xml', '404.html', 'llms.txt', ...exportFiles];
 fs.writeFileSync(path.join(OUT, 'sw.js'), `/* 由 scripts/build-site.js 生成，不要手改。 */
 const CACHE = ${JSON.stringify(CACHE)};
 const PRECACHE = ${JSON.stringify(precache)};
@@ -162,7 +214,7 @@ if (process.env.SKIP_OG) {
 }
 
 // 10) 自检：产物不全就别让工作流继续往下走到部署那一步
-for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml']) {
+for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml', 'llms.txt']) {
   if (!fs.existsSync(path.join(OUT, need))) problems.push('产物缺失：' + need);
 }
 const idx = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');

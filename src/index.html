@@ -176,7 +176,7 @@
       <div class="phead">
         <div class="kick">Feature Map</div>
         <h1>功能地图</h1>
-        <p>7 个模块管 24 个功能。不知道从哪开始，就点「诊断与判断」；想看行业发生了什么，去「变局与大事」。</p>
+        <p id="mapLede">按模块逛，或用搜索直达。</p>
       </div>
       <div class="mgrid stagger" id="mapBody"></div>
     </section>
@@ -250,7 +250,7 @@
         <h3><span class="ic">⌕</span>搜不到？</h3>
         <ul class="ul">
           <li><b>换个说法。</b>「便宜」搜不到时试「价格」，「翻墙」试「国内直连」——站内用的是后者的术语。</li>
-          <li><b>直接进完整工具站。</b><a href="#all">24 个功能页平铺成一张规格表</a>，按模块扫一遍通常比搜更快。</li>
+          <li><b>直接进完整工具站。</b><a href="#all" id="searchAllHint">功能页平铺成一张规格表</a>，按模块扫一遍通常比搜更快。</li>
           <li><b>没有收录的条目。</b><a href="#feedback">提一条反馈</a>，收录标准是「做测试的人会真的用到」。</li>
         </ul>
       </div>
@@ -542,13 +542,7 @@
       </div>
 
       <div class="panel">
-        <h3><span class="ic">▤</span>按工具看阶梯</h3>
-        <div class="sub">同一家的档位排在一起，才看得出「加钱买到了什么」。价格是当前核验值，点上方地区可只看国内或国际。</div>
-        <div class="ladder" id="pLadder"></div>
-      </div>
-
-      <div class="panel">
-        <h3><span class="ic">◎</span>按用法切换排序</h3>
+        <h3><span class="ic">◎</span>先说清你要什么</h3>
         <div class="sub">不同用法对「价格 / 额度 / 稳定性 / 合规」的权重完全不同。</div>
         <div class="presets" id="pPresets"></div>
         <div class="hr"></div>
@@ -558,6 +552,25 @@
       </div>
 
       <div class="verdict" id="pVerdict"></div>
+
+      <div class="panel">
+        <h3><span class="ic">▣</span>全量对比</h3>
+        <div class="sub">表头可以点着排序。「选它」是单选——套餐建议只留一个主力，其余按量兜底。</div>
+        <div class="freshBar" id="pFresh"></div>
+        <div class="tableBar"><span id="pCount">—</span><button class="btn sm" id="pMore">显示全部</button></div>
+        <div class="tblWrap">
+          <table class="tb" id="planTable">
+            <thead><tr>
+              <th>#</th><th>套餐 / 模型</th><th>形态</th>
+              <th class="sortable" data-sort="price" aria-sort="none"><button type="button">月价<span class="sortMark">↕</span></button></th>
+              <th class="sortable" data-sort="score" aria-sort="none"><button type="button">分<span class="sortMark">↕</span></button></th>
+              <th>额度 / 工具</th><th>超限 · 风险 · 限制</th><th></th>
+            </tr></thead>
+            <tbody id="planBody"></tbody>
+          </table>
+        </div>
+      </div>
+
       <div class="grid2">
         <div class="panel" style="margin-bottom:0">
           <h3><span class="ic">▣</span>如果只买一个订阅</h3>
@@ -574,18 +587,12 @@
         </div>
       </div>
 
-      <div class="panel">
-        <h3><span class="ic">▣</span>全量对比</h3>
-        <div class="sub">按当前画像排序。「选它」是单选——套餐建议只留一个主力，其余按量兜底。</div>
-        <div class="tableBar"><span id="pCount">—</span><button class="btn sm" id="pMore">显示全部</button></div>
-        <div class="tblWrap">
-          <table class="tb">
-            <thead><tr>
-              <th>#</th><th>套餐 / 模型</th><th>形态</th><th>月价</th><th>分</th><th>额度 / 工具</th><th>超限 · 风险 · 限制</th><th></th>
-            </tr></thead>
-            <tbody id="planBody"></tbody>
-          </table>
-        </div>
+      <div class="panel is-closed" id="pLadderPanel">
+        <h3 class="ladderToggle" id="pLadderToggle" role="button" tabindex="0" aria-expanded="false" aria-controls="pLadder">
+          <span class="ic">▤</span>按工具看阶梯<span class="chev">＋</span>
+        </h3>
+        <div class="sub">同一家的档位排在一起，才看得出「加钱买到了什么」。价格是当前核验值，点上方地区可只看国内或国际。</div>
+        <div class="ladder" id="pLadder"></div>
       </div>
 
       <div class="grid2">

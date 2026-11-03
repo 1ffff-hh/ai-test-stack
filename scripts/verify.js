@@ -892,6 +892,150 @@ async function fresh(browser, hash = '') {
     await c.close();
   }
 
+  // ---------- 29. v9 前端质量地板：溢出 / 字号 / 排序 / 选中态 / 折叠 ----------
+  {
+    const { c, p, errs } = await fresh(browser);
+
+    /* 29.1 横向溢出。v2.3 的第 6 组只在一个动画相位上取样（drift 是 22s 往复 +
+       scale 1.06），所以它放过了 27–40px 的真实溢出。这里取三个相位，
+       并且额外检查光斑结构上不许超出 hero 的盒子。 */
+    const ov = {};
+    for (const theme of ['dark', 'light']) {
+      for (const [w, h] of [[1440, 900], [820, 1000], [390, 844]]) {
+        await p.setViewportSize({ width: w, height: h });
+        await p.evaluate((t) => {
+          document.documentElement.dataset.theme = t;
+          location.hash = '#home';
+        }, theme);
+        let ok = true;
+        for (let k = 0; k < 3; k++) {
+          await p.waitForTimeout(700);
+          const s = await p.evaluate(() => {
+            const g = document.querySelector('.hglow'), hb = document.querySelector('.hero');
+            /* 光斑本身允许超出 hero 盒子（drift 会平移 + 放大它），关键是 hero 必须把它裁掉。
+               所以结构断言是「hero 有横向裁剪」，行为断言是「文档不横向溢出」。 */
+            const hx = g && hb ? getComputedStyle(hb).overflowX : 'clip';
+            return {
+              fits: document.documentElement.scrollWidth <= window.innerWidth + 1,
+              clipped: hx === 'clip' || hx === 'hidden',
+              docW: document.documentElement.scrollWidth,
+              vw: window.innerWidth
+            };
+          });
+          if (!s.fits || !s.clipped) { ok = false; ov[theme + '@' + w + '_fail'] = s; }
+        }
+        ov[theme + '@' + w] = ok;
+      }
+    }
+
+    // 29.2 字号地板：任何一处可见文字都不许低于 11px
+    await p.setViewportSize({ width: 1440, height: 900 });
+    const floor = await p.evaluate(() => {
+      let bad = 0, min = 99, total = 0;
+      const sample = [];
+      [...document.querySelectorAll('.view')].forEach(v => {
+        v.querySelectorAll('*').forEach(el => {
+          const own = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+          if (!own) return;
+          const cs = getComputedStyle(el);
+          if (cs.display === 'none' || cs.visibility === 'hidden') return;
+          const px = parseFloat(cs.fontSize);
+          total++;
+          if (px < min) min = px;
+          if (px < 11) {
+            bad++;
+            if (sample.length < 6) sample.push(v.id + ':' + ((typeof el.className === 'string' && el.className.trim()) ? el.className.trim().split(/\s+/)[0] : el.tagName) + '@' + px);
+          }
+        });
+      });
+      return { bad, min, total, sample };
+    });
+
+    // 29.3 套餐表：吸顶表头 + 点表头真的改顺序（按数据里的 CNY 价比，不按显示文本）
+    await p.evaluate(() => { document.documentElement.dataset.theme = 'dark'; location.hash = '#plans'; });
+    await p.waitForTimeout(500);
+    const priceSeq = () => p.evaluate(() => [...document.querySelectorAll('#planBody tr')].map(tr => {
+      const id = (tr.querySelector('[data-pick]') || {}).dataset ? tr.querySelector('[data-pick]').dataset.pick : '';
+      const pl = window.__DATA__.plans.find(x => x.id === id) || {};
+      return typeof pl.price === 'number' ? pl.price : NaN;
+    }));
+    const sticky = await p.evaluate(() => getComputedStyle(document.querySelector('#planTable thead th')).position);
+    const before = await priceSeq();
+    await p.click('#planTable th[data-sort="price"] button');
+    await p.waitForTimeout(400);
+    const ascAria = await p.evaluate(() => document.querySelector('#planTable th[data-sort="price"]').getAttribute('aria-sort'));
+    const asc = await priceSeq();
+    await p.click('#planTable th[data-sort="price"] button');
+    await p.waitForTimeout(400);
+    const descAria = await p.evaluate(() => document.querySelector('#planTable th[data-sort="price"]').getAttribute('aria-sort'));
+    const desc = await priceSeq();
+    const monotone = (arr, dir) => arr.length > 1 && arr.every((v, i) => i === 0 || (dir === 'asc' ? arr[i - 1] <= v : arr[i - 1] >= v));
+    /* 排序不许污染结论：冠军卡永远按综合分，不跟着价格顺序跑 */
+    const verdictKept = await p.evaluate(() => {
+      const v = document.querySelector('#pVerdict .vn');
+      return v ? v.textContent.trim() : '';
+    });
+
+    // 29.4 新鲜度条 + 阶梯默认折叠、可展开
+    const freshBar = await p.evaluate(() => {
+      const f = document.querySelector('#pFresh');
+      return { txt: f ? f.textContent : '', link: !!document.querySelector('#pFresh a[href="#health"]') };
+    });
+    const ladderClosed = await p.evaluate(() => ({
+      closed: document.querySelector('#pLadderPanel').classList.contains('is-closed'),
+      aria: document.querySelector('#pLadderToggle').getAttribute('aria-expanded'),
+      hidden: document.querySelector('#pLadder').offsetParent === null
+    }));
+    await p.click('#pLadderToggle');
+    await p.waitForTimeout(350);
+    const ladderOpen = await p.evaluate(() => ({
+      closed: document.querySelector('#pLadderPanel').classList.contains('is-closed'),
+      aria: document.querySelector('#pLadderToggle').getAttribute('aria-expanded'),
+      rows: document.querySelectorAll('#pLadder .ladderRow').length,
+      visible: document.querySelector('#pLadder').offsetParent !== null
+    }));
+
+    // 29.5 选中态必须看得出来：搜索页的分类 chip 以前压根没有 .on 样式
+    await p.evaluate(() => { location.hash = '#search'; });
+    await p.waitForTimeout(400);
+    const chips = await p.evaluate(() => {
+      const on = document.querySelector('#siteQCats .chip.on');
+      const off = [...document.querySelectorAll('#siteQCats .chip')].find(c => !c.classList.contains('on'));
+      if (!on || !off) return { found: false };
+      const a = getComputedStyle(on), b = getComputedStyle(off);
+      return { found: true, diff: a.backgroundColor !== b.backgroundColor || a.color !== b.color, onBg: a.backgroundColor, offBg: b.backgroundColor };
+    });
+
+    // 29.6 浅色主题不许有透明渐变大标题（对比度由 a11y 审，这里只锁实现方式）
+    const head = await p.evaluate(() => {
+      document.documentElement.dataset.theme = 'light';
+      const em = document.querySelector('.hero h1 em');
+      const cs = em ? getComputedStyle(em) : null;
+      return cs ? { fill: cs.webkitTextFillColor, img: cs.backgroundImage !== 'none' } : { fill: '', img: false };
+    });
+
+    // 29.7 功能地图的计数必须来自数据，不许写死
+    const lede = await p.evaluate(() => ({
+      txt: (document.querySelector('#mapLede') || {}).textContent || '',
+      // 以「屏幕上真的画出来几个模块卡」为准，而不是猜 __DATA__ 的形状
+      mods: document.querySelectorAll('#mapBody .mcard:not(.maccent)').length
+    }));
+
+    out.uiFloor = { ov, floor, table: { sticky, before, asc, desc, ascAria, descAria, verdictKept }, freshBar, ladderClosed, ladderOpen, chips, head, lede };
+    out.uiFloorOk = Object.values(ov).every(Boolean)
+      && floor.bad === 0 && floor.min >= 11
+      && sticky === 'sticky' && ascAria === 'ascending' && descAria === 'descending'
+      && monotone(asc, 'asc') && monotone(desc, 'desc') && String(asc) !== String(before)
+      && /天内核过/.test(freshBar.txt) && freshBar.link
+      && ladderClosed.closed && ladderClosed.aria === 'false' && ladderClosed.hidden
+      && !ladderOpen.closed && ladderOpen.aria === 'true' && ladderOpen.visible && ladderOpen.rows > 0
+      && chips.found && chips.diff
+      && head.fill !== 'rgba(0, 0, 0, 0)' && !head.img
+      && lede.mods >= 5 && lede.txt.indexOf(lede.mods + ' 个模块') === 0;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
   out.errs = allErrs;
   out.pass = out.viewsOk && out.themeOk && out.overflowOk
     && out.drawer.onOpen.open && out.drawer.afterEsc.open === false
@@ -903,6 +1047,7 @@ async function fresh(browser, hash = '') {
     && out.newsOk && out.impactOk && out.rolesOk && out.freeOk && out.plans2Ok && out.invOk
     && out.healthOk && out.evalOk && out.reportOk && out.siteOk
     && out.sitePagesOk && out.searchOk && out.mineOk && out.feedbackOk
+    && out.uiFloorOk
     && allErrs.length === 0;
 
   console.log(JSON.stringify(out, null, 2));

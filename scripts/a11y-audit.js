@@ -61,7 +61,45 @@ const PROBE = () => {
     const own = Array.from(el.childNodes).some(n => n.nodeType === 3 && n.textContent.trim().length > 0);
     if (!own) return;
     const fg0 = parse(cs.color);
-    if (!fg0 || fg0[3] === 0) return; // 透明 = 渐变文字，跳过
+    /* 渐变文字以前直接跳过，是个真盲区：v2.3 首页标题在浅色主题下
+       用 #67e8f9→#a78bfa 渐变压在 #eef2f8 上，实测只有 1.29:1，门禁全绿。
+       现在逐个取渐变里的色标，和「背后的实际底色」比，取最差的一档。 */
+    if (!fg0 || fg0[3] === 0) {
+      const clip = cs.backgroundClip === 'text' || cs.webkitBackgroundClip === 'text';
+      if (!clip) return;
+      const stops = [...(cs.backgroundImage || '').matchAll(/rgba?\(([^)]+)\)/g)]
+        .map(m => m[1].split(/[,\s/]+/).filter(x => x !== '').map(Number))
+        .filter(c => c.length >= 3 && (c.length < 4 || c[3] > 0));
+      if (!stops.length) return;
+      const gbg = effBg(el.parentElement || el);
+      const gsize = parseFloat(cs.fontSize);
+      const gbold = parseInt(cs.fontWeight, 10) >= 700;
+      const gneed = (gsize >= 24 || (gsize >= 18.66 && gbold)) ? 3 : 4.5;
+      let worst = null;
+      for (const c of stops) {
+        const r = ratio(c, gbg);
+        if (!worst || r < worst.ratio) worst = { ratio: r, fg: c };
+      }
+      if (worst && worst.ratio < gneed - 0.05) {
+        const sel = typeof el.className === 'string' && el.className.trim()
+          ? '.' + el.className.trim().split(/\s+/).slice(0, 2).join('.') : el.tagName;
+        const key = sel + '|grad|' + Math.round(worst.ratio * 100);
+        if (!seen.has(key)) {
+          seen.add(key);
+          bad.push({
+            sel,
+            ratio: +worst.ratio.toFixed(2),
+            need: gneed,
+            size: +gsize.toFixed(1),
+            fg: `rgb(${worst.fg.slice(0, 3).map(Math.round).join(',')})`,
+            bg: `rgb(${gbg.slice(0, 3).map(Math.round).join(',')})`,
+            text: (el.textContent || '').trim().slice(0, 24),
+            grad: true
+          });
+        }
+      }
+      return;
+    }
     // 自己带渐变/图片背景的元素（logo、徽章）算不出真实底色，跳过——探针会误判
     if (cs.backgroundImage && cs.backgroundImage !== 'none' && cs.backgroundClip !== 'text') return;
     const bg = effBg(el);

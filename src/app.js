@@ -118,6 +118,9 @@
     toolRegion: 'all',
     planRegion: 'all',
     planLimit: 20,
+    /* v9：表头排序。key 为空 = 跟随画像；一旦手点就由它接管表格顺序，
+       但「冠军/亚军」结论永远按综合分算，不跟着价格排序跑。 */
+    planSort: { key: '', dir: 'desc' },
     newsRegion: 'all',
     newsKind: 'all',
     newsQ: '',
@@ -948,6 +951,10 @@
   function renderMap() {
     const body = $('#mapBody');
     if (!body) return;
+    // 计数一律运行时算：v2.3 把模块并为 6 个后，这句写死的「7 个模块」还在骗人
+    const lede = $('#mapLede');
+    if (lede) lede.textContent = `${MODS.length} 个模块管 ${FEATURE_VIEWS.length} 个功能。` +
+      '不知道从哪开始，就点「诊断与判断」；想看行业发生了什么，去「变局与大事」。';
     // 不能写 .map(mcardHtml)：map 会把数组索引传进 slim 参数，第 2 张卡起全被当成紧凑版
     body.innerHTML = MODS.map(m => mcardHtml(m, false)).join('') + `
       <a class="mcard maccent" href="#persona">
@@ -1284,6 +1291,8 @@
   function renderSearch() {
     const cats = $('#siteQCats'), meta = $('#siteQMeta'), body = $('#siteQBody');
     if (!cats || !body) return;
+    const allHint = $('#searchAllHint');
+    if (allHint) allHint.textContent = `${FEATURE_VIEWS.length} 个功能页平铺成一张规格表`;
     cats.innerHTML = [{ k: 'all', n: '全部' }].concat(Object.keys(SEARCH_KIND).map(k => ({ k, n: SEARCH_KIND[k] })))
       .map(c => `<button class="chip${SQ.cat === c.k ? ' on' : ''}" type="button" data-sq="${c.k}" aria-pressed="${SQ.cat === c.k}">${c.n}</button>`).join('');
 
@@ -2276,7 +2285,7 @@
         const n = o.id === 'all' ? PLANS.length : PLANS.filter(p => p.region === o.id).length;
         return `<button class="seg ${state.planRegion === o.id ? 'on' : ''}" data-r="${o.id}">${o.n}<span>${n}</span></button>`;
       }).join('');
-      $$('#pRegion .seg').forEach(b => b.onclick = () => { state.planRegion = b.dataset.r; renderPlans(); });
+      $$('#pRegion .seg').forEach(b => b.onclick = () => { state.planRegion = b.dataset.r; state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
     }
     renderPlanLadder();
     const poolR = PLANS.filter(p => state.planRegion === 'all' || p.region === state.planRegion);
@@ -2293,7 +2302,7 @@
       pr.innerHTML = Object.entries(CRIT.planProfiles).map(([id, p]) =>
         `<button class="preset ${id === state.planProfile ? 'on' : ''}" data-p="${esc(id)}">${p.icon} ${esc(p.name)}</button>`
       ).join('');
-      $$('#pPresets .preset').forEach(b => b.onclick = () => { applyPlanProfile(b.dataset.p); renderPlans(); });
+      $$('#pPresets .preset').forEach(b => b.onclick = () => { applyPlanProfile(b.dataset.p); state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
     }
 
     // 形态筛选（Coding / Token / Agent / 会员 / 按量）
@@ -2313,7 +2322,7 @@
         if (t.id !== 'all' && n === 0) return '';
         return `<button class="preset ${state.planType === t.id ? 'on' : ''}" data-ty="${esc(t.id)}">${esc(t.n)} <span style="opacity:.55;font-family:var(--mono);font-size:var(--fs-1)">${n}</span></button>`;
       }).join('');
-      $$('#pTypeFilter .preset').forEach(b => b.onclick = () => { state.planType = b.dataset.ty; renderPlans(); });
+      $$('#pTypeFilter .preset').forEach(b => b.onclick = () => { state.planType = b.dataset.ty; state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
 
       // 形态说明
       const fdesc = $('#pFormDesc');
@@ -2328,9 +2337,16 @@
     const pool = PLANS.filter(p =>
       (state.planType === 'all' || p.form === state.planType) &&
       (state.planRegion === 'all' || p.region === state.planRegion));
-    const scored = pool.map(p => ({ p, s: planScore(p, state.planWeights) })).sort((a, b) => b.s - a.s);
-    const top = scored[0];
-    const sub = scored[1];
+    const byScore = pool.map(p => ({ p, s: planScore(p, state.planWeights) })).sort((a, b) => b.s - a.s);
+    const top = byScore[0];
+    const sub = byScore[1];
+    const SORTERS = {
+      price: (a, b) => (a.p.price - b.p.price),
+      score: (a, b) => (a.s - b.s)
+    };
+    const scored = state.planSort.key && SORTERS[state.planSort.key]
+      ? byScore.slice().sort((a, b) => (state.planSort.dir === 'asc' ? 1 : -1) * SORTERS[state.planSort.key](a, b))
+      : byScore;
 
     const vd = $('#pVerdict');
     if (vd && top) {
@@ -2400,6 +2416,51 @@
         syncHash();
         toast(i >= 0 ? '已取消选择' : '已记为你的选择（套餐单选）');
       });
+    }
+
+    /* ---- v9：表头排序控件 ---- */
+    $$('#planTable th.sortable').forEach(th => {
+      const key = th.dataset.sort;
+      const active = state.planSort.key === key;
+      th.setAttribute('aria-sort', active ? (state.planSort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+      const mark = th.querySelector('.sortMark');
+      if (mark) mark.textContent = active ? (state.planSort.dir === 'asc' ? '↑' : '↓') : '↕';
+      const btn = th.querySelector('button');
+      if (btn) btn.onclick = () => {
+        if (state.planSort.key !== key) state.planSort = { key, dir: key === 'score' ? 'desc' : 'asc' };
+        else state.planSort.dir = state.planSort.dir === 'asc' ? 'desc' : 'asc';
+        renderPlans();
+        const label = key === 'price' ? '月价' : '综合分';
+        toast(`表格已按${label}${state.planSort.dir === 'asc' ? '从低到高' : '从高到低'}排（结论仍按综合分）`);
+      };
+    });
+
+    /* ---- v9：核验新鲜度条（阈值与数据健康页同源，不另立一套） ---- */
+    const fresh = $('#pFresh');
+    if (fresh) {
+      const limit = META.staleAfterDays || 30;
+      const ages = pool.map(p => daysAgo(p.verified || META.lastVerified));
+      const inTime = ages.filter(d => d != null && d <= limit).length;
+      const late = pool.length - inTime;
+      fresh.innerHTML = `<span class="fk">核验新鲜度</span>` +
+        `<b>${inTime} / ${pool.length}</b><span>档在 ${limit} 天内核过</span>` +
+        (late ? `<span class="warn">⚠ ${late} 档超期或未标核验日，下单前以官网为准</span>` : '<span>全部在期内</span>') +
+        `<a href="#health">核验台账 ↗</a>`;
+    }
+
+    /* ---- v9：阶梯降为次要视图，默认折叠 ---- */
+    const lpanel = $('#pLadderPanel'), ltoggle = $('#pLadderToggle');
+    if (lpanel && ltoggle) {
+      const flip = () => {
+        const closed = lpanel.classList.toggle('is-closed');
+        ltoggle.setAttribute('aria-expanded', closed ? 'false' : 'true');
+        const chev = ltoggle.querySelector('.chev');
+        if (chev) chev.textContent = closed ? '＋' : '－';
+      };
+      ltoggle.onclick = flip;
+      ltoggle.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); }
+      };
     }
   }
 

@@ -36,8 +36,8 @@ npm run og             # 重新渲染分享图 _site/og.png（图上数字来自
 |---|---|---|
 | 数据校验 | `node build.js` | 字段缺失、来源等级非法、夺冠率 >40%、过期未下架的优惠 |
 | 脱敏扫描 | `node scripts/check-pii.js` | 本机绝对路径、会话 ID、密钥、私人邮箱 |
-| 对比度 | `node scripts/a11y-audit.js` | 35 视图 × 深/浅主题，WCAG AA 不达标 |
-| 功能验收 | `node scripts/verify.js` | 28 组断言：路由、打印、响应式、各页计数、纠错入口、订阅源、站务层、搜索、个人中心、出错兜底 |
+| 对比度 | `node scripts/a11y-audit.js` | 42 视图 × 深/浅主题 + 诊断报告态，WCAG AA 不达标；渐变文字按每个色标算 |
+| 功能验收 | `node scripts/verify.js` | 29 组断言：路由、打印、响应式、各页计数、纠错入口、订阅源、站务层、搜索、个人中心、出错兜底、前端质量地板（字号/溢出/排序/选中态） |
 | 发布物自检 | `node scripts/build-site.js` | `_site/` 缺文件、head 缺 canonical / og:image / JSON-LD |
 
 `npm run check` 会把最后一道也跑了：**门禁绿 = 能直接发**。
@@ -57,8 +57,9 @@ npm run og             # 重新渲染分享图 _site/og.png（图上数字来自
 
 ## 五、改界面
 
-样式分七层，顺序不能反：`styles.css → v4.css → v4-responsive.css → v5.css → v6.css → v7.css → v8.css`。
+样式分八层，顺序不能反：`styles.css → v4.css → v4-responsive.css → v5.css → v6.css → v7.css → v8.css → v9.css`。
 动效请用 `src/v8.css` 里的刻度（`--dur-1/2/3`、`--ease-out/in-out/pop`），不要写新的时长字面量。
+可读性与选中态用 `src/v9.css` 的地板与 `--sel-*`：任何可见文字不低于 11px，选中态只有一套配方。
 新增组件一律用变量，不要写新数值（字号档 `--fs-1..8`、圆角 `--r-sm/md/lg`、间距 `--sp-1..7`）。
 
 写 `color` 用 `-t` 结尾的变量或 `--cN`；写 `background` / `border` / `gradient` 用不带后缀的主色。

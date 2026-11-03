@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-02",
+  "generatedAt": "2026-11-03",
   "lastVerified": "2026-11-01",
   "note": "一行 = 一次价格记录；prev/delta 为空表示这是该套餐的第一个记录点。",
   "rows": [
