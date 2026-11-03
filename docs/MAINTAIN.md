@@ -64,15 +64,22 @@ build.js         ← 构建。读 data、校验、把 CSS+数据+JS 内联进根
 
 ```bash
 # 1) 打开官网定价页确认当前价格
-# 2) 改 data/plans.json：price / quota / 限制，并把 verified 改成今天
+# 2) 一条命令改完 price / history / verified（先加 --dry 看会改什么）
+npm run data:set -- kimi_pro 199 "官网会员档调整"
 # 3) 重建
 node build.js
 # 4) 四道门禁
 npm run check
 # 5) 提交
 git add data/ index.html exports/
-git commit -m "data: 火山方舟 Lite 40 → 50（2026-11-02 核验）"
+git commit -m "data: Kimi Pro 168 → 199（2026-11-03 核验）"
 ```
+
+`data:set` 会替你算好人民币等值（USD × 7.25）、追加 `history` 条目、
+同步 `historyPoints` / `priceChanges` / `hasTrend`，并把 `verified` 改成今天。
+手写这五处很容易漏，所以别手工改价格。
+
+改完 `quota`、`pros`、`cons` 这类文字仍然要人工写——机器不该替你下编辑判断。
 
 价格历史顺手记进该条的 `history` 数组。这一处写入会同时喂到四个地方：
 套餐页的走势图、「更新日志」页的最近变化时间线、Atom 订阅源、

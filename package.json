@@ -26,6 +26,7 @@
     "data:parse": "node scripts/parse-pricing.js",
     "data:parse:fixtures": "node scripts/parse-pricing.js --fixtures",
     "data:parse:test": "node scripts/parse-pricing.js --offline",
+    "data:set": "node scripts/set-price.js",
     "shots": "node scripts/shots.js"
   },
   "devDependencies": {
