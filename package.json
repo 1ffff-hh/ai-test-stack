@@ -22,6 +22,7 @@
     "refresh": "node scripts/refresh.js",
     "refresh:dry": "node scripts/refresh.js --dry",
     "refresh:offline": "node scripts/refresh.js --offline",
+    "data": "node scripts/data-doctor.js",
     "data:triage": "node scripts/data-triage.js",
     "data:parse": "node scripts/parse-pricing.js",
     "data:parse:fixtures": "node scripts/parse-pricing.js --fixtures",

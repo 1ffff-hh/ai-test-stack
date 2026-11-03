@@ -52,6 +52,9 @@ const RULES = [
 
 // 允许保留的邮箱域名（公开机构/机器人地址），其余邮箱一律报告
 const EMAIL_OK = /@(?:users\.noreply\.github\.com|noreply\.github\.com|noreply\.anthropic\.com|example\.(?:com|org)|localhost)$/i;
+/* 提交信息里的署名邮箱：本地部分也写死，不把整个域名放进来。
+   noreply@anthropic.com 是公开的机器人地址，不是谁的私人邮箱。 */
+const EMAIL_BOT_OK = /^noreply@anthropic\.com$/i;
 const EMAIL_RE = /[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g;
 
 function walk(dir, out = []) {
@@ -104,6 +107,7 @@ if (process.argv.includes('--self-test')) {
   // 邮箱允许清单必须放行机器人、拦住私人邮箱
   if (!EMAIL_OK.test('bot@users.noreply.github.com')) fails.push('email 误伤 noreply 地址');
   if (EMAIL_OK.test('someone@qq.com')) fails.push('email 没拦住私人邮箱');
+  if (!EMAIL_BOT_OK.test('noreply@anthropic.com')) fails.push('email 误伤提交署名邮箱');
   // pii-scan:on
   const stats = { rules: RULES.length, checked: Object.keys(FIXTURES).length, failed: fails.length, failures: fails };
   console.log(JSON.stringify(stats, null, 2));
@@ -134,7 +138,7 @@ for (const f of files) {
     EMAIL_RE.lastIndex = 0;
     let e;
     while ((e = EMAIL_RE.exec(line)) !== null) {
-      if (!EMAIL_OK.test(e[0])) {
+      if (!EMAIL_OK.test(e[0]) && !EMAIL_BOT_OK.test(e[0])) {
         hits.push({ file: f.rel, line: i + 1, rule: 'email', desc: '私人邮箱', sample: mask(e[0]) });
       }
     }
