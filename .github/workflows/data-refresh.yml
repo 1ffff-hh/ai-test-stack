@@ -28,15 +28,20 @@ jobs:
       - name: 抓取 RSS 与价格指纹
         run: node scripts/refresh.js || true
 
+      # 指纹只说「页面变了」；这一步按规则把价格抽出来，能直接说出「变成多少」。
+      # 解析失败也算结果——宁可报错，也不要一个看起来合理的错数。
+      - name: 按规则解析官网价格
+        run: node scripts/parse-pricing.js --fixtures || true
+
       # 价格页变了就开一条 issue，把待办推到眼前；没变化就什么都不做。
       # 已有同名 open issue 时改为追加评论，避免每周刷屏。
       - name: 价格页有变化就开 issue
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          N=$(node -e "const p=require('./data/_pending.json');console.log((p.items||[]).filter(x=>x.status==='pending').length)" 2>/dev/null || echo 0)
+          N=$(node -e "const p=require('./data/_pending.json');const c=require('./data/_price-check.json');const a=(p.items||[]).filter(x=>x.status==='pending').length;const b=(c.items||[]).filter(x=>['mismatch','parse-fail','fetch-fail','no-fixture'].includes(x.status)).length;console.log(a+b)" 2>/dev/null || echo 0)
           if [ "$N" = "0" ]; then echo "没有待处置的价格变更"; exit 0; fi
-          TITLE="数据核验待办：${N} 个价格页有变化"
+          TITLE="数据核验待办：${N} 项需要确认"
           BODY=$(node scripts/data-triage.js)
           NUM=$(gh issue list --state open --search "数据核验待办 in:title" --json number -q '.[0].number' || true)
           if [ -n "$NUM" ]; then
@@ -57,7 +62,7 @@ jobs:
         run: |
           git config user.name "ai-test-stack-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/news-auto.json data/_price-snapshots.json data/_refresh-report.json data/_data-audit.json index.html
+          git add data/news-auto.json data/_price-snapshots.json data/_refresh-report.json data/_data-audit.json data/fixtures index.html
           if git diff --cached --quiet; then
             echo "no data change"
           else

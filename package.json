@@ -23,6 +23,9 @@
     "refresh:dry": "node scripts/refresh.js --dry",
     "refresh:offline": "node scripts/refresh.js --offline",
     "data:triage": "node scripts/data-triage.js",
+    "data:parse": "node scripts/parse-pricing.js",
+    "data:parse:fixtures": "node scripts/parse-pricing.js --fixtures",
+    "data:parse:test": "node scripts/parse-pricing.js --offline",
     "shots": "node scripts/shots.js"
   },
   "devDependencies": {

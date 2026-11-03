@@ -37,8 +37,25 @@ const flag = (name) => {
 const pendingFile = readJSON('_pending.json', { items: [] });
 const items = (pendingFile.items || []).filter(x => x.status === 'pending');
 
+/* 确定性解析的结果单独列：它不产生待办队列，但同样需要人看一眼。
+   与 hash 变更的区别：hash 只说「页面变了」，解析能说出「变成多少」。 */
+const priceCheck = readJSON('_price-check.json', { items: [] });
+const priceBad = (priceCheck.items || []).filter(x => ['mismatch', 'parse-fail', 'fetch-fail', 'no-fixture'].includes(x.status));
+if (priceBad.length) {
+  console.log(`价格解析发现 ${priceBad.length} 处需要确认：\n`);
+  for (const it of priceBad) {
+    if (it.status === 'mismatch') {
+      console.log(`  ${it.planId}  ${it.name}`);
+      console.log(`    库内 ${it.expected} → 官网 ${it.parsed}   ${it.url}`);
+    } else {
+      console.log(`  ${it.source}/${it.planId}  解析失败：${it.why}`);
+    }
+  }
+  console.log('');
+}
+
 if (!items.length) {
-  console.log('没有待处置的价格变更。');
+  console.log(priceBad.length ? '以上是解析层的结果；待办队列里没有页面级变更。' : '没有待处置的价格变更。');
   process.exit(0);
 }
 

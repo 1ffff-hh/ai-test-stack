@@ -1,0 +1,412 @@
+{
+ "updated": "2026-11-03",
+ "note": "确定性价格解析规则。anchor 定位行，pattern 从锚点起 window 个字符内取第 1 个捕获组；pick:last 取最后一个匹配（用于「首月优惠 ¥34 / 标准价 ¥49」这类卡片）。期望值不写在这里，直接和 plans.json 的 priceLocal 比。",
+ "sources": [
+  {
+   "id": "anthropic",
+   "url": "https://www.anthropic.com/pricing",
+   "plans": {
+    "claude_pro": {
+     "anchor": "For everyday work",
+     "window": 200,
+     "pattern": "\\$(\\d+)",
+     "pick": "last"
+    },
+    "claude_max5": {
+     "anchor": "For all-day work",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    },
+    "claude_max20": {
+     "anchor": "For your longest tasks",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "copilot",
+   "url": "https://github.com/features/copilot/plans",
+   "render": true,
+   "plans": {
+    "copilot_pro": {
+     "anchor": "Pro",
+     "nth": 2,
+     "window": 140,
+     "pattern": "\\$\\s*(\\d+)"
+    },
+    "copilot_proplus": {
+     "anchor": "Pro+",
+     "window": 140,
+     "pattern": "\\$\\s*(\\d+)"
+    },
+    "copilot_max": {
+     "anchor": "Max",
+     "window": 140,
+     "pattern": "\\$\\s*(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "cursor",
+   "url": "https://cursor.com/pricing",
+   "plans": {
+    "cursor_plus": {
+     "anchor": "Plus $",
+     "window": 80,
+     "pattern": "\\$(\\d+)"
+    },
+    "cursor_premium": {
+     "anchor": "Premium $",
+     "window": 80,
+     "pattern": "\\$(\\d+)"
+    },
+    "cursor_super": {
+     "anchor": "Super $",
+     "window": 80,
+     "pattern": "\\$(\\d+)"
+    },
+    "cursor_ultra": {
+     "anchor": "Ultra $",
+     "window": 80,
+     "pattern": "\\$(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "grok",
+   "url": "https://x.ai/pricing",
+   "plans": {
+    "grok_plus": {
+     "anchor": "Plus",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    },
+    "grok_premium": {
+     "anchor": "Premium",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    },
+    "grok_super": {
+     "anchor": "Super",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    },
+    "grok_ultra": {
+     "anchor": "Ultra",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    }
+   },
+   "mode": "manual",
+   "note": "x.ai 在本机连接超时，抓不到；四档价格 8 / 30 / 100 / 200 由人工核"
+  },
+  {
+   "id": "kiro",
+   "url": "https://kiro.dev/pricing/",
+   "plans": {
+    "kiro_pro": {
+     "anchor": "KIRO PRO ",
+     "window": 140,
+     "pattern": "\\$(\\d+)"
+    },
+    "kiro_power": {
+     "anchor": "KIRO POWER ",
+     "window": 140,
+     "pattern": "\\$(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "devin",
+   "url": "https://devin.ai/pricing",
+   "plans": {
+    "devin_pro": {
+     "anchor": "Pro $",
+     "window": 100,
+     "pattern": "\\$(\\d+)"
+    },
+    "devin_max": {
+     "anchor": "Max NEW ",
+     "window": 120,
+     "pattern": "\\$(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "trae",
+   "url": "https://www.trae.cn/pricing",
+   "plans": {
+    "trae_lite": {
+     "anchor": "会员 Lite",
+     "window": 140,
+     "pattern": "¥\\s*(\\d+)",
+     "pick": "last"
+    },
+    "trae_pro": {
+     "anchor": "会员 Pro",
+     "window": 140,
+     "pattern": "¥\\s*(\\d+)",
+     "pick": "last"
+    },
+    "trae_proplus": {
+     "anchor": "会员 Pro+",
+     "window": 140,
+     "pattern": "¥\\s*(\\d+)",
+     "pick": "last"
+    },
+    "trae_ultra": {
+     "anchor": "会员 Ultra",
+     "window": 140,
+     "pattern": "¥\\s*(\\d+)",
+     "pick": "last"
+    }
+   }
+  },
+  {
+   "id": "qoder",
+   "url": "https://qoder.cn/pricing",
+   "render": true,
+   "plans": {
+    "qoder": {
+     "anchor": "专业版",
+     "window": 80,
+     "pattern": "¥\\s*(\\d+)\\s*首月"
+    },
+    "qoder_plus": {
+     "anchor": "高级版",
+     "window": 60,
+     "pattern": "[¥￥]\\s*(\\d+(?:\\.\\d+)?)"
+    }
+   }
+  },
+  {
+   "id": "comate",
+   "url": "https://comate.baidu.com/zh/pricing",
+   "render": true,
+   "plans": {
+    "comate_pro": {
+     "anchor": "专业版",
+     "window": 80,
+     "pattern": "[¥￥]\\s*(\\d+)"
+    },
+    "comate_flagship": {
+     "anchor": "旗舰版",
+     "window": 80,
+     "pattern": "[¥￥]\\s*(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "codebuddy",
+   "url": "https://www.codebuddy.cn/pricing",
+   "render": true,
+   "plans": {
+    "codebuddy_std": {
+     "anchor": "标准版",
+     "window": 60,
+     "pattern": "(\\d+)\\s*/月",
+     "pick": "last"
+    },
+    "codebuddy_adv": {
+     "anchor": "高级版",
+     "window": 60,
+     "pattern": "(\\d+)\\s*/月",
+     "pick": "last"
+    }
+   },
+   "note": "旗舰版卡片同时有推广价 700 / 标准价 999 / 划线价 1399，规则无法区分，留人工核"
+  },
+  {
+   "id": "volcengine",
+   "url": "https://www.volcengine.com/docs/ark/coding-plan-personal-universal-promotion?lang=zh",
+   "render": true,
+   "plans": {
+    "volc": {
+     "anchor": "Lite",
+     "window": 200,
+     "pattern": "原价\\s*(\\d+)"
+    },
+    "huoshan_pro": {
+     "anchor": "Pro",
+     "window": 200,
+     "pattern": "原价\\s*(\\d+)"
+    },
+    "ark_agent": {
+     "anchor": "Small",
+     "window": 200,
+     "pattern": "(\\d+)\\s*元"
+    }
+   },
+   "mode": "manual",
+   "note": "文档站前端渲染，抓到的正文只有导航；价格改由人工核（活动页显示原价 40 / 200 元）"
+  },
+  {
+   "id": "bigmodel",
+   "url": "https://bigmodel.cn/glm-coding",
+   "render": true,
+   "plans": {
+    "glm": {
+     "anchor": "Lite",
+     "window": 40,
+     "pattern": "[¥￥]\\s*(\\d+(?:\\.\\d+)?)",
+     "pick": "last"
+    },
+    "glm_pro": {
+     "anchor": "Pro",
+     "window": 40,
+     "pattern": "[¥￥]\\s*(\\d+(?:\\.\\d+)?)",
+     "pick": "last"
+    }
+   }
+  },
+  {
+   "id": "aliyun",
+   "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview",
+   "plans": {
+    "bailian": {
+     "anchor": "个人版 Lite",
+     "window": 400,
+     "pattern": "限时\\s*(\\d+)\\s*元/月"
+    }
+   }
+  },
+  {
+   "id": "kimi",
+   "url": "https://www.kimi.com/help/membership/membership-pricing",
+   "plans": {
+    "kimip": {
+     "anchor": "Plus ¥",
+     "window": 80,
+     "pattern": "¥\\s*(\\d+)"
+    },
+    "kimi_pro": {
+     "anchor": "Pro ¥",
+     "window": 80,
+     "pattern": "¥\\s*(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "minimax",
+   "url": "https://www.minimax.cn/m-plan",
+   "render": true,
+   "plans": {
+    "minimax": {
+     "anchor": "Go",
+     "window": 60,
+     "pattern": "[¥￥]\\s*([\\d,]+)",
+     "pick": "last",
+     "divide": 12
+    },
+    "mm_build": {
+     "anchor": "Build",
+     "window": 60,
+     "pattern": "[¥￥]\\s*([\\d,]+)",
+     "pick": "last",
+     "divide": 12
+    }
+   }
+  },
+  {
+   "id": "mimo",
+   "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
+   "plans": {
+    "mimo": {
+     "anchor": "月度套餐",
+     "window": 200,
+     "pattern": "¥\\s*(\\d+)"
+    }
+   }
+  },
+  {
+   "id": "katalon",
+   "url": "https://katalon.com/pricing",
+   "plans": {
+    "katalon_pro": {
+     "anchor": "Professional",
+     "window": 200,
+     "pattern": "\\$\\s*([\\d,]+)",
+     "divide": 12
+    }
+   }
+  },
+  {
+   "id": "applitools",
+   "url": "https://applitools.com/pricing/",
+   "plans": {
+    "applitools_starter": {
+     "anchor": "Starter",
+     "window": 200,
+     "pattern": "\\$\\s*([\\d,]+)"
+    }
+   }
+  },
+  {
+   "id": "openai",
+   "url": "https://chatgpt.com/pricing/",
+   "mode": "manual",
+   "note": "价格由前端渲染，fetch 拿不到数字；改用官方帮助中心的档位表人工核对"
+  },
+  {
+   "id": "muse",
+   "url": "https://dev.meta.ai/products/muse-code",
+   "mode": "manual",
+   "note": "站点拒绝抓取"
+  },
+  {
+   "id": "antigravity",
+   "url": "https://antigravity.google/pricing",
+   "mode": "manual",
+   "note": "页面只写 Not specified，价格在 gemini.google/subscriptions"
+  },
+  {
+   "id": "testrigor",
+   "url": "https://testrigor.com/sign-up/",
+   "mode": "manual",
+   "note": "官网已不标价"
+  },
+  {
+   "id": "mabl",
+   "url": "https://www.mabl.com/pricing",
+   "mode": "manual",
+   "note": "官网改为定制报价"
+  },
+  {
+   "id": "qawolf",
+   "url": "https://www.qawolf.com/pricing",
+   "mode": "manual",
+   "note": "按 run 计费，没有月费可比"
+  },
+  {
+   "id": "codegeex",
+   "url": "https://codegeex.cn/",
+   "mode": "manual",
+   "note": "官网只剩免费版"
+  },
+  {
+   "id": "deepseek",
+   "url": "https://api-docs.deepseek.com/quick_start/pricing",
+   "mode": "manual",
+   "note": "按 token 计价，与月费口径不同，见 dsapi.quota"
+  },
+  {
+   "id": "workbuddy",
+   "url": "https://www.workbuddy.cn/pricing",
+   "mode": "manual",
+   "note": "仅工具条目，未进套餐表"
+  },
+  {
+   "id": "zai",
+   "url": "https://z.ai/pricing",
+   "mode": "manual",
+   "note": "仅工具条目，未进套餐表"
+  },
+  {
+   "id": "hermes",
+   "url": "https://hermes-agent.nousresearch.com",
+   "mode": "manual",
+   "note": "仅工具条目，未进套餐表"
+  }
+ ]
+}
