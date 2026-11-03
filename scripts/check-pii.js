@@ -13,10 +13,14 @@ const SKIP_DIRS = new Set([
   '.git', 'node_modules', '.shots', '_site', 'dist',
   'docs/internal'          // 内部材料，本来就不发布
 ]);
-// 不扫描的单文件：这些是本机运行产物，已被 .gitignore 挡住，进不了公开仓库。
-// 它们会记下 `file:///` 解析出来的本机路径——那是正常的运行结果，不是泄密。
+// 不扫描的单文件：这些是本机运行产物或内部材料，已被 .gitignore 挡住，进不了公开仓库。
+// verify.json 会记下 `file:///` 解析出来的本机路径——那是正常的运行结果，不是泄密。
+// HANDOFF.md / errors.log 按用户要求留在仓库根，内容本身就是本机路径与报错原文，
+// 只用于本地交接；.gitignore 保证它们不会被 `git add` 进来。
 const SKIP_FILES = new Set([
-  'verify.json'
+  'verify.json',
+  'HANDOFF.md',
+  'errors.log'
 ]);
 // 不扫描的二进制扩展名
 const SKIP_EXT = new Set([

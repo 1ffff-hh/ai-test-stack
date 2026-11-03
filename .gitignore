@@ -12,6 +12,7 @@ _site/
 # 内部材料：交接报告、错误日志。本地保留，不进公开仓库
 docs/internal/
 errors.log
+HANDOFF.md
 
 # 编辑器 / 系统
 .DS_Store
