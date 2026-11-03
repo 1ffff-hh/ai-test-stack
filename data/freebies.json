@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-01",
+ "updated": "2026-11-03",
  "intro": {
   "title": "白嫖地图：先把免费的用干净，再决定买什么",
   "lead": "34 条可自查的免费额度，分成云厂商新户、模型免费层、Agent 免费档、学生/创业四类。每条都写清「怎么领、上限是什么、坑在哪、什么时候过期」。过期活动不删除，标成「已过期」留作证据——因为这张表的价值不是\"看起来多\"，而是\"现在还能用\"。",
@@ -44,19 +44,20 @@
    "region": "cn",
    "cat": "cloud",
    "value": "高",
-   "amount": "每个模型 100 万 Token，合计 7000 万+",
+   "amount": "每个模型通常 100 万 Token（官网原文用「通常」限定）",
    "unit": "Token",
    "how": "开通百炼自动发放，无需领取、无需实名；模型广场里带蓝色额度条的模型即有额度。",
    "cap": "有效期 90 天（开通日与模型发布日取较晚）；仅华北2（北京）；输入+输出合并扣减。",
    "trap": "Token Plan / Coding Plan 的专属 API Key 不消耗免费额度，必须换通用 API Key——很多人试完订阅才发现赠额一分没动。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://help.aliyun.com/zh/model-studio/new-free-quota",
    "src": "official",
    "tags": [
     "新手首选",
     "90 天"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-volc",
@@ -76,7 +77,8 @@
    "src": "official",
    "tags": [
     "多模型"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-tokenhub",
@@ -85,18 +87,19 @@
    "region": "cn",
    "cat": "cloud",
    "value": "高",
-   "amount": "每个语言模型 100 万 Token；视觉 50–100 积分",
+   "amount": "文本与多模态模型各 100 万 Token；3D 模型 100 积分",
    "unit": "Token / 积分",
    "how": "开通 TokenHub 服务即领，无需单独申请。",
-   "cap": "语言模型与多模态理解模型各 100 万 Token；视觉模型按积分；额度有有效期。",
+   "cap": "语言模型与多模态理解模型各 100 万 Token；3D 模型按积分；额度有有效期。",
    "trap": "TokenHub 与混元原生 API 是两套入口，额度不互通；在混元控制台看不到 TokenHub 的赠额。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://cloud.tencent.com/product/tokenhub",
    "src": "official",
    "tags": [
     "多模态"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-qianfan",
@@ -116,7 +119,8 @@
    "src": "official",
    "tags": [
     "指定模型"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-zhipu",
@@ -131,12 +135,13 @@
    "cap": "分模型发放，部分旗舰模型不参与；有效期以站内信为准。",
    "trap": "2000 万是\"全系合计\"的口径，旗舰模型单价高，实际能跑的请求数远低于直觉。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://bigmodel.cn/",
    "src": "official",
    "tags": [
     "额度大"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-deepseek",
@@ -157,7 +162,8 @@
    "tags": [
     "无需绑卡",
     "30 天"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-siliconflow",
@@ -178,7 +184,8 @@
    "tags": [
     "国内直连",
     "永久"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-modelscope",
@@ -187,18 +194,19 @@
    "region": "cn",
    "cat": "model",
    "value": "中",
-   "amount": "每日免费调用额度（按模型）",
-   "unit": "次/日",
+   "amount": "注册得 200 魔搭币；绑定阿里云账号每日再得 50",
+   "unit": "魔搭币",
    "how": "绑定阿里云账号后在「API-Inference」开通，拿 Token 调用。",
-   "cap": "每日限额，按模型独立；高峰期排队；仅社区模型。",
+   "cap": "注册赠送 200 魔搭币；绑定阿里云账号每日再得 50；按模型扣减。",
    "trap": "这是\"社区模型免费跑\"，不是\"旗舰模型免费\"；延迟不稳定，不能拿它做性能基线。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://modelscope.cn/",
    "src": "community",
    "tags": [
     "每日额度"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-workbuddy",
@@ -218,7 +226,8 @@
    "src": "official",
    "tags": [
     "任务制"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-aistudio",
@@ -239,7 +248,8 @@
    "tags": [
     "无需绑卡",
     "永久"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-groq",
@@ -260,7 +270,8 @@
    "tags": [
     "无需绑卡",
     "低延迟"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-mistral",
@@ -281,7 +292,8 @@
    "tags": [
     "额度极大",
     "限速"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-cloudflare",
@@ -301,7 +313,8 @@
    "src": "official",
    "tags": [
     "边缘推理"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-ghmodels",
@@ -321,7 +334,8 @@
    "src": "official",
    "tags": [
     "多模型"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-openrouter",
@@ -336,13 +350,14 @@
    "cap": "余额需为非负（可以是 0）；免费变体有限速；可用模型随供给变化。",
    "trap": "免费变体随时下架；生产依赖它就是给自己埋雷。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://openrouter.ai/models?max_price=0",
    "src": "official",
    "tags": [
     "聚合",
     "一个 Key"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-nvidia",
@@ -362,7 +377,8 @@
    "src": "official",
    "tags": [
     "开源模型"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-cohere",
@@ -382,7 +398,8 @@
    "src": "official",
    "tags": [
     "RAG"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-cerebras",
@@ -403,7 +420,8 @@
    "tags": [
     "已变更",
     "反面案例"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-hf",
@@ -412,19 +430,20 @@
    "region": "global",
    "cat": "model",
    "value": "无",
-   "amount": "免费账户每月约 $0.10 额度",
+   "amount": "免费账户无月度额度；月度 credits 仅限 PRO / Team / Enterprise",
    "unit": "USD",
    "how": "注册后即可用 Inference Providers。",
-   "cap": "额度极低；热门模型排队；超出按量。",
-   "trap": "这就是\"名义免费\"：$0.10 连一次完整评测都跑不完。列进来是为了让你别被\"HF 免费\"误导。",
+   "cap": "按量计费；月度 included credits 只给 PRO / Team / Enterprise；免费账户无赠额。",
+   "trap": "「HF 免费」指的是能调，不是有额度：免费账户没有月度 credits，跑评测要自己充值。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://huggingface.co/docs/inference-providers",
    "src": "official",
    "tags": [
     "名义免费",
     "反面案例"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-trae",
@@ -444,7 +463,8 @@
    "src": "official",
    "tags": [
     "国内直连"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-comate",
@@ -465,7 +485,8 @@
    "tags": [
     "国内直连",
     "不限次补全"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-codegeex",
@@ -486,7 +507,8 @@
    "tags": [
     "国内直连",
     "可离线"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-qoder",
@@ -501,12 +523,13 @@
    "cap": "Credits 制；社区版补全有限；Pro ¥59 起。",
    "trap": "300 Credits 看起来多，但按 token 扣，跑两个大任务就没了；先拿它试\"仓库理解\"值不值。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://qoder.com/",
    "src": "official",
    "tags": [
     "国内直连"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-codebuddy",
@@ -541,13 +564,14 @@
    "cap": "补全 2000 次/月；agent 额度很少；个人档默认用于训练。",
    "trap": "免费档也在\"默认用于训练\"的范围里（2026-04-24 起），公司代码别往这里放。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://github.com/features/copilot",
    "src": "official",
    "tags": [
     "无需绑卡",
     "训练条款"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-antigravity",
@@ -562,13 +586,14 @@
    "cap": "按周配额；2026-06-18 起 Gemini CLI 免费额度被大幅削减并并入 Antigravity CLI。",
    "trap": "免费额度是 Google 的获客策略，一年内已缩过一次；把免费档写进团队容量计划就是赌博。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://antigravity.google/",
    "src": "official",
    "tags": [
     "多 Agent",
     "额度会缩"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-kiro",
@@ -588,7 +613,8 @@
    "src": "official",
    "tags": [
     "规格驱动"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-kimi",
@@ -608,7 +634,8 @@
    "src": "community",
    "tags": [
     "国内直连"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-grok",
@@ -623,12 +650,13 @@
    "cap": "仅\"Limited\"；Grok 4.7 Fast 不含；付费从 $8 起。",
    "trap": "官方只写\"Limited\"，没有数字；拿它做容量评估等于没有评估。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://x.ai/cli",
    "src": "official",
    "tags": [
     "额度不公开"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-muse",
@@ -649,7 +677,8 @@
    "tags": [
     "没有免费档",
     "反面案例"
-   ]
+   ],
+   "verifiable": false
   },
   {
    "id": "fb-ghstudent",
@@ -664,12 +693,13 @@
    "cap": "仅在读学生；需每学年复核；部分权益有地区限制。",
    "trap": "毕业后会失效，别把课程项目之外的 production 依赖建在上面。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://education.github.com/pack",
    "src": "official",
    "tags": [
     "学生"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-awsactivate",
@@ -684,13 +714,14 @@
    "cap": "需公司主体与审核；有效期 1–2 年；不能用于所有服务。",
    "trap": "这是云资源 credits，不是\"AI token 免费\"；Kiro / Bedrock 的用量要先确认在覆盖范围内。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://aws.amazon.com/activate/",
    "src": "official",
    "tags": [
     "创业",
     "需审核"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-google-startups",
@@ -705,13 +736,14 @@
    "cap": "分档审核；有效期 2 年；部分 AI 服务单独计量。",
    "trap": "额度大但门槛高，个人开发者基本拿不到；别把它写进个人预算。",
    "expiry": null,
-   "verified": "2026-11-01",
+   "verified": "2026-11-03",
    "url": "https://cloud.google.com/startup",
    "src": "official",
    "tags": [
     "创业",
     "需审核"
-   ]
+   ],
+   "verifiable": true
   },
   {
    "id": "fb-hunyuan",

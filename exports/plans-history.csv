@@ -18,13 +18,13 @@ kimip,Kimi 会员,月之暗面,Plus,cn,CNY,2026-09-01,99,99,0,新 Plus 档
 bailian,阿里云百炼 Token Plan,阿里云,Lite,cn,CNY,2026-10-29,39,40,-1,改登记 Token Plan Lite（限时 ¥39 / 原价 ¥60）
 dsapi,DeepSeek API,DeepSeek,按量 · 中度用量,cn,CNY,2026-10-29,60,60,0,核对官方价格页，单价未变
 antigravity_pro,Google Antigravity,Google,AI Pro,global,USD,2026-11-01,145,,,当前价
-antigravity_ultra,Google Antigravity,Google,AI Ultra,global,USD,2026-11-01,1812,,,当前价
+antigravity_ultra,Google Antigravity,Google,AI Ultra 5×,global,USD,2026-11-01,1812,,,当前价
 applitools_starter,Applitools,Applitools,Eyes Starter,global,USD,2026-11-01,4836,,,当前价
 chatgpt_go,ChatGPT,OpenAI,Go,global,USD,2026-11-01,58,,,当前价
 chatgpt_plus,ChatGPT,OpenAI,Plus,global,USD,2026-11-01,145,,,当前价
 chatgpt_pro,ChatGPT,OpenAI,Pro $100,global,USD,2026-11-01,725,,,当前价
 chatgpt_pro200,ChatGPT,OpenAI,Pro $200,global,USD,2026-11-01,1450,,,当前价
-claude_max20,Claude,Anthropic,Max 20×,global,USD,2026-11-01,1450,,,当前价
+claude_max20,Claude,Anthropic,Ultra,global,USD,2026-11-01,1450,,,当前价
 claude_max5,Claude,Anthropic,Max 5×,global,USD,2026-11-01,725,,,当前价
 claude_pro,Claude,Anthropic,Pro,global,USD,2026-11-01,145,,,当前价
 codebuddy_adv,CodeBuddy,腾讯云,高级版,cn,CNY,2026-11-01,199,,,当前价
@@ -47,7 +47,7 @@ grok_premium,Grok Build（X 订阅）,xAI,Premium,global,USD,2026-11-01,218,,,�
 grok_super,Grok Build（X 订阅）,xAI,Super,global,USD,2026-11-01,725,,,当前价
 grok_ultra,Grok Build（X 订阅）,xAI,Ultra,global,USD,2026-11-01,1450,,,当前价
 katalon_pro,Katalon,Katalon,Pro,global,USD,2026-11-01,602,,,当前价
-kimi_pro,Kimi Code,月之暗面,Professional,cn,CNY,2026-11-01,168,,,当前价
+kimi_pro,Kimi Code,月之暗面,Pro,cn,CNY,2026-11-01,168,,,当前价
 kiro_power,Kiro,AWS,Power,global,USD,2026-11-01,1450,,,当前价
 kiro_pro,Kiro,AWS,Pro,global,USD,2026-11-01,145,,,当前价
 mabl_team,mabl,mabl,Team,global,USD,2026-11-01,3263,,,当前价
@@ -62,3 +62,9 @@ trae_lite,Trae,字节跳动,Lite,cn,CNY,2026-11-01,49,,,当前价
 trae_pro,Trae,字节跳动,Pro,cn,CNY,2026-11-01,99,,,当前价
 trae_proplus,Trae,字节跳动,Pro+,cn,CNY,2026-11-01,239,,,当前价
 trae_ultra,Trae,字节跳动,Ultra,cn,CNY,2026-11-01,699,,,当前价
+antigravity_ultra,Google Antigravity,Google,AI Ultra 5×,global,USD,2026-11-03,725,1812,-1087,由 $249.99 拆档为 $99.99（5×）/ $199.99（20×）
+antigravity_ultra20,Google Antigravity,Google,AI Ultra 20×,global,USD,2026-11-03,1450,,,新增档
+chatgpt_pro500,ChatGPT,OpenAI,Pro $500,global,USD,2026-11-03,3625,,,新增档
+comate_flagship,文心快码 Comate,百度,旗舰版,cn,CNY,2026-11-03,199,299,-100,官网价由 ¥299 下调至 ¥199
+katalon_pro,Katalon,Katalon,Pro,global,USD,2026-11-03,1088,602,486,"官网改为 $1,800/席/年，折合 $150/席/月"
+kimi_pro,Kimi Code,月之暗面,Pro,cn,CNY,2026-11-03,199,168,31,档名由 Professional 更正为 Pro，价格由 ¥168 调整为 ¥199

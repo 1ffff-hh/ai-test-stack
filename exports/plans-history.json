@@ -1,6 +1,6 @@
 {
   "generatedAt": "2026-11-03",
-  "lastVerified": "2026-11-01",
+  "lastVerified": "2026-11-03",
   "note": "一行 = 一次价格记录；prev/delta 为空表示这是该套餐的第一个记录点。",
   "rows": [
     {
@@ -254,7 +254,7 @@
       "id": "antigravity_ultra",
       "name": "Google Antigravity",
       "vendor": "Google",
-      "tier": "AI Ultra",
+      "tier": "AI Ultra 5×",
       "region": "global",
       "currency": "USD",
       "date": "2026-11-01",
@@ -332,7 +332,7 @@
       "id": "claude_max20",
       "name": "Claude",
       "vendor": "Anthropic",
-      "tier": "Max 20×",
+      "tier": "Ultra",
       "region": "global",
       "currency": "USD",
       "date": "2026-11-01",
@@ -631,7 +631,7 @@
       "id": "kimi_pro",
       "name": "Kimi Code",
       "vendor": "月之暗面",
-      "tier": "Professional",
+      "tier": "Pro",
       "region": "cn",
       "currency": "CNY",
       "date": "2026-11-01",
@@ -821,6 +821,84 @@
       "prev": "",
       "delta": "",
       "note": "当前价"
+    },
+    {
+      "id": "antigravity_ultra",
+      "name": "Google Antigravity",
+      "vendor": "Google",
+      "tier": "AI Ultra 5×",
+      "region": "global",
+      "currency": "USD",
+      "date": "2026-11-03",
+      "price": 725,
+      "prev": 1812,
+      "delta": -1087,
+      "note": "由 $249.99 拆档为 $99.99（5×）/ $199.99（20×）"
+    },
+    {
+      "id": "antigravity_ultra20",
+      "name": "Google Antigravity",
+      "vendor": "Google",
+      "tier": "AI Ultra 20×",
+      "region": "global",
+      "currency": "USD",
+      "date": "2026-11-03",
+      "price": 1450,
+      "prev": "",
+      "delta": "",
+      "note": "新增档"
+    },
+    {
+      "id": "chatgpt_pro500",
+      "name": "ChatGPT",
+      "vendor": "OpenAI",
+      "tier": "Pro $500",
+      "region": "global",
+      "currency": "USD",
+      "date": "2026-11-03",
+      "price": 3625,
+      "prev": "",
+      "delta": "",
+      "note": "新增档"
+    },
+    {
+      "id": "comate_flagship",
+      "name": "文心快码 Comate",
+      "vendor": "百度",
+      "tier": "旗舰版",
+      "region": "cn",
+      "currency": "CNY",
+      "date": "2026-11-03",
+      "price": 199,
+      "prev": 299,
+      "delta": -100,
+      "note": "官网价由 ¥299 下调至 ¥199"
+    },
+    {
+      "id": "katalon_pro",
+      "name": "Katalon",
+      "vendor": "Katalon",
+      "tier": "Pro",
+      "region": "global",
+      "currency": "USD",
+      "date": "2026-11-03",
+      "price": 1088,
+      "prev": 602,
+      "delta": 486,
+      "note": "官网改为 $1,800/席/年，折合 $150/席/月"
+    },
+    {
+      "id": "kimi_pro",
+      "name": "Kimi Code",
+      "vendor": "月之暗面",
+      "tier": "Pro",
+      "region": "cn",
+      "currency": "CNY",
+      "date": "2026-11-03",
+      "price": 199,
+      "prev": 168,
+      "delta": 31,
+      "note": "档名由 Professional 更正为 Pro，价格由 ¥168 调整为 ¥199"
     }
   ]
 }

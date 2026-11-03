@@ -46,7 +46,7 @@
     "region": "global",
     "firstSeen": "2025-02",
     "risk": "国内风控严、需境外支付",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -127,7 +127,7 @@
     "region": "global",
     "firstSeen": "2025-05",
     "risk": "云端沙箱对私有仓库有顾虑",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -208,7 +208,7 @@
     "region": "cn",
     "firstSeen": "2026-03",
     "risk": "技术预览，接口仍在变",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -288,7 +288,7 @@
     "region": "cn",
     "firstSeen": "2026-04",
     "risk": "不是编码工具",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 3,
@@ -370,7 +370,7 @@
     "region": "cn",
     "firstSeen": "2026-02",
     "risk": "绑定 GLM，隐私政策无退出选项",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -451,7 +451,7 @@
     "region": "cn",
     "firstSeen": "2025-09",
     "risk": "Credits 口径 2026-05 起变更；社区版补全有限；企业档按席位另计",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -532,7 +532,7 @@
     "region": "global",
     "firstSeen": "2025-11",
     "risk": "社区小，问题靠自己读源码",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 2,
       "testcase_gen": 3,
@@ -614,7 +614,7 @@
     "region": "global",
     "firstSeen": "2026-02",
     "risk": "配置重、安装源在境外",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 3,
       "testcase_gen": 3,
@@ -695,7 +695,7 @@
     "region": "cn",
     "firstSeen": "2026-05",
     "risk": "产品很新，长期性待观察",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 3,
       "testcase_gen": 3,
@@ -776,7 +776,7 @@
     "region": "cn",
     "firstSeen": "2025-10",
     "risk": "生态薄",
-    "verified": "2026-10-29",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 3,
       "testcase_gen": 3,
@@ -858,7 +858,7 @@
     "region": "cn",
     "firstSeen": "2026-01",
     "risk": "工具白名单最严，禁企业场景",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "capabilities": {
       "req_analysis": 4,
       "testcase_gen": 4,
@@ -964,7 +964,7 @@
     },
     "provenance": "official",
     "provenanceNote": "价格取自 cursor.com/pricing 与 X 订阅公告（2026-10-31 复核）；收购信息见 2026-08-14 官方公告。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "copilot",
@@ -1037,7 +1037,7 @@
     },
     "provenance": "official",
     "provenanceNote": "价格与 AI Credits 规则取自 GitHub 官方 plans 页与 2026-06-01 计费变更公告；训练条款见 2026-04-24 隐私更新。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "muse",
@@ -1111,7 +1111,7 @@
     },
     "provenance": "official",
     "provenanceNote": "订阅价与模型价取自 dev.meta.ai/products/muse-code（2026-10-31 复核）；训练默认值与 Contributor 地域限制见 Meta 定价文档与第三方评测。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "grok",
@@ -1260,7 +1260,7 @@
     },
     "provenance": "official",
     "provenanceNote": "免费档与 AI Pro / Ultra 关系取自 Google Antigravity 官方页；2026-06-18 免费额度调整见官方开发者论坛与多家媒体。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "devin",
@@ -1334,7 +1334,7 @@
     },
     "provenance": "official",
     "provenanceNote": "改名与档位取自 Cognition / Devin 官方 FAQ 与定价页（2026-10-31 复核）。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "kiro",
@@ -1407,7 +1407,7 @@
     },
     "provenance": "official",
     "provenanceNote": "档位与 credits 规则取自 kiro.dev/pricing（2026-10-31 复核）。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "opencode",
@@ -1480,7 +1480,7 @@
     },
     "provenance": "official",
     "provenanceNote": "协议与模型商数量取自仓库 README（2026-10 星数 20 万+，多来源交叉）。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "trae",
@@ -1553,7 +1553,7 @@
     },
     "provenance": "official",
     "provenanceNote": "档位与积分规则取自 Trae 官方套餐表与 2026-10 社区实测；Lite 仅 Work 的限定见官方套餐说明。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "comate",
@@ -1626,7 +1626,7 @@
     },
     "provenance": "official",
     "provenanceNote": "价格分别取自官网与百度智能云文档（两套口径均保留）；限速见 2026-07 官方说明与社区实测。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "codebuddy",
@@ -1699,7 +1699,7 @@
     },
     "provenance": "official",
     "provenanceNote": "档位与积分取自腾讯云 CodeBuddy 定价页；\"一半为活动赠送\"见 2026-10 社区实测。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "codegeex",
@@ -1772,7 +1772,7 @@
     },
     "provenance": "official",
     "provenanceNote": "价格取自 CodeGeeX 官网；开源与本地部署见官方仓库说明。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "testrigor",
@@ -1845,7 +1845,7 @@
     },
     "provenance": "mixed",
     "provenanceNote": "官方只公开免费档与\"定制报价\"；$300/$900 为第三方 2026-06/10 报道区间，页面已标注为区间而非标价。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "mabl",
@@ -1918,7 +1918,7 @@
     },
     "provenance": "mixed",
     "provenanceNote": "官方为定制报价；$450–500 为第三方 2026 估算区间，页面标注为估算。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "qawolf",
@@ -1991,7 +1991,7 @@
     },
     "provenance": "official",
     "provenanceNote": "自建平台计量价 1¢/credit + 15¢/runner minute 取自官方 2026-10 定价；托管服务仍为报价制。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "katalon",
@@ -2032,7 +2032,7 @@
       "future": 3,
       "compliance": 4
     },
-    "monthlyCost": 602,
+    "monthlyCost": 1088,
     "scriptable": true,
     "cnDirect": false,
     "license": "闭源",
@@ -2064,7 +2064,7 @@
     },
     "provenance": "official",
     "provenanceNote": "Pro $1000/席/年（约 $83/月）取自官方定价与 2026-10 促销口径；BYO-LLM 见 2026-01 发布说明。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "applitools",
@@ -2137,7 +2137,7 @@
     },
     "provenance": "mixed",
     "provenanceNote": "官方 Starter 与第三方 $667/$899 口径并存；页面取区间下沿做估算并在文案标注。",
-    "verified": "2026-11-01"
+    "verified": "2026-11-03"
   },
   {
     "id": "playwright",
@@ -2208,7 +2208,7 @@
       "model_switch": 4,
       "ecosystem": 5
     },
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "provenance": "official",
     "provenanceNote": "1.56 Test Agents 与 1.64 WebMCP（2026-10-07）取自 Playwright 官方博客与发布说明；MIT 许可证见仓库。"
   }

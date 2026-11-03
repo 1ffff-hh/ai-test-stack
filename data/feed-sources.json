@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-01",
+  "updated": "2026-11-03",
   "note": "自动更新管线配置。enabled=false 的源不会抓取；all 表示不按关键词过滤。",
   "keywords": [
     "AI",
@@ -145,7 +145,7 @@
     {
       "id": "openai",
       "name": "OpenAI ChatGPT Pricing",
-      "url": "https://openai.com/chatgpt/pricing/"
+      "url": "https://chatgpt.com/pricing/"
     },
     {
       "id": "copilot",
@@ -164,8 +164,8 @@
     },
     {
       "id": "grok",
-      "name": "xAI Grok / X",
-      "url": "https://x.ai/cli"
+      "name": "xAI Pricing",
+      "url": "https://x.ai/pricing"
     },
     {
       "id": "kiro",
@@ -179,7 +179,7 @@
     },
     {
       "id": "antigravity",
-      "name": "Google Antigravity",
+      "name": "Antigravity Pricing",
       "url": "https://antigravity.google/pricing"
     },
     {
@@ -189,23 +189,98 @@
     },
     {
       "id": "qoder",
-      "name": "Qoder Pricing",
-      "url": "https://qoder.com/pricing"
+      "name": "Qoder CN Pricing",
+      "url": "https://qoder.cn/pricing"
     },
     {
       "id": "comate",
-      "name": "文心快码",
-      "url": "https://comate.baidu.com/"
+      "name": "文心快码 Pricing",
+      "url": "https://comate.baidu.com/zh/pricing"
     },
     {
       "id": "codebuddy",
-      "name": "腾讯 CodeBuddy",
-      "url": "https://copilot.tencent.com/"
+      "name": "CodeBuddy Pricing",
+      "url": "https://www.codebuddy.cn/pricing"
     },
     {
       "id": "testrigor",
       "name": "testRigor Pricing",
-      "url": "https://testrigor.com/pricing/"
+      "url": "https://testrigor.com/sign-up/"
+    },
+    {
+      "id": "deepseek",
+      "name": "DeepSeek API Pricing",
+      "url": "https://api-docs.deepseek.com/quick_start/pricing"
+    },
+    {
+      "id": "volcengine",
+      "name": "火山方舟 Coding Plan",
+      "url": "https://www.volcengine.com/docs/82379/1928261"
+    },
+    {
+      "id": "bigmodel",
+      "name": "智谱 GLM Coding",
+      "url": "https://bigmodel.cn/glm-coding"
+    },
+    {
+      "id": "aliyun",
+      "name": "阿里云百炼 Token Plan",
+      "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview"
+    },
+    {
+      "id": "kimi",
+      "name": "Kimi 会员价格",
+      "url": "https://www.kimi.com/help/membership/membership-pricing"
+    },
+    {
+      "id": "minimax",
+      "name": "MiniMax M Plan",
+      "url": "https://www.minimax.cn/m-plan"
+    },
+    {
+      "id": "mimo",
+      "name": "小米 MiMo Token Plan",
+      "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan"
+    },
+    {
+      "id": "workbuddy",
+      "name": "WorkBuddy Pricing",
+      "url": "https://www.workbuddy.cn/pricing"
+    },
+    {
+      "id": "zai",
+      "name": "z.ai Pricing",
+      "url": "https://z.ai/pricing"
+    },
+    {
+      "id": "katalon",
+      "name": "Katalon Pricing",
+      "url": "https://katalon.com/pricing"
+    },
+    {
+      "id": "mabl",
+      "name": "mabl Pricing",
+      "url": "https://www.mabl.com/pricing"
+    },
+    {
+      "id": "qawolf",
+      "name": "QA Wolf Pricing",
+      "url": "https://www.qawolf.com/pricing"
+    },
+    {
+      "id": "applitools",
+      "name": "Applitools Pricing",
+      "url": "https://applitools.com/pricing/"
+    },
+    {
+      "id": "codegeex",
+      "name": "CodeGeeX",
+      "url": "https://codegeex.cn/"
+    },
+    {
+      "id": "hermes",
+      "name": "Hermes Agent",
+      "url": "https://hermes-agent.nousresearch.com"
     }
   ]
 }

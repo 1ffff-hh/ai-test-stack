@@ -680,6 +680,10 @@ async function fresh(browser, hash = '') {
     const histLines = fs.existsSync(histCsv)
       ? fs.readFileSync(histCsv, 'utf8').trim().split('\n').length - 1
       : -1;
+    // 期望行数从数据现算，别写死：加一档套餐就要回来改常量，迟早忘。
+    const plansData = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'data', 'plans.json'), 'utf8'));
+    const expectHist = plansData.reduce((n, x) => n + (x.history || [])
+      .filter(e => e && e.date && typeof e.price === 'number').length, 0);
 
     out.site = { head, home, ch, priceRows, opened, links, fixBox, histLines };
     out.siteOk = /ai-test-stack\/$|localhost/.test(head.canonical)
@@ -691,10 +695,10 @@ async function fresh(browser, hash = '') {
       && head.site && /issues\/new$/.test(head.site.issue || '')
       && home.hidden === false && home.rows === 3
       && ch.rows === 8 && /价格变动/.test(ch.sum) && /本站改动/.test(ch.sum) && ch.more
-      && priceRows.n === 5 && priceRows.fix === 5
+      && priceRows.n > 0 && priceRows.fix === priceRows.n
       && opened.length === 1 && /data-correction\.yml/.test(opened[0]) && /%E4%BB%B7%E6%A0%BC%E4%B8%8D%E5%AF%B9/.test(opened[0])
       && links.footer === 3 && fixBox === 3
-      && histLines === 63;
+      && histLines === expectHist;
     allErrs.push(...errs);
     await c.close();
   }

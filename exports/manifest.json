@@ -2,14 +2,14 @@
   "site": "AI Test Stack",
   "version": "0.9.1",
   "generatedAt": "2026-11-03",
-  "lastVerified": "2026-11-01",
+  "lastVerified": "2026-11-03",
   "fx": {
     "USD": 7.25,
     "note": "美元按 7.25 折算人民币，仅用于同表比较；下单以支付时汇率为准。"
   },
   "counts": {
     "tools": 29,
-    "plans": 57,
+    "plans": 59,
     "bundles": 32,
     "freebies": 34,
     "news": 33,

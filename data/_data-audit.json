@@ -1,0 +1,45 @@
+{
+ "updated": "2026-11-03",
+ "entries": [
+  {
+   "id": "codebuddy",
+   "name": "CodeBuddy Pricing",
+   "url": "https://www.codebuddy.cn/pricing",
+   "action": "accept",
+   "at": "2026-11-03",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-03"
+  },
+  {
+   "id": "comate",
+   "name": "文心快码 Pricing",
+   "url": "https://comate.baidu.com/zh/pricing",
+   "action": "accept",
+   "at": "2026-11-03",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-03"
+  },
+  {
+   "id": "qoder",
+   "name": "Qoder CN Pricing",
+   "url": "https://qoder.cn/pricing",
+   "action": "accept",
+   "at": "2026-11-03",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-03"
+  },
+  {
+   "id": "anthropic",
+   "name": "Anthropic Pricing",
+   "url": "https://www.anthropic.com/pricing",
+   "action": "accept",
+   "at": "2026-11-03",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-03"
+  }
+ ]
+}

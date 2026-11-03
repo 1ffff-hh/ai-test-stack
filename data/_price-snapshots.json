@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-01",
+ "updated": "2026-11-03",
  "pages": {
   "anthropic": {
    "name": "Anthropic Pricing",
    "url": "https://www.anthropic.com/pricing",
-   "hash": "a0fcd5ee7c19b97a",
+   "hash": "f9e9aaa6d1385ece",
    "prices": [
     "$0",
     "$17",
@@ -31,13 +31,20 @@
     "$0.20",
     "$5"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "copilot": {
    "name": "GitHub Copilot Plans",
    "url": "https://github.com/features/copilot/plans",
-   "hash": "2123a05b74463a7e",
+   "hash": "3a8a97b5bf6b5f89",
    "prices": [
+    "$ 0",
+    "$ 10",
+    "$15",
+    "$ 39",
+    "$70",
+    "$ 100",
+    "$200",
     "$0",
     "$10",
     "$39",
@@ -54,11 +61,9 @@
     "$0.01",
     "$0.01",
     "$10",
-    "$0.01",
-    "$0.01",
-    "$10"
+    "$0.01"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "cursor": {
    "name": "Cursor Pricing",
@@ -88,7 +93,7 @@
     "$200",
     "$30"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "kiro": {
    "name": "Kiro Pricing",
@@ -119,7 +124,7 @@
     "$100",
     "$0.04"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "devin": {
    "name": "Devin Pricing",
@@ -137,10 +142,10 @@
     "$80",
     "$40"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "antigravity": {
-   "name": "Google Antigravity",
+   "name": "Antigravity Pricing",
    "url": "https://antigravity.google/pricing",
    "hash": "48b1aa945dab285e",
    "prices": [
@@ -148,45 +153,246 @@
     "$30",
     "$0"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "trae": {
    "name": "Trae CN Pricing",
    "url": "https://www.trae.cn/pricing",
-   "hash": "af55bc5b5fd6f4af",
+   "hash": "0a6816d6b722556b",
    "prices": [
     "¥ 0",
-    "¥ 39",
+    "¥ 34",
     "¥49",
     "¥ 69",
     "¥99",
-    "¥ 219",
+    "¥ 167",
     "¥239",
-    "¥ 629",
+    "¥ 489",
     "¥699"
    ],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "qoder": {
-   "name": "Qoder Pricing",
-   "url": "https://qoder.com/pricing",
-   "hash": "558bb68b8f9549fe",
+   "name": "Qoder CN Pricing",
+   "url": "https://qoder.cn/pricing",
+   "hash": "be502db8ba5c22da",
    "prices": [],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "comate": {
-   "name": "文心快码",
-   "url": "https://comate.baidu.com/",
-   "hash": "e3b0c44298fc1c14",
+   "name": "文心快码 Pricing",
+   "url": "https://comate.baidu.com/zh/pricing",
+   "hash": "be55e50b29940216",
    "prices": [],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
   },
   "codebuddy": {
-   "name": "腾讯 CodeBuddy",
-   "url": "https://copilot.tencent.com/",
-   "hash": "a313ae54e13445eb",
+   "name": "CodeBuddy Pricing",
+   "url": "https://www.codebuddy.cn/pricing",
+   "hash": "88ab9e9a01576db5",
    "prices": [],
-   "at": "2026-11-01"
+   "at": "2026-11-03"
+  },
+  "testrigor": {
+   "name": "testRigor Pricing",
+   "url": "https://testrigor.com/sign-up/",
+   "hash": "990acf232d228d98",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "deepseek": {
+   "name": "DeepSeek API Pricing",
+   "url": "https://api-docs.deepseek.com/quick_start/pricing",
+   "hash": "b530894472053c7c",
+   "prices": [
+    "$0.00",
+    "$0.02",
+    "$0.00",
+    "$0.04",
+    "$0.15",
+    "$0.66",
+    "$0.3",
+    "$1.32",
+    "$0.6",
+    "$1.98",
+    "$1.2",
+    "$3.96",
+    "$0.75",
+    "$0.75"
+   ],
+   "at": "2026-11-03"
+  },
+  "volcengine": {
+   "name": "火山方舟 Coding Plan",
+   "url": "https://www.volcengine.com/docs/82379/1928261",
+   "hash": "3917926d617a9930",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "bigmodel": {
+   "name": "智谱 GLM Coding",
+   "url": "https://bigmodel.cn/glm-coding",
+   "hash": "429c969546e1c3d9",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "aliyun": {
+   "name": "阿里云百炼 Token Plan",
+   "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview",
+   "hash": "196a1c10cc008b18",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "kimi": {
+   "name": "Kimi 会员价格",
+   "url": "https://www.kimi.com/help/membership/membership-pricing",
+   "hash": "a39c2ca249935abd",
+   "prices": [
+    "¥49",
+    "¥468",
+    "¥39",
+    "¥99",
+    "¥948",
+    "¥79",
+    "¥199",
+    "¥1",
+    "¥159",
+    "¥699",
+    "¥6",
+    "¥559",
+    "¥1",
+    "¥13",
+    "¥1",
+    "¥3"
+   ],
+   "at": "2026-11-03"
+  },
+  "minimax": {
+   "name": "MiniMax M Plan",
+   "url": "https://www.minimax.cn/m-plan",
+   "hash": "264187265f6885c7",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "mimo": {
+   "name": "小米 MiMo Token Plan",
+   "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
+   "hash": "2390b6bb44564db9",
+   "prices": [
+    "$6",
+    "¥39",
+    "$16",
+    "¥99",
+    "$50",
+    "¥329",
+    "$100",
+    "¥659",
+    "$63.36",
+    "¥408",
+    "$168.96",
+    "¥1044",
+    "$528.00",
+    "¥3468",
+    "$1056.00",
+    "¥6948",
+    "$16",
+    "¥99",
+    "$50",
+    "¥329",
+    "$100",
+    "¥659",
+    "$168.96",
+    "¥1"
+   ],
+   "at": "2026-11-03"
+  },
+  "workbuddy": {
+   "name": "WorkBuddy Pricing",
+   "url": "https://www.workbuddy.cn/pricing",
+   "hash": "0a23e08c1c85222b",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "zai": {
+   "name": "z.ai Pricing",
+   "url": "https://z.ai/pricing",
+   "hash": "3b7727ac83e8ce84",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "katalon": {
+   "name": "Katalon Pricing",
+   "url": "https://katalon.com/pricing",
+   "hash": "e215665dae8c3db9",
+   "prices": [
+    "$1",
+    "$2",
+    "$150",
+    "$1",
+    "$150"
+   ],
+   "at": "2026-11-03"
+  },
+  "mabl": {
+   "name": "mabl Pricing",
+   "url": "https://www.mabl.com/pricing",
+   "hash": "8e2825337ec57456",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "qawolf": {
+   "name": "QA Wolf Pricing",
+   "url": "https://www.qawolf.com/pricing",
+   "hash": "fa9baa2a2d23dba0",
+   "prices": [
+    "$ 1",
+    "$ 2",
+    "$ 2",
+    "$2",
+    "$89",
+    "$89",
+    "$1",
+    "$1",
+    "$13",
+    "$2",
+    "$4"
+   ],
+   "at": "2026-11-03"
+  },
+  "applitools": {
+   "name": "Applitools Pricing",
+   "url": "https://applitools.com/pricing/",
+   "hash": "c656531adc21da4d",
+   "prices": [
+    "$667"
+   ],
+   "at": "2026-11-03"
+  },
+  "codegeex": {
+   "name": "CodeGeeX",
+   "url": "https://codegeex.cn/",
+   "hash": "e3b0c44298fc1c14",
+   "prices": [],
+   "at": "2026-11-03"
+  },
+  "hermes": {
+   "name": "Hermes Agent",
+   "url": "https://hermes-agent.nousresearch.com",
+   "hash": "0a2cf54d57266550",
+   "prices": [
+    "$0",
+    "$0",
+    "$20",
+    "$22.00",
+    "$10.00",
+    "$100",
+    "$110.00",
+    "$50.00",
+    "$200",
+    "$220.00",
+    "$100.00"
+   ],
+   "at": "2026-11-03"
   }
  }
 }

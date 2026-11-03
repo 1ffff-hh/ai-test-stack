@@ -1,99 +1,14 @@
 {
- "at": "2026-11-01T15:39:18.632Z",
+ "at": "2026-11-03T07:27:46.286Z",
  "dry": false,
  "offline": false,
- "feeds": [
-  {
-   "id": "openai",
-   "name": "OpenAI News",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "anthropic",
-   "name": "Anthropic News",
-   "ok": false,
-   "n": 0,
-   "err": "HTTP 404"
-  },
-  {
-   "id": "googleai",
-   "name": "Google AI Blog",
-   "ok": false,
-   "n": 0,
-   "err": "Client network socket disconnected before secure TLS connection was established"
-  },
-  {
-   "id": "deepmind",
-   "name": "Google DeepMind",
-   "ok": true,
-   "n": 7,
-   "err": ""
-  },
-  {
-   "id": "hf",
-   "name": "Hugging Face Blog",
-   "ok": false,
-   "n": 0,
-   "err": "timeout"
-  },
-  {
-   "id": "github",
-   "name": "GitHub Blog",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "techcrunch-ai",
-   "name": "TechCrunch AI",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "verge-ai",
-   "name": "The Verge AI",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "jiqizhixin",
-   "name": "机器之心",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "qbitai",
-   "name": "量子位",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "infoq-cn",
-   "name": "InfoQ 中文",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  },
-  {
-   "id": "oschina",
-   "name": "开源中国",
-   "ok": true,
-   "n": 0,
-   "err": ""
-  }
- ],
+ "feeds": [],
  "pricing": [
   {
    "id": "anthropic",
    "name": "Anthropic Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -101,21 +16,21 @@
    "name": "OpenAI ChatGPT Pricing",
    "ok": false,
    "changed": false,
-   "err": "HTTP 403"
+   "err": "timeout"
   },
   {
    "id": "copilot",
    "name": "GitHub Copilot Plans",
-   "ok": true,
+   "ok": false,
    "changed": false,
-   "err": ""
+   "err": "timeout"
   },
   {
    "id": "cursor",
    "name": "Cursor Pricing",
-   "ok": false,
+   "ok": true,
    "changed": false,
-   "err": "timeout"
+   "err": ""
   },
   {
    "id": "muse",
@@ -126,7 +41,7 @@
   },
   {
    "id": "grok",
-   "name": "xAI Grok / X",
+   "name": "xAI Pricing",
    "ok": false,
    "changed": false,
    "err": "timeout"
@@ -141,13 +56,13 @@
   {
    "id": "devin",
    "name": "Devin Pricing",
-   "ok": false,
+   "ok": true,
    "changed": false,
-   "err": "timeout"
+   "err": ""
   },
   {
    "id": "antigravity",
-   "name": "Google Antigravity",
+   "name": "Antigravity Pricing",
    "ok": true,
    "changed": false,
    "err": ""
@@ -161,89 +76,220 @@
   },
   {
    "id": "qoder",
-   "name": "Qoder Pricing",
+   "name": "Qoder CN Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "comate",
-   "name": "文心快码",
+   "name": "文心快码 Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "codebuddy",
-   "name": "腾讯 CodeBuddy",
+   "name": "CodeBuddy Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "testrigor",
    "name": "testRigor Pricing",
-   "ok": false,
+   "ok": true,
    "changed": false,
-   "err": "timeout"
+   "err": ""
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek API Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "volcengine",
+   "name": "火山方舟 Coding Plan",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "bigmodel",
+   "name": "智谱 GLM Coding",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "aliyun",
+   "name": "阿里云百炼 Token Plan",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "kimi",
+   "name": "Kimi 会员价格",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "minimax",
+   "name": "MiniMax M Plan",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "mimo",
+   "name": "小米 MiMo Token Plan",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "workbuddy",
+   "name": "WorkBuddy Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "zai",
+   "name": "z.ai Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "katalon",
+   "name": "Katalon Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "mabl",
+   "name": "mabl Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "qawolf",
+   "name": "QA Wolf Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "applitools",
+   "name": "Applitools Pricing",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "codegeex",
+   "name": "CodeGeeX",
+   "ok": true,
+   "changed": false,
+   "err": ""
+  },
+  {
+   "id": "hermes",
+   "name": "Hermes Agent",
+   "ok": true,
+   "changed": false,
+   "err": ""
   }
  ],
- "news": {
-  "feeds": 12,
-  "fetched": 7,
-  "total": 31
- },
- "priceChanges": [],
+ "news": null,
+ "priceChanges": [
+  {
+   "id": "anthropic",
+   "name": "Anthropic Pricing",
+   "url": "https://www.anthropic.com/pricing",
+   "old": "a0fcd5ee7c19b97a",
+   "now": "f9e9aaa6d1385ece"
+  },
+  {
+   "id": "qoder",
+   "name": "Qoder CN Pricing",
+   "url": "https://qoder.cn/pricing",
+   "old": "558bb68b8f9549fe",
+   "now": "be502db8ba5c22da"
+  },
+  {
+   "id": "comate",
+   "name": "文心快码 Pricing",
+   "url": "https://comate.baidu.com/zh/pricing",
+   "old": "e3b0c44298fc1c14",
+   "now": "be55e50b29940216"
+  },
+  {
+   "id": "codebuddy",
+   "name": "CodeBuddy Pricing",
+   "url": "https://www.codebuddy.cn/pricing",
+   "old": "a313ae54e13445eb",
+   "now": "88ab9e9a01576db5"
+  }
+ ],
  "freshness": [
   {
    "file": "tools.json",
    "name": "工具",
-   "date": "2026-11-01",
-   "days": 1,
+   "date": "2026-11-03",
+   "days": 0,
    "stale": false
   },
   {
    "file": "plans.json",
    "name": "套餐",
-   "date": "2026-11-01",
-   "days": 1,
+   "date": "2026-11-03",
+   "days": 0,
    "stale": false
   },
   {
    "file": "promos.json",
    "name": "优惠",
    "date": "2026-10-30",
-   "days": 3,
+   "days": 4,
    "stale": false
   },
   {
    "file": "freebies.json",
    "name": "免费额度",
    "date": "2026-11-01",
-   "days": 1,
+   "days": 2,
    "stale": false
   },
   {
    "file": "news.json",
    "name": "AI 大事",
-   "date": "2026-11-01",
-   "days": 1,
+   "date": "2026-11-03",
+   "days": 0,
    "stale": false
   },
   {
    "file": "roles.json",
    "name": "角色阶梯",
    "date": "2026-11-01",
-   "days": 1,
+   "days": 2,
    "stale": false
   },
   {
    "file": "impact.json",
    "name": "冲击数据",
    "date": "2026-11-01",
-   "days": 1,
+   "days": 2,
    "stale": false
   }
  ],
- "durationMs": 128621
+ "pendingCount": 4,
+ "durationMs": 63750
 }
