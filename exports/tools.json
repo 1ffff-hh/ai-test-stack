@@ -1133,7 +1133,8 @@
     "strengths": [
       "$8 起步，是主流终端 agent 里最低的门口",
       "Arena 模式独此一家：同一任务多模型竞标，适合高风险改动",
-      "与 X / Grok 共用一个池，已经在付 X Premium 的人边际成本接近零"
+      "与 X / Grok 共用一个池，已经在付 X Premium 的人边际成本接近零",
+      "国内订阅可直接用支付宝 / 银联付款，不用外币卡（2026-10-31 起）"
     ],
     "weaknesses": [
       "不单卖：没有 X 账号就没有 Grok Build",
@@ -1160,7 +1161,7 @@
     "pricing": "订阅",
     "link": "https://x.ai/cli",
     "firstSeen": "2026-05",
-    "risk": "额度是 X 订阅共享池；官方不公布绝对请求数；国内需境外网络与支付",
+    "risk": "额度是 X 订阅共享池；官方不公布绝对请求数；国内需境外网络（付款已支持支付宝 / 银联）",
     "capabilities": {
       "req_analysis": 3,
       "testcase_gen": 4,
@@ -1184,8 +1185,8 @@
       "ecosystem": 3
     },
     "provenance": "official",
-    "provenanceNote": "档位与倍数取自 xAI / X 订阅页（2026-10-31 复核）；Grok Bot 归属见 X 订阅权益说明。",
-    "verified": "2026-11-01"
+    "provenanceNote": "档位与倍数取自 xAI / X 订阅页（2026-10-31 复核）；Grok Bot 归属见 X 订阅权益说明；支付宝 / 银联付款为 2026-10-31 媒体实测（IT之家），xAI 尚未发布官方公告。",
+    "verified": "2026-11-03"
   },
   {
     "id": "antigravity",

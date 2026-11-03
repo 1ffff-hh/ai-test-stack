@@ -47,10 +47,10 @@
 | muse_high | Muse Code | Meta | High | global | USD | 15 | ¥109 | 订阅 | 2026-11-01 |
 | muse_power | Muse Code | Meta | Power | global | USD | 50 | ¥363 | 订阅 | 2026-11-01 |
 | muse_max | Muse Code | Meta | Maximum | global | USD | 200 | ¥1450 | 订阅 | 2026-11-01 |
-| grok_plus | Grok Build（X 订阅） | xAI | Plus | global | USD | 8 | ¥58 | X 订阅 | 2026-11-01 |
-| grok_premium | Grok Build（X 订阅） | xAI | Premium | global | USD | 30 | ¥218 | X 订阅 | 2026-11-01 |
-| grok_super | Grok Build（X 订阅） | xAI | Super | global | USD | 100 | ¥725 | X 订阅 | 2026-11-01 |
-| grok_ultra | Grok Build（X 订阅） | xAI | Ultra | global | USD | 200 | ¥1450 | X 订阅 | 2026-11-01 |
+| grok_plus | Grok Build（X 订阅） | xAI | Plus | global | USD | 8 | ¥58 | X 订阅 | 2026-11-03 |
+| grok_premium | Grok Build（X 订阅） | xAI | Premium | global | USD | 30 | ¥218 | X 订阅 | 2026-11-03 |
+| grok_super | Grok Build（X 订阅） | xAI | Super | global | USD | 100 | ¥725 | X 订阅 | 2026-11-03 |
+| grok_ultra | Grok Build（X 订阅） | xAI | Ultra | global | USD | 200 | ¥1450 | X 订阅 | 2026-11-03 |
 | kiro_pro | Kiro | AWS | Pro | global | USD | 20 | ¥145 | Credits 套餐 | 2026-11-01 |
 | kiro_power | Kiro | AWS | Power | global | USD | 200 | ¥1450 | Credits 套餐 | 2026-11-01 |
 | devin_pro | Devin Desktop | Cognition | Pro | global | USD | 20 | ¥145 | 订阅 | 2026-11-01 |

@@ -272,6 +272,12 @@
      "d": "国内 AI 与工程动态；标题党词已在管线里过滤",
      "u": "https://www.jiqizhixin.com/rss",
      "usedFor": "AI 大事"
+    },
+    {
+     "n": "IT之家 · Grok 开通银联与支付宝",
+     "d": "用户实测：Grok 订阅页地区可选中国大陆 / 香港 / 澳门 / 台湾，付款支持银联、支付宝、Apple Pay、Google Pay；报道时 xAI 未发官方公告",
+     "u": "https://finance.sina.com.cn/stock/t/2026-10-31/doc-inixcfyv3843656.shtml",
+     "usedFor": "Grok 支付方式"
     }
    ]
   }

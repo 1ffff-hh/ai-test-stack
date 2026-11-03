@@ -41,10 +41,10 @@ muse_everyday,Muse Code,Meta,Everyday,global,USD,5,36,coding,订阅,10–50 prom
 muse_high,Muse Code,Meta,High,global,USD,15,109,coding,订阅,5× Everyday,2026-11-01,需境外网络 | 默认用于训练 | 仅 Meta 模型
 muse_power,Muse Code,Meta,Power,global,USD,50,363,coding,订阅,20× Everyday + Muse Wonder Full,2026-11-01,需境外网络 | 默认用于训练 | 仅 Meta 模型
 muse_max,Muse Code,Meta,Maximum,global,USD,200,1450,coding,订阅,80× Everyday,2026-11-01,需境外网络 | 默认用于训练 | 仅 Meta 模型
-grok_plus,Grok Build（X 订阅）,xAI,Plus,global,USD,8,58,member,X 订阅,Basic，共享池,2026-11-01,需境外网络 | 需 X 账号 | 额度共享
-grok_premium,Grok Build（X 订阅）,xAI,Premium,global,USD,30,218,member,X 订阅,4× Plus,2026-11-01,需境外网络 | 需 X 账号 | 额度共享
-grok_super,Grok Build（X 订阅）,xAI,Super,global,USD,100,725,member,X 订阅,15× Plus,2026-11-01,需境外网络 | 需 X 账号 | 额度共享
-grok_ultra,Grok Build（X 订阅）,xAI,Ultra,global,USD,200,1450,member,X 订阅,50× Plus,2026-11-01,需境外网络 | 需 X 账号 | 额度共享
+grok_plus,Grok Build（X 订阅）,xAI,Plus,global,USD,8,58,member,X 订阅,Basic，共享池,2026-11-03,需境外网络 | 需 X 账号 | 额度共享
+grok_premium,Grok Build（X 订阅）,xAI,Premium,global,USD,30,218,member,X 订阅,4× Plus,2026-11-03,需境外网络 | 需 X 账号 | 额度共享
+grok_super,Grok Build（X 订阅）,xAI,Super,global,USD,100,725,member,X 订阅,15× Plus,2026-11-03,需境外网络 | 需 X 账号 | 额度共享
+grok_ultra,Grok Build（X 订阅）,xAI,Ultra,global,USD,200,1450,member,X 订阅,50× Plus,2026-11-03,需境外网络 | 需 X 账号 | 额度共享
 kiro_pro,Kiro,AWS,Pro,global,USD,20,145,coding,Credits 套餐,1000 credits,2026-11-01,需境外网络 | credits 制
 kiro_power,Kiro,AWS,Power,global,USD,200,1450,coding,Credits 套餐,10000 credits,2026-11-01,需境外网络 | credits 制
 devin_pro,Devin Desktop,Cognition,Pro,global,USD,20,145,coding,订阅,本地 agent 额度 + 少量云任务,2026-11-01,需境外网络 | 云用量另计

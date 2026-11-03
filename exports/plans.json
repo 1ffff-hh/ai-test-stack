@@ -2651,7 +2651,8 @@
     "risk": "额度与聊天/语音/Imagine 共享；官方不公布绝对请求数",
     "pros": [
       "$8 最低终端 agent 门票",
-      "已在用 X Premium 的人边际成本近零"
+      "已在用 X Premium 的人边际成本近零",
+      "可用支付宝 / 银联付款，不用外币卡"
     ],
     "cons": [
       "共享池",
@@ -2680,7 +2681,7 @@
       }
     ],
     "verdict": "$8 能用，但别把它当\"无限编程\"——它是聊天额度的另一个出口。",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "tierOrder": 0,
     "type": "订阅",
     "form": "member",
@@ -2713,7 +2714,8 @@
     "tools": "Grok Build + Grok Bot + Cursor Pro 权益",
     "risk": "捆绑内容多，实际编程额度占比不透明",
     "pros": [
-      "含 Grok Bot 与 Cursor Pro 权益"
+      "含 Grok Bot 与 Cursor Pro 权益",
+      "可用支付宝 / 银联付款，不用外币卡"
     ],
     "cons": [
       "额度仍不透明"
@@ -2741,7 +2743,7 @@
       }
     ],
     "verdict": "想要 Grok Bot 的人从这档开始；纯编码用途性价比一般。",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "tierOrder": 1,
     "type": "订阅",
     "form": "member",
@@ -2774,7 +2776,8 @@
     "tools": "同上",
     "risk": "官方只给倍数，无绝对容量",
     "pros": [
-      "高峰优先"
+      "高峰优先",
+      "可用支付宝 / 银联付款，不用外币卡"
     ],
     "cons": [
       "与 Claude Max 同价但能力未验证"
@@ -2802,7 +2805,7 @@
       }
     ],
     "verdict": "X 深度用户的档位，编码团队没有理由优先选它。",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "tierOrder": 2,
     "type": "订阅",
     "form": "member",
@@ -2835,7 +2838,8 @@
     "tools": "同上",
     "risk": "最高档仍不公布绝对额度",
     "pros": [
-      "50 倍额度"
+      "50 倍额度",
+      "可用支付宝 / 银联付款，不用外币卡"
     ],
     "cons": [
       "$200 无容量承诺"
@@ -2863,7 +2867,7 @@
       }
     ],
     "verdict": "除非你是 X 生态重度用户，否则同价选 Claude / Copilot 更稳。",
-    "verified": "2026-11-01",
+    "verified": "2026-11-03",
     "tierOrder": 3,
     "type": "订阅",
     "form": "member",
