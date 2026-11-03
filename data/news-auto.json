@@ -2,40 +2,20 @@
  "updated": "2026-11-03",
  "events": [
   {
-   "id": "auto-qbitai-670561077e",
+   "id": "auto-qbitai-cf58e478c7",
    "date": "2026-11-03",
    "region": "cn",
    "kind": "model",
-   "title": "纯语音Personal Agent来了！或许，这就是乔布斯心中的Siri",
-   "body": "终于，有了一个可以触摸的起点",
+   "title": "MIT：GPT-6 Astra能直接修改Qwen权重，数学能力暴涨6倍",
+   "body": "指令执行能力也同步提升",
    "impact": "",
    "source": {
     "name": "量子位",
-    "url": "https://www.qbitai.com/2026/11/507419.html"
+    "url": "https://www.qbitai.com/2026/11/507322.html"
    },
    "srcType": "auto",
    "auto": true,
    "feed": "qbitai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-0ec5a78caa",
-   "date": "2026-11-03",
-   "region": "global",
-   "kind": "funding",
-   "title": "Apple Watch’s AI features for rewinding and recapping conversations begin beta testing",
-   "body": "Now in beta: Apple's new Audio Intelligence features can help you remember what someone said or take notes on conversations.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/11/02/apple-watchs-ai-features-for-rewinding-and-recapping-conversations-begin-beta-testing/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -62,140 +42,40 @@
    ]
   },
   {
-   "id": "auto-qbitai-cf58e478c7",
+   "id": "auto-techcrunch-ai-0ec5a78caa",
+   "date": "2026-11-03",
+   "region": "global",
+   "kind": "funding",
+   "title": "Apple Watch’s AI features for rewinding and recapping conversations begin beta testing",
+   "body": "Now in beta: Apple's new Audio Intelligence features can help you remember what someone said or take notes on conversations.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/11/02/apple-watchs-ai-features-for-rewinding-and-recapping-conversations-begin-beta-testing/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-qbitai-670561077e",
    "date": "2026-11-03",
    "region": "cn",
    "kind": "model",
-   "title": "MIT：GPT-6 Astra能直接修改Qwen权重，数学能力暴涨6倍",
-   "body": "指令执行能力也同步提升",
+   "title": "纯语音Personal Agent来了！或许，这就是乔布斯心中的Siri",
+   "body": "终于，有了一个可以触摸的起点",
    "impact": "",
    "source": {
     "name": "量子位",
-    "url": "https://www.qbitai.com/2026/11/507322.html"
+    "url": "https://www.qbitai.com/2026/11/507419.html"
    },
    "srcType": "auto",
    "auto": true,
    "feed": "qbitai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-googleai-9ed47b5b1f",
-   "date": "2026-11-02",
-   "region": "global",
-   "kind": "model",
-   "title": "The latest AI news we announced in October 2026",
-   "body": "Here are Google’s latest AI updates from October 2026",
-   "impact": "",
-   "source": {
-    "name": "Google AI Blog",
-    "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "googleai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-9913b3df2a",
-   "date": "2026-11-02",
-   "region": "global",
-   "kind": "funding",
-   "title": "Elon Musk throttles Grok Bot limits due to ‘unsustainably high’ costs",
-   "body": "Musk recently referred to Grok Bot as having \"the fastest growth of a product that I've ever seen in my life.\"",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/11/02/elon-musk-throttles-grok-bot-limits-due-to-unsustainably-high-costs/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-8ea8980342",
-   "date": "2026-11-02",
-   "region": "global",
-   "kind": "funding",
-   "title": "OpenAI is finally merging ChatGPT’s Chat and Work tabs",
-   "body": "OpenAI said that ChatGPT and Codex will draw usage from the same allocation pool after this change.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/11/02/openai-is-finally-merging-chatgpts-chat-and-work-tabs/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-verge-ai-301453efb2",
-   "date": "2026-11-02",
-   "region": "global",
-   "kind": "product",
-   "title": "Anthropic clamps down on Claude’s AI video game clones",
-   "body": "Anthropic has updated Claude Code's system prompt to prevent the AI tool from being used to re-create existing video games, as reported by Tom's Hardware. Retro gaming is currently being overrun with AI-made decompilations, recompilations, and ports, but while",
-   "impact": "",
-   "source": {
-    "name": "The Verge AI",
-    "url": "https://www.theverge.com/ai-artificial-intelligence/1024632/anthropic-claude-ai-video-game-clones"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "verge-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-qbitai-31c4055ff5",
-   "date": "2026-11-02",
-   "region": "cn",
-   "kind": "model",
-   "title": "OpenAI重写大模型法则，第一条：忠于人类！！",
-   "body": "新版“机器人三定律”。",
-   "impact": "",
-   "source": {
-    "name": "量子位",
-    "url": "https://www.qbitai.com/2026/11/507225.html"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "qbitai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-eca50e2c05",
-   "date": "2026-11-02",
-   "region": "cn",
-   "kind": "product",
-   "title": "DeepSeek 团队把 Agent 设计成“操作系统”：多任务的上限不该是人的注意力",
-   "body": "DeepSeek Harness 团队发了一篇架构长文，讲他们怎么做出一个\"永远在线\"的 Agent。文章有一句话很精辟： 单任务的上限取决于模型能力，多任务的上限取决于人的注意力。 他们观察到，一个人通常只能同时跟进 3 到 5 个活跃 Session。因为现有 Agent 都以单个 Session 为单位，Session 之间彼此独立——你并行推进多项工作...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503338/deepseek-harness-super-agent"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -222,16 +102,16 @@
    ]
   },
   {
-   "id": "auto-oschina-09c512c223",
-   "date": "2026-10-30",
+   "id": "auto-oschina-eca50e2c05",
+   "date": "2026-11-02",
    "region": "cn",
    "kind": "product",
-   "title": "拿注意力层当内存——有人在 Qwen 权重里编译了一颗 RISC-V CPU",
-   "body": "开发者 Divyansh Agrawal 往 Qwen 3.5 4B 的权重里编译了一颗真正的 RISC-V CPU，然后用模型自己的 Gated DeltaNet 注意力层当内存。他给这东西起名 Qwenputer。 先把话说明白：这不是插件、不是工具调用、也不是沙箱。CPU 完全跑在模型的前向传播里，能执行算术、跑 C 和 MicroPython 代码，不需要任何外部运行时。 原理...",
+   "title": "DeepSeek 团队把 Agent 设计成“操作系统”：多任务的上限不该是人的注意力",
+   "body": "DeepSeek Harness 团队发了一篇架构长文，讲他们怎么做出一个\"永远在线\"的 Agent。文章有一句话很精辟： 单任务的上限取决于模型能力，多任务的上限取决于人的注意力。 他们观察到，一个人通常只能同时跟进 3 到 5 个活跃 Session。因为现有 Agent 都以单个 Session 为单位，Session 之间彼此独立——你并行推进多项工作...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503307/qwenputer-risc-v"
+    "url": "https://www.oschina.net/news/503338/deepseek-harness-super-agent"
    },
    "srcType": "auto",
    "auto": true,
@@ -242,16 +122,156 @@
    ]
   },
   {
-   "id": "auto-oschina-8260e50a24",
+   "id": "auto-qbitai-31c4055ff5",
+   "date": "2026-11-02",
+   "region": "cn",
+   "kind": "model",
+   "title": "OpenAI重写大模型法则，第一条：忠于人类！！",
+   "body": "新版“机器人三定律”。",
+   "impact": "",
+   "source": {
+    "name": "量子位",
+    "url": "https://www.qbitai.com/2026/11/507225.html"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "qbitai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-verge-ai-301453efb2",
+   "date": "2026-11-02",
+   "region": "global",
+   "kind": "product",
+   "title": "Anthropic clamps down on Claude’s AI video game clones",
+   "body": "Anthropic has updated Claude Code's system prompt to prevent the AI tool from being used to re-create existing video games, as reported by Tom's Hardware. Retro gaming is currently being overrun with AI-made decompilations, recompilations, and ports, but while",
+   "impact": "",
+   "source": {
+    "name": "The Verge AI",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1024632/anthropic-claude-ai-video-game-clones"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "verge-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-8ea8980342",
+   "date": "2026-11-02",
+   "region": "global",
+   "kind": "funding",
+   "title": "OpenAI is finally merging ChatGPT’s Chat and Work tabs",
+   "body": "OpenAI said that ChatGPT and Codex will draw usage from the same allocation pool after this change.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/11/02/openai-is-finally-merging-chatgpts-chat-and-work-tabs/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-9913b3df2a",
+   "date": "2026-11-02",
+   "region": "global",
+   "kind": "funding",
+   "title": "Elon Musk throttles Grok Bot limits due to ‘unsustainably high’ costs",
+   "body": "Musk recently referred to Grok Bot as having \"the fastest growth of a product that I've ever seen in my life.\"",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/11/02/elon-musk-throttles-grok-bot-limits-due-to-unsustainably-high-costs/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-googleai-9ed47b5b1f",
+   "date": "2026-11-02",
+   "region": "global",
+   "kind": "model",
+   "title": "The latest AI news we announced in October 2026",
+   "body": "Here are Google’s latest AI updates from October 2026",
+   "impact": "",
+   "source": {
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "googleai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-06e6afaaf5",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "Zest’s new AI agent finds restaurants and books reservations over text",
+   "body": "Can't agree on where to eat? Zest's AI concierge can combine everyone's tastes, put restaurant options to a vote, and make the reservation.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-4f134d3f83",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "DoorDash said it’s only received ‘several hundred’ orders from AI agents",
+   "body": "DoorDash said that it is open to working with third-party agent makers.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/doordash-said-its-only-received-several-hundred-orders-from-ai-agents/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-6e1a5813bb",
    "date": "2026-10-30",
    "region": "cn",
    "kind": "product",
-   "title": "MiniMax Code 团队把自己每天用的 16 个 Agent 技能开源了",
-   "body": "MiniMax Code 团队把他们自己天天在用的工作流和 skills 开源了。仓库开头第一句就把定位说清楚了：这不是提示词合集，也不是\"最佳实践\"清单，而是团队里的人每天真在用的东西——怎么让 AI 写的代码保持高标准、怎么判断一个任务该不该交给子 agent、一条长命令该等多久、长会话怎么不变得迟钝、每一轮到底是什么进了上...",
+   "title": "DeepSeek 千亿融资名单曝光，国资占比从 2% 跳到 27%",
+   "body": "DeepSeek 第二轮融资拿下了 1055 亿元人民币，约 158 亿美元。The Information 拿到了出资名单，近 30 家投资者——比金额更有意思的是名单的构成变化。 腾讯和宁德时代仍是两大主力。腾讯两轮各出 100 亿；宁德时代及其董事长两轮分别出 50 亿和 100 亿。长鑫存储和中芯国际这两家芯片厂商也在里面，金额未披露。互联网...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503308"
+    "url": "https://www.oschina.net/news/503318"
    },
    "srcType": "auto",
    "auto": true,
@@ -282,16 +302,16 @@
    ]
   },
   {
-   "id": "auto-oschina-6e1a5813bb",
+   "id": "auto-oschina-8260e50a24",
    "date": "2026-10-30",
    "region": "cn",
    "kind": "product",
-   "title": "DeepSeek 千亿融资名单曝光，国资占比从 2% 跳到 27%",
-   "body": "DeepSeek 第二轮融资拿下了 1055 亿元人民币，约 158 亿美元。The Information 拿到了出资名单，近 30 家投资者——比金额更有意思的是名单的构成变化。 腾讯和宁德时代仍是两大主力。腾讯两轮各出 100 亿；宁德时代及其董事长两轮分别出 50 亿和 100 亿。长鑫存储和中芯国际这两家芯片厂商也在里面，金额未披露。互联网...",
+   "title": "MiniMax Code 团队把自己每天用的 16 个 Agent 技能开源了",
+   "body": "MiniMax Code 团队把他们自己天天在用的工作流和 skills 开源了。仓库开头第一句就把定位说清楚了：这不是提示词合集，也不是\"最佳实践\"清单，而是团队里的人每天真在用的东西——怎么让 AI 写的代码保持高标准、怎么判断一个任务该不该交给子 agent、一条长命令该等多久、长会话怎么不变得迟钝、每一轮到底是什么进了上...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503318"
+    "url": "https://www.oschina.net/news/503308"
    },
    "srcType": "auto",
    "auto": true,
@@ -302,116 +322,16 @@
    ]
   },
   {
-   "id": "auto-techcrunch-ai-4f134d3f83",
+   "id": "auto-oschina-09c512c223",
    "date": "2026-10-30",
-   "region": "global",
-   "kind": "funding",
-   "title": "DoorDash said it’s only received ‘several hundred’ orders from AI agents",
-   "body": "DoorDash said that it is open to working with third-party agent makers.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/10/30/doordash-said-its-only-received-several-hundred-orders-from-ai-agents/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-06e6afaaf5",
-   "date": "2026-10-30",
-   "region": "global",
-   "kind": "funding",
-   "title": "Zest’s new AI agent finds restaurants and books reservations over text",
-   "body": "Can't agree on where to eat? Zest's AI concierge can combine everyone's tastes, put restaurant options to a vote, and make the reservation.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-3d6ab3b4d4",
-   "date": "2026-10-29",
    "region": "cn",
    "kind": "product",
-   "title": "Cursor 把创造 Agent 的那套工序做成了产品",
-   "body": "Cursor 把自己的家底掏出来了。10 月 20 日发布的 Agent SDK，就是他们构建 Bugbot、Security Reviewer、Rollouts 这些托管 agent 时用的那套框架——现在对外开放。 该团队提到，最有用的 agent 是贴合某个团队工作方式的。以前要这么做，基本等于二选一——要么接受一个按别人工作流设计好的产品，要么从零开始搭。Age...",
+   "title": "拿注意力层当内存——有人在 Qwen 权重里编译了一颗 RISC-V CPU",
+   "body": "开发者 Divyansh Agrawal 往 Qwen 3.5 4B 的权重里编译了一颗真正的 RISC-V CPU，然后用模型自己的 Gated DeltaNet 注意力层当内存。他给这东西起名 Qwenputer。 先把话说明白：这不是插件、不是工具调用、也不是沙箱。CPU 完全跑在模型的前向传播里，能执行算术、跑 C 和 MicroPython 代码，不需要任何外部运行时。 原理...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503287/cursor-agent-sdk"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-31504530c2",
-   "date": "2026-10-29",
-   "region": "cn",
-   "kind": "product",
-   "title": "Anthropic 平台负责人：多 Agent 跑起来之后，还有四个工程难题无法解决",
-   "body": "\"很多软件工程师正在经历一场身份危机。这份工作变了很多。有人沮丧，有人正玩得开心。\" 写这段话的是 Anthropic 平台负责人 Katelyn Lesse，她看到的是另一种可能：\"AI 要创造出它本可以创造的那些惊人成果，除非软件工程师把那些问题解决掉，否则做不到。这件事是生存级的，说实话这挺好玩。\" 她所说的\"那些问题\"，来自...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503288/new-problems-for-engineers-to-solve"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-64d3677da7",
-   "date": "2026-10-29",
-   "region": "cn",
-   "kind": "product",
-   "title": "我只说了 15 句“哪里不对”，OpenAgents 就帮我做出了一个鹈鹕骑行 3D 游戏",
-   "body": "我只说了15句“哪里不对”，OpenAgents就帮我做出了一个鹈鹕骑行3D游戏 本文所用的作品、全部渲染截图与制作过程数据，均由作者本人授权发布。 一个 161 KB 的 HTML 文件，零外部素材。AI 真正干活 5.9 小时。而这位用户做的，只是看图、说一句哪里不对。 快来成为用户体验官，快速上手！ https://openagents.org/blog/...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503291"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-3bb6a190a5",
-   "date": "2026-10-29",
-   "region": "cn",
-   "kind": "product",
-   "title": "OpenAI 隔离的 AI agent 通过 CPU 缓存互相通信",
-   "body": "OpenAI 做了个测试：把两个 agent 放进完全隔离的环境，跑在同一套硬件上，没有网络、没有共享文件，命令它们互相传递一个秘密。它们做到了——用的是处理器缓存。一个 agent 故意改写缓存里的数据，另一个测量加载时间的差异，把消息解码出来。这套手法正是著名 Spectre 和 Meltdown 攻击的原理。 这不是科幻设定，是 ...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503303/openai-securing-our-frontier-model-training-environment"
+    "url": "https://www.oschina.net/news/503307/qwenputer-risc-v"
    },
    "srcType": "auto",
    "auto": true,
@@ -442,20 +362,100 @@
    ]
   },
   {
-   "id": "auto-deepmind-2212baa2a1",
-   "date": "2026-10-28",
-   "region": "global",
-   "kind": "model",
-   "title": "Gemini 4 Carbon: Our next frontier model",
-   "body": "",
+   "id": "auto-oschina-3bb6a190a5",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "OpenAI 隔离的 AI agent 通过 CPU 缓存互相通信",
+   "body": "OpenAI 做了个测试：把两个 agent 放进完全隔离的环境，跑在同一套硬件上，没有网络、没有共享文件，命令它们互相传递一个秘密。它们做到了——用的是处理器缓存。一个 agent 故意改写缓存里的数据，另一个测量加载时间的差异，把消息解码出来。这套手法正是著名 Spectre 和 Meltdown 攻击的原理。 这不是科幻设定，是 ...",
    "impact": "",
    "source": {
-    "name": "Google DeepMind",
-    "url": "https://deepmind.google/blog/gemini-4-carbon-our-next-frontier-model/"
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503303/openai-securing-our-frontier-model-training-environment"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "deepmind",
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-64d3677da7",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "我只说了 15 句“哪里不对”，OpenAgents 就帮我做出了一个鹈鹕骑行 3D 游戏",
+   "body": "我只说了15句“哪里不对”，OpenAgents就帮我做出了一个鹈鹕骑行3D游戏 本文所用的作品、全部渲染截图与制作过程数据，均由作者本人授权发布。 一个 161 KB 的 HTML 文件，零外部素材。AI 真正干活 5.9 小时。而这位用户做的，只是看图、说一句哪里不对。 快来成为用户体验官，快速上手！ https://openagents.org/blog/...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503291"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-31504530c2",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "Anthropic 平台负责人：多 Agent 跑起来之后，还有四个工程难题无法解决",
+   "body": "\"很多软件工程师正在经历一场身份危机。这份工作变了很多。有人沮丧，有人正玩得开心。\" 写这段话的是 Anthropic 平台负责人 Katelyn Lesse，她看到的是另一种可能：\"AI 要创造出它本可以创造的那些惊人成果，除非软件工程师把那些问题解决掉，否则做不到。这件事是生存级的，说实话这挺好玩。\" 她所说的\"那些问题\"，来自...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503288/new-problems-for-engineers-to-solve"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-3d6ab3b4d4",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "Cursor 把创造 Agent 的那套工序做成了产品",
+   "body": "Cursor 把自己的家底掏出来了。10 月 20 日发布的 Agent SDK，就是他们构建 Bugbot、Security Reviewer、Rollouts 这些托管 agent 时用的那套框架——现在对外开放。 该团队提到，最有用的 agent 是贴合某个团队工作方式的。以前要这么做，基本等于二选一——要么接受一个按别人工作流设计好的产品，要么从零开始搭。Age...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503287/cursor-agent-sdk"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-0a02d539f7",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "product",
+   "title": "Legora is building the agentic operating system for legal work",
+   "body": "See how Legora uses OpenAI models, ChatGPT, and Codex to accelerate legal workflows, expand contract analysis, and free lawyers to focus on higher-value work.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/legora"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -482,16 +482,36 @@
    ]
   },
   {
-   "id": "auto-openai-0a02d539f7",
+   "id": "auto-deepmind-2212baa2a1",
    "date": "2026-10-28",
    "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Carbon: Our next frontier model",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-carbon-our-next-frontier-model/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-24b87a718a",
+   "date": "2026-10-27",
+   "region": "global",
    "kind": "product",
-   "title": "Legora is building the agentic operating system for legal work",
-   "body": "See how Legora uses OpenAI models, ChatGPT, and Codex to accelerate legal workflows, expand contract analysis, and free lawyers to focus on higher-value work.",
+   "title": "OpenAI expands partnership with Oracle to bring its apps to ChatGPT",
+   "body": "OpenAI and Oracle are expanding their partnership to bring business applications and AI agents into ChatGPT and power new Oracle offerings.",
    "impact": "",
    "source": {
     "name": "OpenAI News",
-    "url": "https://openai.com/index/legora"
+    "url": "https://openai.com/index/oracle-apps-in-chatgpt"
    },
    "srcType": "auto",
    "auto": true,
@@ -522,56 +542,16 @@
    ]
   },
   {
-   "id": "auto-openai-24b87a718a",
-   "date": "2026-10-27",
-   "region": "global",
-   "kind": "product",
-   "title": "OpenAI expands partnership with Oracle to bring its apps to ChatGPT",
-   "body": "OpenAI and Oracle are expanding their partnership to bring business applications and AI agents into ChatGPT and power new Oracle offerings.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/oracle-apps-in-chatgpt"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-openai-080dafe675",
+   "id": "auto-openai-6dd7f50a68",
    "date": "2026-10-26",
    "region": "global",
    "kind": "product",
-   "title": "Introducing GPT-6.1 Terra",
-   "body": "Bringing fast and capable computer use to everyone",
+   "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
+   "body": "How Greptile uses GPT-6 Astra to test user workflows, Daybreak to strengthen security, and Codex to reduce rework.",
    "impact": "",
    "source": {
     "name": "OpenAI News",
-    "url": "https://openai.com/index/introducing-gpt-6-1-terra"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-openai-d85c3038d4",
-   "date": "2026-10-26",
-   "region": "global",
-   "kind": "product",
-   "title": "ChatGPT’s expanding world of work",
-   "body": "Explore OpenAI Signals data on 165 work activities across nearly 100 countries, revealing how people use ChatGPT for work and how usage changes over time.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/chatgpt-expanding-world-of-work"
+    "url": "https://openai.com/index/greptile-code-review-codex-astra"
    },
    "srcType": "auto",
    "auto": true,
@@ -602,16 +582,36 @@
    ]
   },
   {
-   "id": "auto-openai-6dd7f50a68",
+   "id": "auto-openai-d85c3038d4",
    "date": "2026-10-26",
    "region": "global",
    "kind": "product",
-   "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
-   "body": "How Greptile uses GPT-6 Astra to test user workflows, Daybreak to strengthen security, and Codex to reduce rework.",
+   "title": "ChatGPT’s expanding world of work",
+   "body": "Explore OpenAI Signals data on 165 work activities across nearly 100 countries, revealing how people use ChatGPT for work and how usage changes over time.",
    "impact": "",
    "source": {
     "name": "OpenAI News",
-    "url": "https://openai.com/index/greptile-code-review-codex-astra"
+    "url": "https://openai.com/index/chatgpt-expanding-world-of-work"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-080dafe675",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "Introducing GPT-6.1 Terra",
+   "body": "Bringing fast and capable computer use to everyone",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/introducing-gpt-6-1-terra"
    },
    "srcType": "auto",
    "auto": true,
@@ -742,40 +742,20 @@
    ]
   },
   {
-   "id": "auto-hf-dced758bb6",
+   "id": "auto-googleai-b09e76dc49",
    "date": "2026-10-13",
    "region": "global",
    "kind": "model",
-   "title": "Run fast, private agents on-device with LFM2.5-24B-A2B",
-   "body": "",
+   "title": "Gemini 4 Argon: Built to solve your hardest problems",
+   "body": "We’re giving developers, enterprises, scientists, and consumers access to Gemini 4 Argon, our latest frontier model.",
    "impact": "",
    "source": {
-    "name": "Hugging Face Blog",
-    "url": "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b"
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "hf",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-deepmind-4bb6ea2a75",
-   "date": "2026-10-13",
-   "region": "global",
-   "kind": "model",
-   "title": "Gemini 4 Argon for Robotics",
-   "body": "",
-   "impact": "",
-   "source": {
-    "name": "Google DeepMind",
-    "url": "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "deepmind",
+   "feed": "googleai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -802,20 +782,40 @@
    ]
   },
   {
-   "id": "auto-googleai-b09e76dc49",
+   "id": "auto-deepmind-4bb6ea2a75",
    "date": "2026-10-13",
    "region": "global",
    "kind": "model",
-   "title": "Gemini 4 Argon: Built to solve your hardest problems",
-   "body": "We’re giving developers, enterprises, scientists, and consumers access to Gemini 4 Argon, our latest frontier model.",
+   "title": "Gemini 4 Argon for Robotics",
+   "body": "",
    "impact": "",
    "source": {
-    "name": "Google AI Blog",
-    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/"
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "googleai",
+   "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-dced758bb6",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Run fast, private agents on-device with LFM2.5-24B-A2B",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -842,26 +842,6 @@
    ]
   },
   {
-   "id": "auto-hf-1156033652",
-   "date": "2026-10-02",
-   "region": "global",
-   "kind": "model",
-   "title": "AutoSynthData: Generating Training Data for Enterprise Agents",
-   "body": "",
-   "impact": "",
-   "source": {
-    "name": "Hugging Face Blog",
-    "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "hf",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
    "id": "auto-googleai-4023b516de",
    "date": "2026-10-02",
    "region": "global",
@@ -876,6 +856,26 @@
    "srcType": "auto",
    "auto": true,
    "feed": "googleai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-1156033652",
+   "date": "2026-10-02",
+   "region": "global",
+   "kind": "model",
+   "title": "AutoSynthData: Generating Training Data for Enterprise Agents",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
    "weight": 1,
    "tags": [
     "自动抓取"

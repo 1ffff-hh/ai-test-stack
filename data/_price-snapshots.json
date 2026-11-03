@@ -4,7 +4,7 @@
   "anthropic": {
    "name": "Anthropic Pricing",
    "url": "https://www.anthropic.com/pricing",
-   "hash": "a0fcd5ee7c19b97a",
+   "hash": "af23941c686ced47",
    "prices": [
     "$0",
     "$17",
@@ -68,7 +68,7 @@
   "cursor": {
    "name": "Cursor Pricing",
    "url": "https://cursor.com/pricing",
-   "hash": "78a09598c32a7e22",
+   "hash": "253c58989be6833e",
    "prices": [
     "$0",
     "$8",
@@ -277,7 +277,7 @@
   "mimo": {
    "name": "小米 MiMo Token Plan",
    "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
-   "hash": "2390b6bb44564db9",
+   "hash": "7af07e54eed3d4fc",
    "prices": [
     "$6",
     "¥39",
