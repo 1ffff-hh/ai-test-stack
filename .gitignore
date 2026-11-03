@@ -8,6 +8,8 @@ node_modules/
 verify.json
 _site/
 *.log.tmp
+# 价格变更待办：本机队列，处置结果记在 data/_data-audit.json
+data/_pending.json
 
 # 内部材料：交接报告、错误日志。本地保留，不进公开仓库
 docs/internal/

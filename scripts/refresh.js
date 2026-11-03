@@ -181,6 +181,12 @@ async function runPricing(report) {
   const pages = cfg.pricing || [];
   const snap = { updated: new Date().toISOString().slice(0, 10), pages: Object.assign({}, prevSnap.pages) };
   const changes = [];
+  const today = new Date().toISOString().slice(0, 10);
+  /* 待办队列：检测到页面变了就记一条，等人工 data:triage 处置。
+     变了但没处置之前，快照里的旧指纹保持不变——这样它每天都会继续报，
+     不会被下一次抓取悄悄「接受」。 */
+  const prevPending = readJSON('_pending.json', { items: [] });
+  const pending = new Map((prevPending.items || []).filter(x => x.status === 'pending').map(x => [x.id, x]));
   for (const p of pages) {
     const st = { id: p.id, name: p.name, ok: false, changed: false, err: '' };
     if (OFFLINE) { st.err = 'offline'; report.pricing.push(st); continue; }
@@ -190,14 +196,39 @@ async function runPricing(report) {
       const hash = crypto.createHash('sha256').update(text).digest('hex').slice(0, 16);
       const prices = (text.match(/[$¥]\s?\d+(?:\.\d{1,2})?/g) || []).slice(0, 24);
       const old = snap.pages[p.id];
-      if (old && old.hash !== hash) { st.changed = true; changes.push({ id: p.id, name: p.name, url: p.url, old: old.hash, now: hash }); }
-      snap.pages[p.id] = { name: p.name, url: p.url, hash, prices, at: new Date().toISOString().slice(0, 10) };
+      if (old && old.hash !== hash) {
+        st.changed = true;
+        changes.push({ id: p.id, name: p.name, url: p.url, old: old.hash, now: hash });
+        const prevPrices = old.prices || [];
+        const prevItem = pending.get(p.id);
+        pending.set(p.id, {
+          id: p.id,
+          name: p.name,
+          url: p.url,
+          oldHash: old.hash,
+          newHash: hash,
+          oldPrices: prevPrices,
+          newPrices: prices,
+          added: prices.filter(x => !prevPrices.includes(x)).slice(0, 20),
+          removed: prevPrices.filter(x => !prices.includes(x)).slice(0, 20),
+          firstDetectedAt: prevItem ? prevItem.firstDetectedAt : today,
+          detectedAt: today,
+          status: 'pending'
+        });
+        // 不更新快照指纹，等 triage 处置
+      } else {
+        snap.pages[p.id] = { name: p.name, url: p.url, hash, prices, at: today };
+      }
       st.ok = true;
     } catch (e) { st.err = String(e.message || e).slice(0, 120); }
     report.pricing.push(st);
   }
-  if (!DRY) writeJSON('_price-snapshots.json', snap);
+  if (!DRY) {
+    writeJSON('_price-snapshots.json', snap);
+    writeJSON('_pending.json', { updated: today, items: Array.from(pending.values()) });
+  }
   report.priceChanges = changes;
+  report.pendingCount = pending.size;
   return changes;
 }
 
@@ -216,6 +247,11 @@ function freshness(report) {
       else if (f === 'promos.json') {
         const all = [].concat(j.freeTier || [], j.firstBuy || []).map(x => x.verified).filter(Boolean).sort();
         d = all.length ? all[all.length - 1] : null;
+      } else if (f === 'freebies.json') {
+        /* 只算「公开页能核」的条目。要登录或页面压根不写额度的标了 verifiable:false，
+           把它们算进来会让新鲜度永远显示过期，而实际上没人能核。 */
+        const all = (j.items || []).filter(x => x.verifiable !== false).map(x => x.verified).filter(Boolean).sort();
+        d = all.length ? all[all.length - 1] : (j.updated || null);
       } else d = j.updated || j.lastVerified || null;
     } catch (e) {}
     const days = d ? Math.max(0, Math.round((today - new Date(d)) / 86400000)) : null;
@@ -236,6 +272,7 @@ function freshness(report) {
   console.log(`\n刷新${DRY ? '（dry）' : ''}${OFFLINE ? '（offline）' : ''} · ${report.durationMs}ms`);
   console.log(`  新闻：${report.news ? report.news.fetched + ' 条新增 / 共 ' + report.news.total : '跳过'}`);
   console.log(`  价格页：${report.pricing.filter(p => p.ok).length}/${report.pricing.length} 抓取成功，${report.priceChanges.length} 个页面有变化`);
+  if (report.pendingCount) console.log(`  待处置：${report.pendingCount} 条 → node scripts/data-triage.js`);
   const bad = report.feeds.filter(f => !f.ok).concat(report.pricing.filter(p => !p.ok));
   if (bad.length) console.log('  失败源：' + bad.length + '（已在报告中记录，不阻塞）');
   console.log('  新鲜度：' + report.freshness.map(f => `${f.name} ${f.days == null ? '—' : f.days + 'd'}${f.stale ? '⚠' : ''}`).join(' · '));

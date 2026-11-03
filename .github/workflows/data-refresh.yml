@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   refresh:
@@ -26,6 +27,23 @@ jobs:
 
       - name: 抓取 RSS 与价格指纹
         run: node scripts/refresh.js || true
+
+      # 价格页变了就开一条 issue，把待办推到眼前；没变化就什么都不做。
+      # 已有同名 open issue 时改为追加评论，避免每周刷屏。
+      - name: 价格页有变化就开 issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          N=$(node -e "const p=require('./data/_pending.json');console.log((p.items||[]).filter(x=>x.status==='pending').length)" 2>/dev/null || echo 0)
+          if [ "$N" = "0" ]; then echo "没有待处置的价格变更"; exit 0; fi
+          TITLE="数据核验待办：${N} 个价格页有变化"
+          BODY=$(node scripts/data-triage.js)
+          NUM=$(gh issue list --state open --search "数据核验待办 in:title" --json number -q '.[0].number' || true)
+          if [ -n "$NUM" ]; then
+            gh issue comment "$NUM" --body "$BODY"
+          else
+            gh issue create --title "$TITLE" --body "$BODY"
+          fi
       - name: 重新构建并跑门禁
         run: |
           node build.js
@@ -39,7 +57,7 @@ jobs:
         run: |
           git config user.name "ai-test-stack-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/news-auto.json data/_price-snapshots.json data/_refresh-report.json index.html
+          git add data/news-auto.json data/_price-snapshots.json data/_refresh-report.json data/_data-audit.json index.html
           if git diff --cached --quiet; then
             echo "no data change"
           else

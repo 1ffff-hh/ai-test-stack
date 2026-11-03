@@ -22,6 +22,7 @@
     "refresh": "node scripts/refresh.js",
     "refresh:dry": "node scripts/refresh.js --dry",
     "refresh:offline": "node scripts/refresh.js --offline",
+    "data:triage": "node scripts/data-triage.js",
     "shots": "node scripts/shots.js"
   },
   "devDependencies": {
