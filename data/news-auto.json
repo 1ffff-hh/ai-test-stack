@@ -2,20 +2,40 @@
  "updated": "2026-11-03",
  "events": [
   {
-   "id": "auto-qbitai-cf58e478c7",
+   "id": "auto-qbitai-670561077e",
    "date": "2026-11-03",
    "region": "cn",
    "kind": "model",
-   "title": "MIT：GPT-6 Astra能直接修改Qwen权重，数学能力暴涨6倍",
-   "body": "指令执行能力也同步提升",
+   "title": "纯语音Personal Agent来了！或许，这就是乔布斯心中的Siri",
+   "body": "终于，有了一个可以触摸的起点",
    "impact": "",
    "source": {
     "name": "量子位",
-    "url": "https://www.qbitai.com/2026/11/507322.html"
+    "url": "https://www.qbitai.com/2026/11/507419.html"
    },
    "srcType": "auto",
    "auto": true,
    "feed": "qbitai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-0ec5a78caa",
+   "date": "2026-11-03",
+   "region": "global",
+   "kind": "funding",
+   "title": "Apple Watch’s AI features for rewinding and recapping conversations begin beta testing",
+   "body": "Now in beta: Apple's new Audio Intelligence features can help you remember what someone said or take notes on conversations.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/11/02/apple-watchs-ai-features-for-rewinding-and-recapping-conversations-begin-beta-testing/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -42,56 +62,16 @@
    ]
   },
   {
-   "id": "auto-oschina-b02ae75093",
-   "date": "2026-11-02",
-   "region": "cn",
-   "kind": "product",
-   "title": "Postgres 19 迟到了，原因是 LLM 找出了太多老 bug",
-   "body": "PostgreSQL 19 要迟到了，大概率拖到 11 月才发。过去十年它的发布节奏准得像钟表——不早于 9 月中，不晚于 10 月中——今年破了例。 更反常的是今年在测试阶段后期，一些相当重要的功能被撤销：UPDATE/DELETE FOR PORTION OF、SQL Property Graph Queries（SQL/PGQ）、ALTER TABLE … MERGE/SPLIT PARTITION，全部在 ...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503336/postgres-19-is-late-and-its-ais-fault"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-eca50e2c05",
-   "date": "2026-11-02",
-   "region": "cn",
-   "kind": "product",
-   "title": "DeepSeek 团队把 Agent 设计成“操作系统”：多任务的上限不该是人的注意力",
-   "body": "DeepSeek Harness 团队发了一篇架构长文，讲他们怎么做出一个\"永远在线\"的 Agent。文章有一句话很精辟： 单任务的上限取决于模型能力，多任务的上限取决于人的注意力。 他们观察到，一个人通常只能同时跟进 3 到 5 个活跃 Session。因为现有 Agent 都以单个 Session 为单位，Session 之间彼此独立——你并行推进多项工作...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503338/deepseek-harness-super-agent"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-qbitai-31c4055ff5",
-   "date": "2026-11-02",
+   "id": "auto-qbitai-cf58e478c7",
+   "date": "2026-11-03",
    "region": "cn",
    "kind": "model",
-   "title": "OpenAI重写大模型法则，第一条：忠于人类！！",
-   "body": "新版“机器人三定律”。",
+   "title": "MIT：GPT-6 Astra能直接修改Qwen权重，数学能力暴涨6倍",
+   "body": "指令执行能力也同步提升",
    "impact": "",
    "source": {
     "name": "量子位",
-    "url": "https://www.qbitai.com/2026/11/507225.html"
+    "url": "https://www.qbitai.com/2026/11/507322.html"
    },
    "srcType": "auto",
    "auto": true,
@@ -102,40 +82,20 @@
    ]
   },
   {
-   "id": "auto-verge-ai-301453efb2",
+   "id": "auto-googleai-9ed47b5b1f",
    "date": "2026-11-02",
    "region": "global",
-   "kind": "product",
-   "title": "Anthropic clamps down on Claude’s AI video game clones",
-   "body": "Anthropic has updated Claude Code's system prompt to prevent the AI tool from being used to re-create existing video games, as reported by Tom's Hardware. Retro gaming is currently being overrun with AI-made decompilations, recompilations, and ports, but while",
+   "kind": "model",
+   "title": "The latest AI news we announced in October 2026",
+   "body": "Here are Google’s latest AI updates from October 2026",
    "impact": "",
    "source": {
-    "name": "The Verge AI",
-    "url": "https://www.theverge.com/ai-artificial-intelligence/1024632/anthropic-claude-ai-video-game-clones"
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "verge-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-8ea8980342",
-   "date": "2026-11-02",
-   "region": "global",
-   "kind": "funding",
-   "title": "OpenAI is finally merging ChatGPT’s Chat and Work tabs",
-   "body": "OpenAI said that ChatGPT and Codex will draw usage from the same allocation pool after this change.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/11/02/openai-is-finally-merging-chatgpts-chat-and-work-tabs/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
+   "feed": "googleai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -162,76 +122,76 @@
    ]
   },
   {
-   "id": "auto-googleai-9ed47b5b1f",
+   "id": "auto-techcrunch-ai-8ea8980342",
    "date": "2026-11-02",
    "region": "global",
+   "kind": "funding",
+   "title": "OpenAI is finally merging ChatGPT’s Chat and Work tabs",
+   "body": "OpenAI said that ChatGPT and Codex will draw usage from the same allocation pool after this change.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/11/02/openai-is-finally-merging-chatgpts-chat-and-work-tabs/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-verge-ai-301453efb2",
+   "date": "2026-11-02",
+   "region": "global",
+   "kind": "product",
+   "title": "Anthropic clamps down on Claude’s AI video game clones",
+   "body": "Anthropic has updated Claude Code's system prompt to prevent the AI tool from being used to re-create existing video games, as reported by Tom's Hardware. Retro gaming is currently being overrun with AI-made decompilations, recompilations, and ports, but while",
+   "impact": "",
+   "source": {
+    "name": "The Verge AI",
+    "url": "https://www.theverge.com/ai-artificial-intelligence/1024632/anthropic-claude-ai-video-game-clones"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "verge-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-qbitai-31c4055ff5",
+   "date": "2026-11-02",
+   "region": "cn",
    "kind": "model",
-   "title": "The latest AI news we announced in October 2026",
-   "body": "<img src=\"https://storage.googleapis.com/gweb-uniblog-publish-prod/images/Oct_AI_Recap_social.max-600x600.format-webp.webp\">Here are Google’s latest AI updates from October 2026",
+   "title": "OpenAI重写大模型法则，第一条：忠于人类！！",
+   "body": "新版“机器人三定律”。",
    "impact": "",
    "source": {
-    "name": "Google AI Blog",
-    "url": "https://blog.google/innovation-and-ai/technology/ai/google-ai-updates-october-2026/"
+    "name": "量子位",
+    "url": "https://www.qbitai.com/2026/11/507225.html"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "googleai",
+   "feed": "qbitai",
    "weight": 1,
    "tags": [
     "自动抓取"
    ]
   },
   {
-   "id": "auto-techcrunch-ai-06e6afaaf5",
-   "date": "2026-10-30",
-   "region": "global",
-   "kind": "funding",
-   "title": "Zest’s new AI agent finds restaurants and books reservations over text",
-   "body": "Can't agree on where to eat? Zest's AI concierge can combine everyone's tastes, put restaurant options to a vote, and make the reservation.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-techcrunch-ai-4f134d3f83",
-   "date": "2026-10-30",
-   "region": "global",
-   "kind": "funding",
-   "title": "DoorDash said it’s only received ‘several hundred’ orders from AI agents",
-   "body": "DoorDash said that it is open to working with third-party agent makers.",
-   "impact": "",
-   "source": {
-    "name": "TechCrunch AI",
-    "url": "https://techcrunch.com/2026/10/30/doordash-said-its-only-received-several-hundred-orders-from-ai-agents/"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "techcrunch-ai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-6e1a5813bb",
-   "date": "2026-10-30",
+   "id": "auto-oschina-eca50e2c05",
+   "date": "2026-11-02",
    "region": "cn",
    "kind": "product",
-   "title": "DeepSeek 千亿融资名单曝光，国资占比从 2% 跳到 27%",
-   "body": "DeepSeek 第二轮融资拿下了 1055 亿元人民币，约 158 亿美元。The Information 拿到了出资名单，近 30 家投资者——比金额更有意思的是名单的构成变化。 腾讯和宁德时代仍是两大主力。腾讯两轮各出 100 亿；宁德时代及其董事长两轮分别出 50 亿和 100 亿。长鑫存储和中芯国际这两家芯片厂商也在里面，金额未披露。互联网...",
+   "title": "DeepSeek 团队把 Agent 设计成“操作系统”：多任务的上限不该是人的注意力",
+   "body": "DeepSeek Harness 团队发了一篇架构长文，讲他们怎么做出一个\"永远在线\"的 Agent。文章有一句话很精辟： 单任务的上限取决于模型能力，多任务的上限取决于人的注意力。 他们观察到，一个人通常只能同时跟进 3 到 5 个活跃 Session。因为现有 Agent 都以单个 Session 为单位，Session 之间彼此独立——你并行推进多项工作...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503318"
+    "url": "https://www.oschina.net/news/503338/deepseek-harness-super-agent"
    },
    "srcType": "auto",
    "auto": true,
@@ -242,36 +202,16 @@
    ]
   },
   {
-   "id": "auto-oschina-2d2b75a2a2",
-   "date": "2026-10-30",
+   "id": "auto-oschina-b02ae75093",
+   "date": "2026-11-02",
    "region": "cn",
    "kind": "product",
-   "title": "这个 Agent 宿主把界面做成了纯文本，你想要什么形状自己让 Agent 改",
-   "body": "Herdr 的自我介绍里有一句话很吸睛：\"每一处界面都是你 agent 能改的文件。\" 它是一个给 coding agent 用的原生宿主——Claude Code、Codex、以及任何在终端里跑的 agent 都能住进去。想法是反过来的：不是让你去学一套新的 IDE 布局，而是把整个界面做成纯文本文件，你要什么形状，让 agent 自己改。 具体做法简单到有点...",
+   "title": "Postgres 19 迟到了，原因是 LLM 找出了太多老 bug",
+   "body": "PostgreSQL 19 要迟到了，大概率拖到 11 月才发。过去十年它的发布节奏准得像钟表——不早于 9 月中，不晚于 10 月中——今年破了例。 更反常的是今年在测试阶段后期，一些相当重要的功能被撤销：UPDATE/DELETE FOR PORTION OF、SQL Property Graph Queries（SQL/PGQ）、ALTER TABLE … MERGE/SPLIT PARTITION，全部在 ...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503317/herdr-dev-agent-ide-runtime"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "oschina",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-8260e50a24",
-   "date": "2026-10-30",
-   "region": "cn",
-   "kind": "product",
-   "title": "MiniMax Code 团队把自己每天用的 16 个 Agent 技能开源了",
-   "body": "MiniMax Code 团队把他们自己天天在用的工作流和 skills 开源了。仓库开头第一句就把定位说清楚了：这不是提示词合集，也不是\"最佳实践\"清单，而是团队里的人每天真在用的东西——怎么让 AI 写的代码保持高标准、怎么判断一个任务该不该交给子 agent、一条长命令该等多久、长会话怎么不变得迟钝、每一轮到底是什么进了上...",
-   "impact": "",
-   "source": {
-    "name": "开源中国",
-    "url": "https://www.oschina.net/news/503308"
+    "url": "https://www.oschina.net/news/503336/postgres-19-is-late-and-its-ais-fault"
    },
    "srcType": "auto",
    "auto": true,
@@ -302,36 +242,16 @@
    ]
   },
   {
-   "id": "auto-openai-19aab46742",
-   "date": "2026-10-29",
-   "region": "global",
-   "kind": "product",
-   "title": "Credit Saison achieves 954% ROI in a ChatGPT Enterprise pilot",
-   "body": "Credit Saison’s ChatGPT Enterprise pilot delivered 954% ROI. See how leaders and employees helped turn the results into companywide adoption.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/credit-saison"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-oschina-3bb6a190a5",
-   "date": "2026-10-29",
+   "id": "auto-oschina-8260e50a24",
+   "date": "2026-10-30",
    "region": "cn",
    "kind": "product",
-   "title": "OpenAI 隔离的 AI agent 通过 CPU 缓存互相通信",
-   "body": "OpenAI 做了个测试：把两个 agent 放进完全隔离的环境，跑在同一套硬件上，没有网络、没有共享文件，命令它们互相传递一个秘密。它们做到了——用的是处理器缓存。一个 agent 故意改写缓存里的数据，另一个测量加载时间的差异，把消息解码出来。这套手法正是著名 Spectre 和 Meltdown 攻击的原理。 这不是科幻设定，是 ...",
+   "title": "MiniMax Code 团队把自己每天用的 16 个 Agent 技能开源了",
+   "body": "MiniMax Code 团队把他们自己天天在用的工作流和 skills 开源了。仓库开头第一句就把定位说清楚了：这不是提示词合集，也不是\"最佳实践\"清单，而是团队里的人每天真在用的东西——怎么让 AI 写的代码保持高标准、怎么判断一个任务该不该交给子 agent、一条长命令该等多久、长会话怎么不变得迟钝、每一轮到底是什么进了上...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503303/openai-securing-our-frontier-model-training-environment"
+    "url": "https://www.oschina.net/news/503308"
    },
    "srcType": "auto",
    "auto": true,
@@ -342,16 +262,96 @@
    ]
   },
   {
-   "id": "auto-oschina-64d3677da7",
-   "date": "2026-10-29",
+   "id": "auto-oschina-2d2b75a2a2",
+   "date": "2026-10-30",
    "region": "cn",
    "kind": "product",
-   "title": "我只说了 15 句“哪里不对”，OpenAgents 就帮我做出了一个鹈鹕骑行 3D 游戏",
-   "body": "我只说了15句“哪里不对”，OpenAgents就帮我做出了一个鹈鹕骑行3D游戏 本文所用的作品、全部渲染截图与制作过程数据，均由作者本人授权发布。 一个 161 KB 的 HTML 文件，零外部素材。AI 真正干活 5.9 小时。而这位用户做的，只是看图、说一句哪里不对。 快来成为用户体验官，快速上手！ https://openagents.org/blog/...",
+   "title": "这个 Agent 宿主把界面做成了纯文本，你想要什么形状自己让 Agent 改",
+   "body": "Herdr 的自我介绍里有一句话很吸睛：\"每一处界面都是你 agent 能改的文件。\" 它是一个给 coding agent 用的原生宿主——Claude Code、Codex、以及任何在终端里跑的 agent 都能住进去。想法是反过来的：不是让你去学一套新的 IDE 布局，而是把整个界面做成纯文本文件，你要什么形状，让 agent 自己改。 具体做法简单到有点...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503291"
+    "url": "https://www.oschina.net/news/503317/herdr-dev-agent-ide-runtime"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-6e1a5813bb",
+   "date": "2026-10-30",
+   "region": "cn",
+   "kind": "product",
+   "title": "DeepSeek 千亿融资名单曝光，国资占比从 2% 跳到 27%",
+   "body": "DeepSeek 第二轮融资拿下了 1055 亿元人民币，约 158 亿美元。The Information 拿到了出资名单，近 30 家投资者——比金额更有意思的是名单的构成变化。 腾讯和宁德时代仍是两大主力。腾讯两轮各出 100 亿；宁德时代及其董事长两轮分别出 50 亿和 100 亿。长鑫存储和中芯国际这两家芯片厂商也在里面，金额未披露。互联网...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503318"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "oschina",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-4f134d3f83",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "DoorDash said it’s only received ‘several hundred’ orders from AI agents",
+   "body": "DoorDash said that it is open to working with third-party agent makers.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/doordash-said-its-only-received-several-hundred-orders-from-ai-agents/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-techcrunch-ai-06e6afaaf5",
+   "date": "2026-10-30",
+   "region": "global",
+   "kind": "funding",
+   "title": "Zest’s new AI agent finds restaurants and books reservations over text",
+   "body": "Can't agree on where to eat? Zest's AI concierge can combine everyone's tastes, put restaurant options to a vote, and make the reservation.",
+   "impact": "",
+   "source": {
+    "name": "TechCrunch AI",
+    "url": "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "techcrunch-ai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-oschina-3d6ab3b4d4",
+   "date": "2026-10-29",
+   "region": "cn",
+   "kind": "product",
+   "title": "Cursor 把创造 Agent 的那套工序做成了产品",
+   "body": "Cursor 把自己的家底掏出来了。10 月 20 日发布的 Agent SDK，就是他们构建 Bugbot、Security Reviewer、Rollouts 这些托管 agent 时用的那套框架——现在对外开放。 该团队提到，最有用的 agent 是贴合某个团队工作方式的。以前要这么做，基本等于二选一——要么接受一个按别人工作流设计好的产品，要么从零开始搭。Age...",
+   "impact": "",
+   "source": {
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503287/cursor-agent-sdk"
    },
    "srcType": "auto",
    "auto": true,
@@ -382,16 +382,16 @@
    ]
   },
   {
-   "id": "auto-oschina-3d6ab3b4d4",
+   "id": "auto-oschina-64d3677da7",
    "date": "2026-10-29",
    "region": "cn",
    "kind": "product",
-   "title": "Cursor 把创造 Agent 的那套工序做成了产品",
-   "body": "Cursor 把自己的家底掏出来了。10 月 20 日发布的 Agent SDK，就是他们构建 Bugbot、Security Reviewer、Rollouts 这些托管 agent 时用的那套框架——现在对外开放。 该团队提到，最有用的 agent 是贴合某个团队工作方式的。以前要这么做，基本等于二选一——要么接受一个按别人工作流设计好的产品，要么从零开始搭。Age...",
+   "title": "我只说了 15 句“哪里不对”，OpenAgents 就帮我做出了一个鹈鹕骑行 3D 游戏",
+   "body": "我只说了15句“哪里不对”，OpenAgents就帮我做出了一个鹈鹕骑行3D游戏 本文所用的作品、全部渲染截图与制作过程数据，均由作者本人授权发布。 一个 161 KB 的 HTML 文件，零外部素材。AI 真正干活 5.9 小时。而这位用户做的，只是看图、说一句哪里不对。 快来成为用户体验官，快速上手！ https://openagents.org/blog/...",
    "impact": "",
    "source": {
     "name": "开源中国",
-    "url": "https://www.oschina.net/news/503287/cursor-agent-sdk"
+    "url": "https://www.oschina.net/news/503291"
    },
    "srcType": "auto",
    "auto": true,
@@ -402,40 +402,40 @@
    ]
   },
   {
-   "id": "auto-openai-0a02d539f7",
-   "date": "2026-10-28",
-   "region": "global",
+   "id": "auto-oschina-3bb6a190a5",
+   "date": "2026-10-29",
+   "region": "cn",
    "kind": "product",
-   "title": "Legora is building the agentic operating system for legal work",
-   "body": "See how Legora uses OpenAI models, ChatGPT, and Codex to accelerate legal workflows, expand contract analysis, and free lawyers to focus on higher-value work.",
+   "title": "OpenAI 隔离的 AI agent 通过 CPU 缓存互相通信",
+   "body": "OpenAI 做了个测试：把两个 agent 放进完全隔离的环境，跑在同一套硬件上，没有网络、没有共享文件，命令它们互相传递一个秘密。它们做到了——用的是处理器缓存。一个 agent 故意改写缓存里的数据，另一个测量加载时间的差异，把消息解码出来。这套手法正是著名 Spectre 和 Meltdown 攻击的原理。 这不是科幻设定，是 ...",
    "impact": "",
    "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/legora"
+    "name": "开源中国",
+    "url": "https://www.oschina.net/news/503303/openai-securing-our-frontier-model-training-environment"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "openai",
+   "feed": "oschina",
    "weight": 1,
    "tags": [
     "自动抓取"
    ]
   },
   {
-   "id": "auto-github-c3a85f641e",
-   "date": "2026-10-28",
+   "id": "auto-openai-19aab46742",
+   "date": "2026-10-29",
    "region": "global",
    "kind": "product",
-   "title": "Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents",
-   "body": "See how a record year of growth reached every industry, every field, and every kind of builder in the 2026 Octoverse report. The post Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents appeared first on The GitHub Blog .",
+   "title": "Credit Saison achieves 954% ROI in a ChatGPT Enterprise pilot",
+   "body": "Credit Saison’s ChatGPT Enterprise pilot delivered 954% ROI. See how leaders and employees helped turn the results into companywide adoption.",
    "impact": "",
    "source": {
-    "name": "GitHub Blog",
-    "url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/credit-saison"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "github",
+   "feed": "openai",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -462,6 +462,66 @@
    ]
   },
   {
+   "id": "auto-github-c3a85f641e",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "product",
+   "title": "Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents",
+   "body": "See how a record year of growth reached every industry, every field, and every kind of builder in the 2026 Octoverse report. The post Octoverse: Commits, pushes, reach new highs in 2026 as developers build with agents appeared first on The GitHub Blog .",
+   "impact": "",
+   "source": {
+    "name": "GitHub Blog",
+    "url": "https://github.blog/news-insights/octoverse/octoverse-commits-pushes-reach-new-highs-in-2026-as-developers-build-with-agents/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "github",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-0a02d539f7",
+   "date": "2026-10-28",
+   "region": "global",
+   "kind": "product",
+   "title": "Legora is building the agentic operating system for legal work",
+   "body": "See how Legora uses OpenAI models, ChatGPT, and Codex to accelerate legal workflows, expand contract analysis, and free lawyers to focus on higher-value work.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/legora"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-4ea736d3a3",
+   "date": "2026-10-27",
+   "region": "global",
+   "kind": "model",
+   "title": "Can we trust LLMs to judge whether a research idea is novel?",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/allenai/novelty-bench"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
    "id": "auto-openai-24b87a718a",
    "date": "2026-10-27",
    "region": "global",
@@ -472,66 +532,6 @@
    "source": {
     "name": "OpenAI News",
     "url": "https://openai.com/index/oracle-apps-in-chatgpt"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-openai-6dd7f50a68",
-   "date": "2026-10-26",
-   "region": "global",
-   "kind": "product",
-   "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
-   "body": "How Greptile uses GPT-6 Astra to test user workflows, Daybreak to strengthen security, and Codex to reduce rework.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/greptile-code-review-codex-astra"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-openai-8d34baaf86",
-   "date": "2026-10-26",
-   "region": "global",
-   "kind": "product",
-   "title": "GPT-6.1 Sol helps CodeRabbit strengthen security across complex codebases",
-   "body": "CodeRabbit uses GPT-6.1 Sol to investigate security risks across complex codebases. Its security agent helps developers review findings and proposed fixes.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/gpt-6-1-sol-coderabbit-code-security"
-   },
-   "srcType": "auto",
-   "auto": true,
-   "feed": "openai",
-   "weight": 1,
-   "tags": [
-    "自动抓取"
-   ]
-  },
-  {
-   "id": "auto-openai-d85c3038d4",
-   "date": "2026-10-26",
-   "region": "global",
-   "kind": "product",
-   "title": "ChatGPT’s expanding world of work",
-   "body": "Explore OpenAI Signals data on 165 work activities across nearly 100 countries, revealing how people use ChatGPT for work and how usage changes over time.",
-   "impact": "",
-   "source": {
-    "name": "OpenAI News",
-    "url": "https://openai.com/index/chatgpt-expanding-world-of-work"
    },
    "srcType": "auto",
    "auto": true,
@@ -562,6 +562,66 @@
    ]
   },
   {
+   "id": "auto-openai-d85c3038d4",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "ChatGPT’s expanding world of work",
+   "body": "Explore OpenAI Signals data on 165 work activities across nearly 100 countries, revealing how people use ChatGPT for work and how usage changes over time.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/chatgpt-expanding-world-of-work"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-8d34baaf86",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "GPT-6.1 Sol helps CodeRabbit strengthen security across complex codebases",
+   "body": "CodeRabbit uses GPT-6.1 Sol to investigate security risks across complex codebases. Its security agent helps developers review findings and proposed fixes.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/gpt-6-1-sol-coderabbit-code-security"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-openai-6dd7f50a68",
+   "date": "2026-10-26",
+   "region": "global",
+   "kind": "product",
+   "title": "Greptile takes bug detection beyond code review with GPT-6 Astra",
+   "body": "How Greptile uses GPT-6 Astra to test user workflows, Daybreak to strengthen security, and Codex to reduce rework.",
+   "impact": "",
+   "source": {
+    "name": "OpenAI News",
+    "url": "https://openai.com/index/greptile-code-review-codex-astra"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
    "id": "auto-openai-5a2e6d305c",
    "date": "2026-10-23",
    "region": "global",
@@ -576,6 +636,26 @@
    "srcType": "auto",
    "auto": true,
    "feed": "openai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-87d7c14e65",
+   "date": "2026-10-22",
+   "region": "global",
+   "kind": "model",
+   "title": "Turning Database Grading into RL Rewards: Post-Training Agents with ThinkingBox",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/microsoft/thinkingbox-training"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -642,20 +722,60 @@
    ]
   },
   {
-   "id": "auto-googleai-b09e76dc49",
-   "date": "2026-10-13",
+   "id": "auto-hf-dbd62fbbd8",
+   "date": "2026-10-15",
    "region": "global",
    "kind": "model",
-   "title": "Gemini 4 Argon: Built to solve your hardest problems",
-   "body": "We’re giving developers, enterprises, scientists, and consumers access to Gemini 4 Argon, our latest frontier model.",
+   "title": "Welcome Muse Spark Open: open-weight frontier multimodal mixture-of-experts model from Meta",
+   "body": "",
    "impact": "",
    "source": {
-    "name": "Google AI Blog",
-    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/"
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/meta-muse-spark-open"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "googleai",
+   "feed": "hf",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-dced758bb6",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Run fast, private agents on-device with LFM2.5-24B-A2B",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/LiquidAI/lfm25-24b-a2b"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-deepmind-4bb6ea2a75",
+   "date": "2026-10-13",
+   "region": "global",
+   "kind": "model",
+   "title": "Gemini 4 Argon for Robotics",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Google DeepMind",
+    "url": "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "deepmind",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -682,20 +802,60 @@
    ]
   },
   {
-   "id": "auto-deepmind-4bb6ea2a75",
+   "id": "auto-googleai-b09e76dc49",
    "date": "2026-10-13",
    "region": "global",
    "kind": "model",
-   "title": "Gemini 4 Argon for Robotics",
-   "body": "",
+   "title": "Gemini 4 Argon: Built to solve your hardest problems",
+   "body": "We’re giving developers, enterprises, scientists, and consumers access to Gemini 4 Argon, our latest frontier model.",
    "impact": "",
    "source": {
-    "name": "Google DeepMind",
-    "url": "https://deepmind.google/blog/gemini-4-argon-for-robotics/"
+    "name": "Google AI Blog",
+    "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/"
    },
    "srcType": "auto",
    "auto": true,
-   "feed": "deepmind",
+   "feed": "googleai",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-2942ebca5f",
+   "date": "2026-10-03",
+   "region": "global",
+   "kind": "model",
+   "title": "The Agent Said It Was Done. The Database Disagreed.",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/microsoft/thinkingbox"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-1156033652",
+   "date": "2026-10-02",
+   "region": "global",
+   "kind": "model",
+   "title": "AutoSynthData: Generating Training Data for Enterprise Agents",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/ServiceNow-AI/autosynthdata"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
    "weight": 1,
    "tags": [
     "自动抓取"
@@ -736,6 +896,46 @@
    "srcType": "auto",
    "auto": true,
    "feed": "deepmind",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-ac213ad1aa",
+   "date": "2026-09-29",
+   "region": "global",
+   "kind": "model",
+   "title": "Getting the Source Right, Not Just the Fact: Source-Aware Verification for MCP Agents",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/MultiverseComputingCAI/getting-the-source-right-not-just-the-fact-source"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
+   "weight": 1,
+   "tags": [
+    "自动抓取"
+   ]
+  },
+  {
+   "id": "auto-hf-6197b63749",
+   "date": "2026-09-28",
+   "region": "global",
+   "kind": "model",
+   "title": "Holo4: powering generalist computer-use agents",
+   "body": "",
+   "impact": "",
+   "source": {
+    "name": "Hugging Face Blog",
+    "url": "https://huggingface.co/blog/Hcompany/holo4"
+   },
+   "srcType": "auto",
+   "auto": true,
+   "feed": "hf",
    "weight": 1,
    "tags": [
     "自动抓取"

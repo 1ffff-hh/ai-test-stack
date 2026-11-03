@@ -1,8 +1,93 @@
 {
- "at": "2026-11-03T07:27:46.286Z",
+ "at": "2026-11-03T08:33:48.279Z",
  "dry": false,
  "offline": false,
- "feeds": [],
+ "feeds": [
+  {
+   "id": "openai",
+   "name": "OpenAI News",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "anthropic",
+   "name": "Anthropic News",
+   "ok": false,
+   "n": 0,
+   "err": "HTTP 404"
+  },
+  {
+   "id": "googleai",
+   "name": "Google AI Blog",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "deepmind",
+   "name": "Google DeepMind",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "hf",
+   "name": "Hugging Face Blog",
+   "ok": true,
+   "n": 8,
+   "err": ""
+  },
+  {
+   "id": "github",
+   "name": "GitHub Blog",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "techcrunch-ai",
+   "name": "TechCrunch AI",
+   "ok": true,
+   "n": 1,
+   "err": ""
+  },
+  {
+   "id": "verge-ai",
+   "name": "The Verge AI",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "jiqizhixin",
+   "name": "机器之心",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "qbitai",
+   "name": "量子位",
+   "ok": true,
+   "n": 1,
+   "err": ""
+  },
+  {
+   "id": "infoq-cn",
+   "name": "InfoQ 中文",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  },
+  {
+   "id": "oschina",
+   "name": "开源中国",
+   "ok": true,
+   "n": 0,
+   "err": ""
+  }
+ ],
  "pricing": [
   {
    "id": "anthropic",
@@ -16,35 +101,35 @@
    "name": "OpenAI ChatGPT Pricing",
    "ok": false,
    "changed": false,
-   "err": "timeout"
+   "err": "HTTP 403"
   },
   {
    "id": "copilot",
    "name": "GitHub Copilot Plans",
-   "ok": false,
-   "changed": false,
-   "err": "timeout"
-  },
-  {
-   "id": "cursor",
-   "name": "Cursor Pricing",
    "ok": true,
    "changed": false,
    "err": ""
   },
   {
+   "id": "cursor",
+   "name": "Cursor Pricing",
+   "ok": true,
+   "changed": true,
+   "err": ""
+  },
+  {
    "id": "muse",
    "name": "Meta Muse Code",
-   "ok": false,
+   "ok": true,
    "changed": false,
-   "err": "timeout"
+   "err": ""
   },
   {
    "id": "grok",
    "name": "xAI Pricing",
    "ok": false,
    "changed": false,
-   "err": "timeout"
+   "err": "HTTP 403"
   },
   {
    "id": "kiro",
@@ -78,21 +163,21 @@
    "id": "qoder",
    "name": "Qoder CN Pricing",
    "ok": true,
-   "changed": true,
+   "changed": false,
    "err": ""
   },
   {
    "id": "comate",
    "name": "文心快码 Pricing",
    "ok": true,
-   "changed": true,
+   "changed": false,
    "err": ""
   },
   {
    "id": "codebuddy",
    "name": "CodeBuddy Pricing",
    "ok": true,
-   "changed": true,
+   "changed": false,
    "err": ""
   },
   {
@@ -148,7 +233,7 @@
    "id": "mimo",
    "name": "小米 MiMo Token Plan",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -208,35 +293,32 @@
    "err": ""
   }
  ],
- "news": null,
+ "news": {
+  "feeds": 12,
+  "fetched": 10,
+  "total": 50
+ },
  "priceChanges": [
   {
    "id": "anthropic",
    "name": "Anthropic Pricing",
    "url": "https://www.anthropic.com/pricing",
-   "old": "a0fcd5ee7c19b97a",
-   "now": "f9e9aaa6d1385ece"
+   "old": "f9e9aaa6d1385ece",
+   "now": "ae737e82524b5d68"
   },
   {
-   "id": "qoder",
-   "name": "Qoder CN Pricing",
-   "url": "https://qoder.cn/pricing",
-   "old": "558bb68b8f9549fe",
-   "now": "be502db8ba5c22da"
+   "id": "cursor",
+   "name": "Cursor Pricing",
+   "url": "https://cursor.com/pricing",
+   "old": "78a09598c32a7e22",
+   "now": "253c58989be6833e"
   },
   {
-   "id": "comate",
-   "name": "文心快码 Pricing",
-   "url": "https://comate.baidu.com/zh/pricing",
-   "old": "e3b0c44298fc1c14",
-   "now": "be55e50b29940216"
-  },
-  {
-   "id": "codebuddy",
-   "name": "CodeBuddy Pricing",
-   "url": "https://www.codebuddy.cn/pricing",
-   "old": "a313ae54e13445eb",
-   "now": "88ab9e9a01576db5"
+   "id": "mimo",
+   "name": "小米 MiMo Token Plan",
+   "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
+   "old": "2390b6bb44564db9",
+   "now": "7af07e54eed3d4fc"
   }
  ],
  "freshness": [
@@ -264,8 +346,8 @@
   {
    "file": "freebies.json",
    "name": "免费额度",
-   "date": "2026-11-01",
-   "days": 2,
+   "date": "2026-11-03",
+   "days": 0,
    "stale": false
   },
   {
@@ -290,6 +372,6 @@
    "stale": false
   }
  ],
- "pendingCount": 4,
- "durationMs": 63750
+ "pendingCount": 3,
+ "durationMs": 45597
 }
