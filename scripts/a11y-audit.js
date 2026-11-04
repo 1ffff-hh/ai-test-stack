@@ -2,9 +2,10 @@ const { launch } = require('./browser');
 const path = require('path');
 // 从项目根解析，不管在哪个目录执行
 const FILE = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
-// 43 个视图 = 25 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
-// 站务页与 error 是 v2.3 新增，必须进这份清单——审计漏一页，就等于那一页没有对比度保证。
-const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','community','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
+// 17 个视图 = 8 个内容页 + 7 个站务页 + error + 404。
+// 合并前是 43 个；页内区块在合并页里，跟着所属页面一起审，所以不需要单独列。
+// 站务页与 error 必须进这份清单——审计漏一页，就等于那一页没有对比度保证。
+const VIEWS = ['home','tools','plans','stacks','signal','career','library','data','search','mine','feedback','about','help','privacy','contact','error','404'];
 
 // 真正的对比度算法：沿 DOM 往上找出第一个不透明背景，再把半透明层合成上去
 const PROBE = () => {

@@ -51,7 +51,6 @@ const data = {
   roadmap: readJSON('roadmap.json'),
   changelog: readJSON('changelog.json'),
   sources: readJSON('sources.json'),
-  modules: readJSON('modules.json'),
   nav: readJSON('nav.json'),
   pages: readJSON('pages.json'),
   planpack: readJSON('planpack.json'),
@@ -198,58 +197,46 @@ data.bundles.forEach(b => {
   if (!b.s || typeof b.s !== 'object') errors.push(`组合方案 ${b.id} 缺少评分 s`);
 });
 
-/* ---------- 模块配置校验（信息架构：功能地图把 16 个功能页组织成 5–6 个模块） ----------
-   缺了某个功能页、一个功能页归进两个模块、引用了不存在的组合——都会在构建期拦下来，
-   不等上线后用户点进空模块才发现。 */
-const FEATURE_VIEW_IDS = ['overview', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'report', 'evalset', 'health', 'community'];
-/* 站务页：不属于任何一个内容模块（它们不属于「事」，是「站」本身）。
+/* ---------- 信息架构校验：8 个内容页，页内再分区块 ----------
+   合并前是 25 个功能页 + 功能地图 + 6 个模块页的三层导航；现在一级就是这 8 页，
+   页内区块用 #page?sec=xxx 定位。这里把「区块必须属于存在的页面」变成构建期约束，
+   否则导航里写错一个 sec=，用户点进去只会落到页面顶部，还以为是站点坏了。 */
+const IA_PAGES = ['home', 'tools', 'plans', 'stacks', 'signal', 'career', 'library', 'data'];
+const FEATURE_VIEW_IDS = IA_PAGES;
+/* 站务页：不属于任何一个内容页（它们不属于「事」，是「站」本身）。
    导航、页脚、404、JSON-LD 都要认得它们，所以在这里单独登记一次。 */
 const SITE_PAGE_IDS = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
-const SYS_VIEW_IDS = ['home', 'map', 'all', '404', 'error'];
-const ALL_VIEW_IDS = [...SYS_VIEW_IDS, ...FEATURE_VIEW_IDS, ...SITE_PAGE_IDS];
-const moduleList = data.modules && data.modules.modules;
-/* 上界钉在 6：功能地图一屏放得下 6 个大模块，第 7 个开始用户就要做「扫描 + 排除」而不是「一眼扫过」。
-   这是信息架构的硬约束，不是随口定的——要加模块，先合掉一个。 */
-if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 6) {
-  errors.push(`modules.json 应有 5–6 个模块（功能地图一屏的上限），现在是 ${moduleList ? moduleList.length : '缺失'}`);
-} else {
-  const modIds = new Set();
-  const seenViews = [];
-  moduleList.forEach(m => {
-    if (!m.id || !m.name) errors.push('模块缺少 id/name: ' + JSON.stringify(m).slice(0, 60));
-    if (modIds.has(m.id)) errors.push(`模块 id 重复: ${m.id}`);
-    if (m.id) modIds.add(m.id);
-    if (!m.icon || !m.tagline || !m.desc) errors.push(`模块 ${m.id || '?'} 缺少 icon/tagline/desc`);
-    if (!Array.isArray(m.features) || m.features.length === 0) errors.push(`模块 ${m.id || '?'} 没有任何功能页`);
-    (m.features || []).forEach(f => {
-      if (!FEATURE_VIEW_IDS.includes(f.v)) errors.push(`模块 ${m.id} 引用了未知功能页 ${f.v}`);
-      if (!f.name || !f.line) errors.push(`模块 ${m.id} 的功能 ${f.v} 缺少 name/line`);
-      seenViews.push(f.v);
-    });
-    (m.bundles || []).forEach(bid => {
-      if (!bundleIds.has(bid)) errors.push(`模块 ${m.id} 引用了不存在的组合 ${bid}`);
-    });
+const SYS_VIEW_IDS = ['404', 'error'];
+const ALL_VIEW_IDS = [...IA_PAGES, ...SITE_PAGE_IDS, ...SYS_VIEW_IDS];
+/* 每个页面里有哪些区块。区块 id 全局唯一——它是 URL 的一部分。 */
+const IA_SECS = {
+  tools: ['tools', 'capabilities', 'versus', 'matrix', 'overview'],
+  plans: ['plans', 'promos', 'free'],
+  stacks: ['bundles', 'stack', 'plan', 'report', 'opinion'],
+  signal: ['news', 'events', 'impact'],
+  career: ['roles', 'roadmap', 'persona'],
+  library: ['community', 'evalset', 'aitest'],
+  data: ['health', 'sources', 'changelog']
+};
+const SEC_IDS = new Set();
+Object.keys(IA_SECS).forEach(page => {
+  if (IA_PAGES.indexOf(page) < 0) errors.push(`信息架构里的 ${page} 不是有效页面`);
+  IA_SECS[page].forEach(sec => {
+    if (SEC_IDS.has(sec)) errors.push(`区块 id ${sec} 重复：它是 URL 的一部分，必须全局唯一`);
+    SEC_IDS.add(sec);
   });
-  // next/path 里会引用别的模块 id，必须等所有模块注册完再校验（两遍扫描）
-  const goOk = (g) => typeof g === 'string' && g[0] === '#' && (
-    g === '#map' || g === '#home' || g === '#all' ||
-    FEATURE_VIEW_IDS.includes(g.slice(1)) ||
-    (g.indexOf('#mod-') === 0 && modIds.has(g.slice(5))));
-  moduleList.forEach(m => {
-    (m.path || []).forEach((s, i) => {
-      if (!s.n) errors.push(`模块 ${m.id} 的 path[${i}] 缺少文案 n`);
-      if (s.go && !goOk(s.go)) errors.push(`模块 ${m.id} 的 path[${i}].go 非法: ${s.go}`);
-    });
-    if (m.next) {
-      if (!m.next.n) errors.push(`模块 ${m.id} 的 next 缺少文案 n`);
-      if (!goOk(m.next.go)) errors.push(`模块 ${m.id} 的 next.go 非法: ${m.next.go}`);
-    }
-  });
-  FEATURE_VIEW_IDS.forEach(v => {
-    const n = seenViews.filter(x => x === v).length;
-    if (n === 0) errors.push(`功能页 ${v} 没有归入任何模块（功能地图会出现漏页）`);
-    if (n > 1) errors.push(`功能页 ${v} 被归入了 ${n} 个模块（只能归一个）`);
-  });
+});
+IA_PAGES.forEach(p => {
+  if (p !== 'home' && !(IA_SECS[p] || []).length) errors.push(`页面 ${p} 一个区块都没有`);
+});
+/* 站内链接校验：#page 或 #page?sec=xxx 都必须落到真实存在的地方 */
+function hashLinkOk(g) {
+  if (typeof g !== 'string' || !g) return false;
+  if (g[0] !== '#') return true;              // feed.xml / issue 这类站外或构建期才存在的目标
+  const [v, qs] = g.slice(1).split('?');
+  if (ALL_VIEW_IDS.indexOf(v) < 0) return false;
+  const m = (qs || '').match(/(?:^|&)sec=([a-z0-9-]+)/);
+  return !m || SEC_IDS.has(m[1]);
 }
 
 /* ---------- 社区资源库校验（community.json + community-stats.json） ----------
@@ -290,13 +277,7 @@ if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 6
 const navList = [];
 {
   const N = data.nav || {};
-  const modIdsForNav = new Set((moduleList || []).map(m => m.id));
-  const goOk = (g) => {
-    if (typeof g !== 'string' || !g) return false;
-    if (g[0] !== '#') return true;              // feed.xml / issue 这类站外或构建期才存在的目标
-    const v = g.slice(1);
-    return ALL_VIEW_IDS.includes(v) || (v.indexOf('mod-') === 0 && modIdsForNav.has(v.slice(4)));
-  };
+  const goOk = hashLinkOk;
   const checkItems = (items, where) => {
     if (!Array.isArray(items)) { errors.push(`nav.json ${where} 不是数组`); return; }
     items.forEach((it, i) => {
@@ -322,11 +303,11 @@ const navList = [];
 
   // 重定向表：键必须不是当前有效的视图（否则永远命中不了），值必须是有效视图
   Object.keys(N.redirects || {}).forEach(k => {
-    if (ALL_VIEW_IDS.includes(k) || (k.indexOf('mod-') === 0 && modIdsForNav.has(k.slice(4)))) {
+    if (ALL_VIEW_IDS.includes(k)) {
       errors.push(`nav.json redirects 的键 ${k} 本身是有效视图，重定向永远不会触发`);
     }
     const to = N.redirects[k];
-    if (!ALL_VIEW_IDS.includes(to) && !(to && to.indexOf('mod-') === 0 && modIdsForNav.has(to.slice(4)))) {
+    if (!ALL_VIEW_IDS.includes(to)) {
       errors.push(`nav.json redirects 的 ${k} 指向不存在的视图 ${to}`);
     }
   });
@@ -730,19 +711,10 @@ if (warns.length) {
 
 /* ---------- 3. 内联 ---------- */
 let html = readText('index.html');
-/* 样式分三层叠加：基础样式 → v4 报告台层 → v4 响应式层。
-   顺序不能反：v4 覆盖基础，响应式必须最后（同特异性后者胜）。 */
-const css = [
-  readText('styles.css'),
-  readText('v4.css'),
-  readText('v4-responsive.css'),
-  readText('v5.css'),
-  readText('v6.css'),
-  readText('v7.css'),
-  readText('v8.css'),
-  readText('v9.css'),
-  readText('v10.css')
-].join('\n\n');
+/* 样式只有一份。合并前是 styles + v4…v10 九个文件按版本号依次叠加——
+   每改一次视觉就再盖一层，最后没人说得清某条规则到底被谁覆盖。
+   0.9.3 按原来的加载顺序拼成一份，级联结果不变，但从此只有一处真相。 */
+const css = readText('styles.css');
 const js = readText('app.js');
 
 const json = JSON.stringify(data);
@@ -803,12 +775,11 @@ const metaTags = [
 /* 结构化数据：让搜索引擎知道这是个「数据集 + 列表」而不是一篇散文。
    条目数与核验日期都在里面，搜索结果里能直接看到"什么时候核过的"。 */
 /* 全站可索引页面清单。名字取中文（`persona` 这种 id 进搜索结果没有意义），
-   顺序按模块走一遍 + 站务页收尾，和用户在功能地图上看到的顺序一致。 */
+   顺序按主导航走一遍 + 站务页收尾。 */
+const IA_LABEL = { home: '首页', tools: '工具', plans: '价格', stacks: '方案', signal: '动向', career: '角色', library: '资源', data: '数据' };
 const SITE_PAGE_LABEL = { search: '搜索', mine: '个人中心', feedback: '反馈', about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式' };
-const SITE_LABEL = {};
-(moduleList || []).forEach(m => (m.features || []).forEach(f => { SITE_LABEL[f.v] = f.name; }));
-Object.keys(SITE_PAGE_LABEL).forEach(k => { SITE_LABEL[k] = SITE_PAGE_LABEL[k]; });
-const SITE_LIST = [...(moduleList || []).flatMap(m => (m.features || []).map(f => f.v)), ...SITE_PAGE_IDS];
+const SITE_LABEL = Object.assign({}, IA_LABEL, SITE_PAGE_LABEL);
+const SITE_LIST = [...IA_PAGES, ...SITE_PAGE_IDS];
 
 const jsonLd = {
   '@context': 'https://schema.org',

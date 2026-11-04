@@ -1,35 +1,42 @@
 {
   "primary": [
     { "n": "首页", "go": "#home", "key": "home" },
-    { "n": "功能地图", "go": "#map", "key": "map" },
-    { "n": "完整工具站", "go": "#all", "key": "all" },
+    { "n": "工具", "go": "#tools", "key": "tools" },
+    { "n": "价格", "go": "#plans", "key": "plans" },
+    { "n": "方案", "go": "#stacks", "key": "stacks" },
+    { "n": "动向", "go": "#signal", "key": "signal" },
+    { "n": "角色", "go": "#career", "key": "career" },
+    { "n": "资源", "go": "#library", "key": "library" },
+    { "n": "数据", "go": "#data", "key": "data" },
     { "n": "搜索", "go": "#search", "key": "search" },
     {
       "group": "我的",
       "key": "mine",
       "items": [
         { "n": "个人中心", "go": "#mine", "icon": "◍", "line": "收藏、浏览历史、我的组合，一处看完" },
-        { "n": "决策报告", "go": "#report", "icon": "▥" },
-        { "n": "我的判断", "go": "#opinion", "icon": "◇" },
-        { "n": "我的组合", "go": "#stack", "icon": "⊕" },
-        { "n": "落地执行包", "go": "#plan", "icon": "▤" }
+        { "n": "决策报告", "go": "#stacks?sec=report", "icon": "▥" },
+        { "n": "我的判断", "go": "#stacks?sec=opinion", "icon": "◇" },
+        { "n": "我的组合", "go": "#stacks?sec=stack", "icon": "⊕" },
+        { "n": "落地执行包", "go": "#stacks?sec=plan", "icon": "▤" }
       ]
     },
     {
       "group": "更多",
       "key": "more",
       "items": [
-        { "n": "AI 大事", "go": "#news", "icon": "◷" },
-        { "n": "AI 冲击", "go": "#impact", "icon": "↯" },
-        { "n": "角色阶梯", "go": "#roles", "icon": "▤" },
-        { "n": "AI 评测集", "go": "#evalset", "icon": "◫" },
-        { "n": "白嫖地图", "go": "#free", "icon": "◎" },
-        { "n": "社区资源库", "go": "#community", "icon": "⌘", "line": "测试工程师用得上的开源项目，星数每周自动刷" },
-        { "n": "数据健康", "go": "#health", "icon": "◷" },
-        { "n": "更新日志", "go": "#changelog", "icon": "↻" },
-        { "n": "数据源", "go": "#sources", "icon": "⌘" },
-        { "n": "帮助与说明", "go": "#help", "icon": "?" },
+        { "n": "能力图谱", "go": "#tools?sec=capabilities", "icon": "◫" },
+        { "n": "两两 PK", "go": "#tools?sec=versus", "icon": "⇄" },
+        { "n": "决策矩阵", "go": "#tools?sec=matrix", "icon": "▦" },
+        { "n": "优惠与白嫖", "go": "#plans?sec=promos", "icon": "◎" },
+        { "n": "AI 大事", "go": "#signal?sec=news", "icon": "◷" },
+        { "n": "AI 冲击", "go": "#signal?sec=impact", "icon": "↯" },
+        { "n": "角色阶梯", "go": "#career?sec=roles", "icon": "▤" },
+        { "n": "AI 评测集", "go": "#library?sec=evalset", "icon": "◫" },
+        { "n": "数据健康", "go": "#data?sec=health", "icon": "◷" },
+        { "n": "更新日志", "go": "#data?sec=changelog", "icon": "↻" },
+        { "n": "数据源与口径", "go": "#data?sec=sources", "icon": "⌘" },
         { "n": "关于本站", "go": "#about", "icon": "◉" },
+        { "n": "帮助与说明", "go": "#help", "icon": "?" },
         { "n": "反馈", "go": "#feedback", "icon": "✉" },
         { "n": "隐私与条款", "go": "#privacy", "icon": "⛨" },
         { "n": "联系方式", "go": "#contact", "icon": "☏" }
@@ -41,37 +48,35 @@
       "n": "逛站",
       "items": [
         { "n": "首页", "go": "#home" },
-        { "n": "功能地图", "go": "#map" },
-        { "n": "完整工具站", "go": "#all" },
-        { "n": "搜索", "go": "#search" },
-        { "n": "测试人诊断", "go": "#persona" },
-        { "n": "决策报告", "go": "#report" },
-        { "n": "我的判断", "go": "#opinion" },
-        { "n": "我的组合", "go": "#stack" },
-        { "n": "落地执行包", "go": "#plan" }
+        { "n": "工具", "go": "#tools" },
+        { "n": "价格", "go": "#plans" },
+        { "n": "方案", "go": "#stacks" },
+        { "n": "动向", "go": "#signal" },
+        { "n": "角色", "go": "#career" },
+        { "n": "资源", "go": "#library" },
+        { "n": "数据", "go": "#data" },
+        { "n": "搜索", "go": "#search" }
       ]
     },
     {
-      "n": "内容",
+      "n": "常用",
       "items": [
-        { "n": "工具库", "go": "#tools" },
-        { "n": "套餐对比", "go": "#plans" },
-        { "n": "组合方案", "go": "#bundles" },
-        { "n": "AI 大事", "go": "#news" },
-        { "n": "AI 冲击", "go": "#impact" },
-        { "n": "角色阶梯", "go": "#roles" },
-        { "n": "AI 评测集", "go": "#evalset" },
-        { "n": "白嫖地图", "go": "#free" },
-        { "n": "社区资源库", "go": "#community" },
-        { "n": "市场变动", "go": "#events" }
+        { "n": "测试人自测", "go": "#career?sec=persona" },
+        { "n": "决策报告", "go": "#stacks?sec=report" },
+        { "n": "我的组合", "go": "#stacks?sec=stack" },
+        { "n": "落地执行包", "go": "#stacks?sec=plan" },
+        { "n": "白嫖地图", "go": "#plans?sec=free" },
+        { "n": "社区资源库", "go": "#library?sec=community" },
+        { "n": "市场变动", "go": "#signal?sec=events" },
+        { "n": "个人中心", "go": "#mine" }
       ]
     },
     {
       "n": "数据与留痕",
       "items": [
-        { "n": "数据健康", "go": "#health" },
-        { "n": "数据源与口径", "go": "#sources" },
-        { "n": "更新日志", "go": "#changelog" },
+        { "n": "数据健康", "go": "#data?sec=health" },
+        { "n": "数据源与口径", "go": "#data?sec=sources" },
+        { "n": "更新日志", "go": "#data?sec=changelog" },
         { "n": "订阅更新（Atom）", "go": "feed.xml", "ext": true }
       ]
     },
@@ -90,31 +95,28 @@
   "mobile": {
     "primary": [
       { "n": "首页", "go": "#home", "icon": "◈" },
-      { "n": "功能地图", "go": "#map", "icon": "▦" },
-      { "n": "完整工具站", "go": "#all", "icon": "▤" },
+      { "n": "工具", "go": "#tools", "icon": "▤" },
+      { "n": "价格", "go": "#plans", "icon": "▣" },
+      { "n": "方案", "go": "#stacks", "icon": "⊞" },
+      { "n": "动向", "go": "#signal", "icon": "◷" },
       { "n": "搜索", "go": "#search", "icon": "⌕" },
-      { "n": "个人中心", "go": "#mine", "icon": "◍" },
-      { "n": "测试人诊断", "go": "#persona", "icon": "◌" },
-      { "n": "决策报告", "go": "#report", "icon": "▥" },
-      { "n": "帮助与说明", "go": "#help", "icon": "?" }
+      { "n": "个人中心", "go": "#mine", "icon": "◍" }
     ],
     "more": [
-      { "n": "AI 冲击", "go": "#impact" },
-      { "n": "AI 评测集", "go": "#evalset" },
-      { "n": "白嫖地图", "go": "#free" },
-      { "n": "社区资源库", "go": "#community" },
-      { "n": "数据健康", "go": "#health" },
-      { "n": "数据源", "go": "#sources" },
-      { "n": "更新日志", "go": "#changelog" },
+      { "n": "角色", "go": "#career" },
+      { "n": "资源", "go": "#library" },
+      { "n": "数据", "go": "#data" },
+      { "n": "测试人自测", "go": "#career?sec=persona" },
+      { "n": "决策报告", "go": "#stacks?sec=report" },
+      { "n": "白嫖地图", "go": "#plans?sec=free" },
+      { "n": "帮助与说明", "go": "#help" },
       { "n": "关于", "go": "#about" },
       { "n": "反馈", "go": "#feedback" },
       { "n": "联系方式", "go": "#contact" },
       { "n": "隐私与条款", "go": "#privacy" }
     ]
   },
-  "redirects": {
-    "mod-start": "mod-diagnose"
-  },
+  "redirects": {},
   "reserved": [
     {
       "n": "实战案例库",

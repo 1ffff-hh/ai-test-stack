@@ -4,9 +4,13 @@ const path = require('path');
    所以换域名时这条断言不用跟着改——写死 '/ai-test-stack/' 的话，一换域名门禁就红。 */
 const SITE_URL = require('./site-base').detect().url;
 const BASE = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
-// 43 个视图 = 25 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
-const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','community','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
-// 站务页：不属于任何模块，面包屑只到「首页 › 页名」
+// 17 个视图 = 8 个内容页 + 7 个站务页 + 404 + error。
+// 合并前是 43 个（25 个功能页 + 地图 + 模块页），旧地址现在靠别名跳转，见第 1 组。
+const VIEWS = ['home','tools','plans','stacks','signal','career','library','data','search','mine','feedback','about','help','privacy','contact','error','404'];
+// 旧的 25 个功能页 id：每一个都必须还能落到一个真实存在的页面上
+const ALIASES = ['overview','report','matrix','capabilities','promos','free','bundles','aitest','events','news','roles','evalset','impact','versus','persona','opinion','roadmap','stack','plan','changelog','sources','health','community','map','all','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data'];
+// 8 个内容页；站务页不属于任何内容页，面包屑只到「首页 › 页名」
+const CONTENT_PAGES = ['home','tools','plans','stacks','signal','career','library','data'];
 const SITE_PAGES = ['search','mine','feedback','about','help','privacy','contact'];
 
 async function fresh(browser, hash = '') {
@@ -24,17 +28,14 @@ async function fresh(browser, hash = '') {
   const out = {};
   const allErrs = [];
 
-  /* 功能页数量从数据里算，不写死。
-     0.9.2 加「社区资源库」时，四处写死的 24 / 31 同时失效——
-     这正是站规「计数一律运行时算」要防的事，验收脚本自己先违反了。
-     现在只有一处真相：modules.json 里各模块 features 之和。 */
+  /* 页内区块数量从 DOM 里算，不写死。
+     合并后一页里有几个区块，真相只在 index.html 里——数一遍 .psec 就有了。 */
   let FEAT_N = 0;
   {
     const c = await browser.newContext();
     const p = await c.newPage();
     await p.goto(BASE, { waitUntil: 'load' });
-    FEAT_N = await p.evaluate(() => (((window.__DATA__ || {}).modules) || { modules: [] }).modules
-      .reduce((n, m) => n + (m.features || []).length, 0));
+    FEAT_N = await p.evaluate(() => document.querySelectorAll('.psec').length);
     await c.close();
   }
 
@@ -154,44 +155,41 @@ async function fresh(browser, hash = '') {
     await c.close();
   }
 
-  // ---------- 8. 引导路径：首页 CTA → 地图 → 模块 → 功能 → 查看更多 ----------
+  // ---------- 8. 合并后的层级：首页 7 张卡 → 页面 → 页内章节 ----------
   {
     const { c, p, errs } = await fresh(browser);
     const home = await p.evaluate(() => ({
       on: document.querySelector('#v-home').classList.contains('on'),
-      h1: (document.querySelector('#v-home h1') || {}).textContent || '',
-      ctas: document.querySelectorAll('#v-home .ctaRow a').length,
-      mods: document.querySelectorAll('#homeMods .mcard').length
+      cards: document.querySelectorAll('#homeMods .mcard').length,
+      hrefs: Array.from(document.querySelectorAll('#homeMods .mcard')).map(a => a.getAttribute('href'))
     }));
-    await p.click('#v-home .ctaRow a.primary');
-    await p.waitForTimeout(300);
-    const step1 = await p.evaluate(() => location.hash);
-    await p.evaluate(() => { location.hash = '#map'; });
-    await p.waitForTimeout(300);
-    const mapCards = await p.evaluate(() => {
-      const cards = Array.from(document.querySelectorAll('#mapBody .mcard'));
-      return { total: cards.length, modLinks: cards.filter(a => (a.getAttribute('href') || '').indexOf('#mod-') === 0).length };
-    });
-    await p.click('#mapBody .mcard');
-    await p.waitForTimeout(300);
-    const modHash = await p.evaluate(() => location.hash);
-    await p.click('#v-mod-diagnose .fgrid .fcard');
-    await p.waitForTimeout(300);
-    const feat = await p.evaluate(() => ({
+    await p.click('#homeMods .mcard');
+    await p.waitForTimeout(350);
+    const page1 = await p.evaluate(() => ({
       hash: location.hash,
-      subnav: !document.querySelector('#subnav').hidden,
+      on: (document.querySelector('.view.on') || {}).id,
+      secNav: document.querySelectorAll('.view.on .secNav a').length,
+      secs: document.querySelectorAll('.view.on .psec').length,
       crumbs: document.querySelectorAll('#subnav .crumbs a, #subnav .crumbs b').length,
-      guide: !!document.querySelector('.pguide')
+      guide: !!document.querySelector('.view.on .pguide')
     }));
-    await p.click('.pguide .gmore .btn.primary');
-    await p.waitForTimeout(300);
-    const more = await p.evaluate(() => location.hash);
-    out.flow = { home, step1, mapCards, modHash, feat, more };
-    // 6 个模块 = 6 张模块卡；首页多一张「全部功能」CTA 所以是 7；地图多一张「不确定从哪开始」所以是 7 卡 / 6 个模块链接
-    out.flowOk = home.on && home.ctas === 2 && home.mods === 7
-      && step1 === '#persona' && mapCards.total === 7 && mapCards.modLinks === 6
-      && modHash === '#mod-diagnose' && feat.hash === '#overview'
-      && feat.subnav && feat.crumbs >= 4 && feat.guide && more === '#all';
+    // 章节条点第二块，URL 要带上 sec=，并且真的滚过去
+    const secLinks = await p.$$('.view.on .secNav a');
+    await secLinks[1].click();
+    await p.waitForTimeout(450);
+    const secJump = await p.evaluate(() => ({
+      hash: location.hash,
+      landed: Math.round(document.querySelectorAll('.view.on .psec')[1].getBoundingClientRect().top)
+    }));
+    out.flow = { home, page1, secJump };
+    // 7 张卡 = 8 个页面减去首页自己；一级只有一层，没有中间目录
+    out.flowOk = home.on && home.cards === 7
+      && home.hrefs.every(h => /^#[a-z]+$/.test(h))
+      && page1.hash === '#tools' && page1.on === 'v-tools'
+      && page1.secNav === 5 && page1.secs === 5
+      && page1.crumbs === 2 && page1.guide
+      && secJump.hash.indexOf('#tools?sec=') === 0
+      && secJump.landed >= 0 && secJump.landed < 260;
     allErrs.push(...errs);
     await c.close();
   }
@@ -212,7 +210,8 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(300);
     const after = await p.evaluate(() => ({ hash: location.hash, closed: document.querySelector('#mnav').hidden }));
     out.mobileNav = { burgerVisible, opened, mods, ...after };
-    out.mobileNavOk = burgerVisible && opened && mods === 6 && after.closed && after.hash === '#overview';
+    // 7 个页面（首页之外），第一项是工具；accordion 的第一条是「进入工具」
+    out.mobileNavOk = burgerVisible && opened && mods === 7 && after.closed && after.hash === '#tools';
     allErrs.push(...errs);
     await c.close();
   }
@@ -229,42 +228,9 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(250);
     const t2 = await p.evaluate(() => document.title);
     out.notFound = { ...nf, toolsTitle: t2 };
-    // 功能页 + 7 个站务页：死路上也得能看见全部岔口
-    out.notFoundOk = nf.on && nf.links === FEAT_N + SITE_PAGES.length
-      && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具库') >= 0;
-    allErrs.push(...errs);
-    await c.close();
-  }
-
-  // ---------- 11. 完整工具站 = 直接总览控制台：16 格平铺全直达 + 搜索 + 模块筛选 ----------
-  {
-    const { c, p, errs } = await fresh(browser, '#all');
-    const base = await p.evaluate(vs => ({
-      kpi: document.querySelectorAll('#allKpis .akpi').length,
-      cards: document.querySelectorAll('#allBody .srow').length,
-      data: document.querySelectorAll('#allData .dcard').length,
-      // 每格都必须是功能页直达链接，不允许出现「下一层目录」
-      direct: Array.from(document.querySelectorAll('#allBody .srow'))
-        .every(a => vs.indexOf((a.getAttribute('href') || '').slice(1)) >= 0)
-    }), VIEWS);
-    await p.fill('#allSearch', '诊断');
-    await p.waitForTimeout(250);
-    const afterQ = await p.evaluate(() => document.querySelectorAll('#allBody .srow').length);
-    await p.fill('#allSearch', '');
-    await p.waitForTimeout(200);
-    await p.click('#allMods .preset[data-am="diagnose"]');
-    await p.waitForTimeout(250);
-    const afterMod = await p.evaluate(() => ({
-      n: document.querySelectorAll('#allBody .srow').length,
-      on: (document.querySelector('#allMods .preset.on') || {}).dataset ? document.querySelector('#allMods .preset.on').dataset.am : ''
-    }));
-    await p.click('#allBody .srow');
-    await p.waitForTimeout(300);
-    const jump = await p.evaluate(() => location.hash);
-    out.console = { base, afterQ, afterMod, jump };
-    out.consoleOk = base.kpi >= 5 && base.cards === FEAT_N && base.direct && base.data >= 2
-      && afterQ > 0 && afterQ < FEAT_N && afterMod.n === 6 && afterMod.on === 'diagnose'
-      && jump === '#overview';
+    // 8 个内容页 + 7 个站务页：死路上也得能看见全部岔口
+    out.notFoundOk = nf.on && nf.links === CONTENT_PAGES.length + SITE_PAGES.length
+      && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具') >= 0;
     allErrs.push(...errs);
     await c.close();
   }
@@ -354,7 +320,7 @@ async function fresh(browser, hash = '') {
     const afterReload = await p.evaluate(() => document.querySelectorAll('#ppBody .task.done').length);
     out.plan = { empty, built, tick1, afterReload };
     out.planOk = empty.on && empty.hasCta && empty.grid
-      && built.hash === '#plan' && built.weeks === 4 && built.tasks === 10 && built.accs === 10
+      && built.hash === '#stacks' && built.weeks === 4 && built.tasks === 10 && built.accs === 10
       && /¥\d+/.test(built.sum) && built.code === 1 && built.exp
       && tick1.n.length === 1 && tick1.done === 1 && afterReload === 1;
     allErrs.push(...errs);
@@ -549,14 +515,14 @@ async function fresh(browser, hash = '') {
     });
     const home = await p.evaluate(() => ({
       hc: (document.querySelector('#hCounts') || {}).textContent || '',
-      feats: (document.querySelector('#rdFeats') || {}).dataset.n,
+      plans: (document.querySelector('#rdPlans') || {}).dataset.n,
       tools: (document.querySelector('#rdTools') || {}).dataset.n
     }));
     out.inv = { inv, home };
     out.invOk = inv.tools >= 28 && inv.plans >= 50 && inv.bundles >= 30 && inv.free >= 30
       && inv.news >= 30 && inv.roles >= 10 && inv.evalset === 30 && inv.kindOk && inv.planOk && inv.freeOk
       && inv.newsOk && inv.roleOk && inv.evalOk && inv.quad === 4 && inv.levels === 3
-      && home.feats === String(FEAT_N) && String(inv.tools) === home.tools;
+      && home.plans === String(inv.plans) && String(inv.tools) === home.tools;
     allErrs.push(...errs);
     await c.close();
   }
@@ -762,11 +728,12 @@ async function fresh(browser, hash = '') {
         .every(v => document.querySelector('#sfNav a[href="#' + v + '"], #tnav a[href="#' + v + '"]'))
     }));
     out.sitePages = { crumbs, blocks, redirect, nav, leftoverToken };
-    out.sitePagesOk = Object.values(crumbs).every(x => x.shown && x.items >= 2 && x.back >= 3)
+    // 面包屑只剩两层（首页 › 页名）：合并后不再有「模块」这一级，也就不该有兄弟页导航
+    out.sitePagesOk = Object.values(crumbs).every(x => x.shown && x.items === 2 && x.back === 0)
       && Object.values(blocks).every(n => n >= 1)
       && !leftoverToken
-      && redirect.hash === '#mod-diagnose' && redirect.on === 'v-mod-diagnose'
-      && nav.top === 4 && nav.groups === 2 && nav.mobilePrim >= 8
+      && redirect.hash === '#home' && redirect.on === 'v-home'
+      && nav.top === 9 && nav.groups === 2 && nav.mobilePrim >= 7
       && nav.footGroups === 4 && nav.footLinks >= 25 && nav.reserved === 3 && nav.reachable;
     allErrs.push(...errs);
     await c.close();
@@ -917,8 +884,8 @@ async function fresh(browser, hash = '') {
       && /data-correction\.yml/.test(dataForm.note)
       && /GLM Coding Lite/.test(dataForm.prev) && /¥138/.test(dataForm.prev)
       && opened.length === 1 && /data-correction\.yml/.test(opened[0])
-      && carried.on === 'v-feedback' && carried.kind === 'bug' && carried.where === '套餐对比'
-      && errView.on === 'v-error' && errView.links === FEAT_N + SITE_PAGES.length
+      && carried.on === 'v-feedback' && carried.kind === 'bug' && carried.where === '价格'
+      && errView.on === 'v-error' && errView.links === CONTENT_PAGES.length + SITE_PAGES.length
       && /出错/.test(errView.title) && /TypeError|cannot read/i.test(errView.trace)
       && /渲染时抛了一个异常/.test(errView.msg);
     allErrs.push(...errs);
@@ -1047,11 +1014,11 @@ async function fresh(browser, hash = '') {
       return cs ? { fill: cs.webkitTextFillColor, img: cs.backgroundImage !== 'none' } : { fill: '', img: false };
     });
 
-    // 29.7 功能地图的计数必须来自数据，不许写死
+    // 29.7 首页的读数条必须来自数据，不许写死
     const lede = await p.evaluate(() => ({
-      txt: (document.querySelector('#mapLede') || {}).textContent || '',
-      // 以「屏幕上真的画出来几个模块卡」为准，而不是猜 __DATA__ 的形状
-      mods: document.querySelectorAll('#mapBody .mcard:not(.maccent)').length
+      txt: (document.querySelector('#rdTools') || {}).dataset.n || '',
+      // 以「屏幕上真的画出来几张页面卡」为准，而不是猜 __DATA__ 的形状
+      mods: document.querySelectorAll('#homeMods .mcard').length
     }));
 
     out.uiFloor = { ov, floor, table: { sticky, before, asc, desc, ascAria, descAria, verdictKept }, freshBar, ladderClosed, ladderOpen, chips, head, lede };
@@ -1064,7 +1031,7 @@ async function fresh(browser, hash = '') {
       && !ladderOpen.closed && ladderOpen.aria === 'true' && ladderOpen.visible && ladderOpen.rows > 0
       && chips.found && chips.diff
       && head.fill !== 'rgba(0, 0, 0, 0)' && !head.img
-      && lede.mods >= 5 && lede.txt.indexOf(lede.mods + ' 个模块') === 0;
+      && lede.mods === 7 && Number(lede.txt) > 0;
     allErrs.push(...errs);
     await c.close();
   }
@@ -1204,7 +1171,7 @@ async function fresh(browser, hash = '') {
     && out.drawer.tabHitsWhenClosed === 0
     && out.skipFocus.cls === 'skip'
     && out.printOk
-    && out.flowOk && out.mobileNavOk && out.notFoundOk && out.consoleOk && out.diagOk
+    && out.flowOk && out.mobileNavOk && out.notFoundOk && out.diagOk
     && out.planOk && out.adoptOk
     && out.newsOk && out.impactOk && out.rolesOk && out.freeOk && out.plans2Ok && out.invOk
     && out.healthOk && out.evalOk && out.reportOk && out.siteOk

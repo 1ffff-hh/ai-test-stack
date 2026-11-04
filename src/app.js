@@ -37,8 +37,6 @@
   const CM_CAT = {};
   (CM.categories || []).forEach(c => { CM_CAT[c.id] = c; });
   const RR = D.refreshReport || null;
-  /* 信息架构配置：6 个模块把 25 个功能页组织成「地图 → 模块 → 功能」的引导路径 */
-  const MODS = (D.modules && D.modules.modules) || [];
   /* 导航与站务页内容：从 data/nav.json / data/pages.json 读。
      以前顶栏、页脚、移动导航三处各写一份，加一页要改三处；现在只改配置。 */
   const NAV = D.nav || { primary: [], footer: [], mobile: { primary: [], more: [] }, redirects: {}, reserved: [] };
@@ -105,9 +103,6 @@
   /* ---------- state ---------- */
   const state = {
     view: 'home',
-    allQuery: '',
-    allMod: 'all',
-    allTab: 'feat',
     weights: {},
     profile: 'aitest',
     cnOnly: false,
@@ -186,12 +181,29 @@
      旧 16 个视图 id 原样保留 = 旧链接/旧分享链接零失效。
      新增：home（默认落地页）、map、all、mod-*（模块页）、404。
      ========================================================= */
-  const FEATURE_VIEWS = ['overview', 'report', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'evalset', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'health', 'community'];
+  /* 8 个内容页。每一页内部是按「要办的事」分的区块（.sec），区块之间有分隔，
+     顶部有章节条。旧的功能页 id 全部保留为跳转别名，老链接和分享链接不会失效。 */
+  const IA = [
+    { id: 'home', name: '首页', tag: '三问诊断：说清你在做什么，当场出方案', secs: [] },
+    { id: 'tools', name: '工具', tag: '29 款工具的档案、能力图谱、两两对比、决策矩阵', secs: [['tools', '工具库'], ['capabilities', '能力图谱'], ['versus', '两两 PK'], ['matrix', '决策矩阵'], ['overview', '总览表']] },
+    { id: 'plans', name: '价格', tag: '59 档套餐的实际月价、优惠、免费额度', secs: [['plans', '套餐对比'], ['promos', '优惠与白嫖'], ['free', '白嫖地图']] },
+    { id: 'stacks', name: '方案', tag: '把选好的工具拼成一套能落地的组合', secs: [['bundles', '组合方案'], ['stack', '我的组合'], ['plan', '执行包'], ['report', '决策报告'], ['opinion', '我的判断']] },
+    { id: 'signal', name: '动向', tag: 'AI 大事、价格变动、对测试岗位的影响', secs: [['news', 'AI 大事'], ['events', '市场变动'], ['impact', 'AI 对测试的冲击']] },
+    { id: 'career', name: '角色', tag: '角色阶梯、成长路线、测试人自测', secs: [['roles', '角色阶梯'], ['roadmap', '成长路线'], ['persona', '测试人自测']] },
+    { id: 'library', name: '资源', tag: '开源项目、评测集、AI 测试资料', secs: [['community', '社区资源库'], ['evalset', 'AI 评测集'], ['aitest', 'AI 测试专项']] },
+    { id: 'data', name: '数据', tag: '每条的出处、核验日、改过什么', secs: [['health', '数据健康'], ['sources', '数据源与口径'], ['changelog', '更新日志']] }
+  ];
+  const FEATURE_VIEWS = IA.map(x => x.id);
+  /* 旧 id → 新页面。合并前每个功能页都是独立地址，站上线过、分享链接在外面，
+     直接删会变成一堆 404——所以这里做别名，旧地址自动落到新页面。 */
+  const SEC_OF = {};
+  IA.forEach(p => p.secs.forEach(([s, label]) => { SEC_OF[s] = { page: p.id, sec: s, label }; }));
+  const REDIRECTS = { map: 'home', all: 'home', 'mod-start': 'home', 'mod-diagnose': 'home', 'mod-grow': 'career', 'mod-shift': 'signal', 'mod-toolkit': 'tools', 'mod-choose': 'plans', 'mod-data': 'data' };
+  Object.keys(SEC_OF).forEach(k => { if (!REDIRECTS[k]) REDIRECTS[k] = SEC_OF[k].page; });
   /* 站务页：不属于任何内容模块（它们不是「事」，是「站」本身）。
      和功能页一样是一级页面，但没有模块归属，所以面包屑只到「首页 › 页名」。 */
   const SITE_PAGES = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
-  const MOD_VIEWS = MODS.map(m => 'mod-' + m.id);
-  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, 'map', 'all', ...MOD_VIEWS, '404', 'error'];
+  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, '404', 'error'];
   /* 文案里的计数占位符。站规是「计数一律运行时算」，但 data/pages.json 里
      一直手写着「57 档」「29 款」——数据涨到 59 档，页面上就成了假话。
      现在写 `{count:plans}`，渲染时从数据取。 */
@@ -203,19 +215,12 @@
     views: FEATURE_VIEWS.length
   };
   const VIEW_NAME = {
-    home: '首页', map: '功能地图', all: '完整工具站', '404': '页面不存在', error: '页面出错',
-    overview: '总览', matrix: '决策矩阵', tools: '工具库', capabilities: '能力图谱',
-    plans: '套餐对比', promos: '优惠白嫖', bundles: '组合方案', aitest: 'AI 测试专项',
-    events: '市场变动', versus: '两两 PK', persona: '测试人诊断', opinion: '我的判断',
-    roadmap: '成长路线', stack: '我的组合', plan: '落地执行包', changelog: '更新日志', sources: '数据源',
-    free: '白嫖地图', news: 'AI 大事', roles: '测试角色阶梯', impact: 'AI 对测试的冲击',
-    report: '决策报告', evalset: 'AI 评测集', health: '数据健康', community: '社区资源库',
+    home: '首页', '404': '页面不存在', error: '页面出错',
     search: '全站搜索', mine: '个人中心', feedback: '反馈',
     about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式'
   };
-  MODS.forEach(m => { VIEW_NAME['mod-' + m.id] = m.name; });
-  const MOD_OF = {};   // 功能页 → 所属模块
-  MODS.forEach(m => (m.features || []).forEach(f => { MOD_OF[f.v] = m; }));
+  Object.keys(SEC_OF).forEach(k => { VIEW_NAME[k] = SEC_OF[k].label; });
+  IA.forEach(p => { VIEW_NAME[p.id] = p.name; });
 
   /* ---------- 轻量埋点：验证用户是否按预期路径走 ---------- */
   function track(n, p) {
@@ -287,84 +292,37 @@
   function chromeFor(v) {
     const sub = $('#subnav');
     if (!sub) return;
-    const modView = v.indexOf('mod-') === 0 ? MODS.find(m => 'mod-' + m.id === v) : null;
-    const m = modView || MOD_OF[v];
-    if (!m) {
-      // 站务页没有模块归属，但仍要有面包屑——否则用户在任何一页都不知道自己在哪一层
-      if (SITE_PAGES.indexOf(v) >= 0) {
-        sub.innerHTML = `<div class="crumbs" aria-label="面包屑"><a href="#home">首页</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b></div><div class="sibnav"><a href="#map" class="">▦ 功能地图</a><a href="#all">▤ 完整工具站</a><a href="#mine">◍ 个人中心</a></div>`;
-        sub.hidden = false;
-        return;
-      }
-      sub.hidden = true; sub.innerHTML = ''; return;
-    }
-    const crumb = modView
-      ? `<a href="#home">首页</a><span class="csep">›</span><a href="#map">功能地图</a><span class="csep">›</span><b>${esc(m.name)}</b>`
-      : `<a href="#home">首页</a><span class="csep">›</span><a href="#map">功能地图</a><span class="csep">›</span><a href="#mod-${m.id}">${esc(m.name)}</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b>`;
-    const sibs = (m.features || []).map(f =>
-      `<a href="#${f.v}" class="${f.v === v ? 'on' : ''}" ${f.v === v ? 'aria-current="page"' : ''}>${f.icon || ''} ${esc(f.name)}</a>`).join('');
-    sub.innerHTML = `<div class="crumbs" aria-label="面包屑">${crumb}</div><div class="sibnav">${sibs}</div>`;
+    if (v === 'home') { sub.hidden = true; sub.innerHTML = ''; return; }
+    // 只有两层了：首页 › 当前页。章节切换在页面顶部那条 secNav 里。
+    sub.innerHTML = `<div class="crumbs" aria-label="面包屑"><a href="#home">首页</a><span class="csep">›</span><b>${esc(VIEW_NAME[v] || v)}</b></div>`;
     sub.hidden = false;
   }
 
-  /* ---------- 功能页底部引导：关联功能 / 下一步 / 组合 / 查看更多 ---------- */
+  /* ---------- 页面底部引导：其他页面 + 收藏 / 报错 ----------
+     以前这里是「同一模块的兄弟页」，合并后兄弟页就是同一页的章节，
+     所以改成指向另外 7 个页面——它现在是「横向出口」，不是「层级出口」。 */
   function guideFor(v) {
     const sec = $('#v-' + v);
     if (!sec) return;
     let g = $('.pguide', sec);
-    const m = MOD_OF[v];
-    if (!m) { if (g) g.remove(); return; }
+    if (FEATURE_VIEWS.indexOf(v) < 0 || v === 'home') { if (g) g.remove(); return; }
     if (!g) { g = document.createElement('div'); g.className = 'panel pguide'; sec.appendChild(g); }
-    const sibs = (m.features || []).filter(f => f.v !== v);
-    const sibLinks = sibs.map(f => `<a class="gchip" href="#${f.v}">${f.icon || ''} ${esc(f.name)}</a>`).join('');
-    const next = m.next || { n: '功能地图', go: '#map' };
+    const others = IA.filter(p => p.id !== v && p.id !== 'home')
+      .map(p => `<a class="gchip" href="#${p.id}">${esc(p.name)}</a>`).join('');
     g.innerHTML = `
       <div class="grow">
         <div class="gcol">
-          <div class="gk">这一页属于 · ${esc(m.name)}</div>
-          <div class="gchips">${sibLinks || '<span class="mini">模块里暂时只有这一页</span>'}</div>
-        </div>
-        <div class="gcol">
-          <div class="gk">下一步</div>
-          <div class="gchips">
-            <a class="gchip" href="${next.go}">${esc(next.n)} →</a>
-            <a class="gchip" href="#mod-${m.id}">回模块页</a>
-            <a class="gchip" href="#map">功能地图</a>
-          </div>
+          <div class="gk">换一页</div>
+          <div class="gchips"><a class="gchip" href="#home">首页</a>${others}</div>
         </div>
         <div class="gcol">
           <div class="gk">这一页</div>
           <div class="gchips">
-            <a class="gchip" href="#bundles">⊞ 全部组合方案</a>
             ${favBtn('page', v, VIEW_NAME[v] || v)}
             <a class="gchip" href="#feedback" data-fb-page="${esc(v)}">✉ 这一页有问题</a>
           </div>
         </div>
-      </div>
-      <div class="gmore"><a class="btn primary" href="#all">查看更多：进入完整工具站 →</a></div>`;
-  }
-
-  /* ---------- 共享模板：模块卡（功能地图全量版 / 首页紧凑版共用） ---------- */
-  function mcardHtml(m, slim, idx) {
-    // 首页（slim）用序号代替 emoji：v4 的模块格靠"01/02"建立顺序感，emoji 在 9.5px 下只剩彩色噪点
-    const mark = slim && typeof idx === 'number' ? String(idx + 1).padStart(2, '0') : (m.icon || '');
-    return `
-      <a class="mcard${slim ? ' mslim' : ''}" href="#mod-${m.id}">
-        <div class="mh"><span class="mic" aria-hidden="true">${mark}</span>
-          <span class="mtt"><span class="mn">${esc(m.name)}</span><span class="me">${esc(m.en || '')}</span></span>
-          <span class="mcnt">${(m.features || []).length} 个功能</span></div>
-        <p class="mtg">${esc(m.tagline || '')}</p>
-        ${slim ? '' : `<div class="mfeats">${(m.features || []).map(f => `<span class="mfeat">${f.icon || ''} ${esc(f.name)}</span>`).join('')}</div>`}
-        <span class="mgo">进入模块 →</span>
-      </a>`;
-  }
-  function fcardHtml(f) {
-    return `
-      <a class="fcard" href="#${f.v}">
-        <div class="fh"><span class="fic" aria-hidden="true">${f.icon || '▸'}</span><b>${esc(f.name)}</b></div>
-        <p>${esc(f.line || '')}</p>
-        <span class="fgo">打开 →</span>
-      </a>`;
+      </div>`;
   }
 
   /* ---------- 首页动态层：数字滚动 / 工具跑马灯 / 选型引擎演示台 ----------
@@ -951,15 +909,14 @@
 
   function renderHome() {
     const ms = $('#homeMods');
-    if (ms) ms.innerHTML = MODS.map((m, i) => mcardHtml(m, true, i)).join('') + `
-      <a class="mcard mcardCta" href="#all">
-        <div class="mh"><span class="mic" aria-hidden="true">→</span><span class="mn">全部功能</span></div>
-        <p class="mtg">${FEATURE_VIEWS.length} 个功能页平铺成一张规格表，按模块与关键词找，不用一层层点。</p>
-        <span class="mctaFoot">进入完整工具站 ↗</span>
-      </a>`;
+    if (ms) ms.innerHTML = IA.filter(p => p.id !== 'home').map((p, i) => `
+      <a class="mcard" href="#${p.id}">
+        <div class="mh"><span class="mic" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><span class="mn">${esc(p.name)}</span></div>
+        <p class="mtg">${esc(p.tag)}</p>
+        <span class="mgo">进入${esc(p.name)} →</span>
+      </a>`).join('');
     // 读数条：数字全部来自数据文件，不做假数
-    const cost = BUNDLES.length ? Math.min.apply(null, BUNDLES.map(b => b.monthlyCost)) : 0;
-    [['rdFeats', FEATURE_VIEWS.length], ['rdTools', TOOLS.length], ['rdCost', cost], ['rdEvs', (EV.events || []).length]]
+    [['rdTools', TOOLS.length], ['rdPlans', PLANS.length], ['rdBundles', BUNDLES.length], ['rdCaps', CAP_LIST.length]]
       .forEach(([id, n]) => { const el = document.getElementById(id); if (el) el.dataset.n = n; });
     const hv = $('#hVerify'); if (hv) hv.textContent = META.lastVerified || '—';
     const hc = $('#hCounts'); if (hc) hc.textContent = `${TOOLS.length} 工具 · ${PLANS.length} 档套餐 · ${BUNDLES.length} 套组合`;
@@ -967,190 +924,6 @@
     startHeroRot();
     diagHtml();
   }
-
-  function renderMap() {
-    const body = $('#mapBody');
-    if (!body) return;
-    // 计数一律运行时算：v2.3 把模块并为 6 个后，这句写死的「7 个模块」还在骗人
-    const lede = $('#mapLede');
-    if (lede) lede.textContent = `${MODS.length} 个模块管 ${FEATURE_VIEWS.length} 个功能。` +
-      '不知道从哪开始，就点「诊断与判断」；想看行业发生了什么，去「变局与大事」。';
-    // 不能写 .map(mcardHtml)：map 会把数组索引传进 slim 参数，第 2 张卡起全被当成紧凑版
-    body.innerHTML = MODS.map(m => mcardHtml(m, false)).join('') + `
-      <a class="mcard maccent" href="#persona">
-        <div class="mh"><span class="mic" aria-hidden="true">◌</span>
-          <span class="mtt"><span class="mn">不确定从哪开始？</span><span class="me">Start Here</span></span></div>
-        <p class="mtg">花 2 分钟做测试人诊断，直接拿到你的类型和一份可抄的组合，再回头按模块逛。</p>
-        <span class="mgo">开始诊断 →</span>
-      </a>`;
-  }
-
-  function renderModule(id) {
-    const m = MODS.find(x => x.id === id);
-    if (!m) return;
-    const body = $('#v-mod-' + id + ' .modbody');
-    if (!body) return;
-    const path = (m.path || []).map((s, i) =>
-      `<div class="opStep"><i>${i + 1}</i><span>${esc(s.n)}${s.go ? ` <a href="${s.go}" class="stepgo">→</a>` : ''}</span></div>`).join('');
-    const bundles = (m.bundles || []).map(bid => {
-      const b = BUNDLES.find(x => x.id === bid);
-      return b ? `<a class="gchip" href="#bundles">⊞ ${esc(b.name)} · ¥${b.monthlyCost}/月起</a>` : '';
-    }).filter(Boolean).join('');
-    const next = m.next || { n: '功能地图', go: '#map' };
-    body.innerHTML = `
-      <div class="phead modhead">
-        <div class="kick">Module · ${esc(m.en || '')}</div>
-        <h1><span class="mhx" aria-hidden="true">${m.icon || ''}</span>${esc(m.name)}</h1>
-        <p>${esc(m.desc || m.tagline || '')}</p>
-      </div>
-      <div class="fgrid stagger">${(m.features || []).map(fcardHtml).join('')}</div>
-      ${path ? `<div class="panel"><h3><span class="ic">◈</span>推荐走法</h3><div class="sub">按顺序走完，这一组要办的事就办完了。</div><div class="opSteps">${path}</div></div>` : ''}
-      ${bundles ? `<div class="panel"><h3><span class="ic">⊞</span>相关组合</h3><div class="sub">这一组的功能常和这些组合搭配使用，组合页里有完整的坑位说明。</div><div class="gchips">${bundles}</div></div>` : ''}
-      <div class="panel">
-        <h3><span class="ic">→</span>下一步</h3>
-        <div class="gchips">
-          <a class="btn primary" href="${next.go}">${esc(next.n)} →</a>
-          <a class="btn" href="#map">回功能地图</a>
-          <a class="btn" href="#all">完整工具站</a>
-        </div>
-      </div>`;
-  }
-
-  /* ---------- 第五层：完整工具站 = 直接总览控制台 ----------
-     不是「分组卡片再进卡片」：KPI 直达 + 16 个功能全部平铺一屏，
-     每格点了立刻进功能页；搜索和模块筛选只是显隐，不产生中间层。 */
-  function allKpis() {
-    const el = $('#allKpis');
-    if (!el || el.dataset.done) return;
-    el.dataset.done = '1';
-    el.innerHTML = [
-      { n: FEATURE_VIEWS.length, k: '功能入口', go: '#map' },
-      { n: TOOLS.length, k: '工具档案', go: '#tools' },
-      { n: PLANS.length, k: '套餐档位', go: '#plans' },
-      { n: BUNDLES.length, k: '套组合方案', go: '#bundles' },
-      { n: (EV.events || []).length, k: '条市场变动', go: '#events' },
-      { t: META.lastVerified || '—', k: '数据核验', go: '#sources' }
-    ].map(x => `<a class="akpi" href="${x.go}"><b>${x.t ? esc(x.t) : x.n}</b><span>${esc(x.k)}</span></a>`).join('');
-  }
-
-  /* 完整工具站 = 五个分类全部平铺，切分类只是换一张表，不产生中间层。
-     这是对「一眼看全」的兑现：功能、工具、套餐、组合、站务页都在同一张规格表里。 */
-  const ALL_TABS = [
-    { k: 'feat', n: '功能', icon: '▦' },
-    { k: 'tool', n: '工具', icon: '▤' },
-    { k: 'plan', n: '套餐', icon: '▣' },
-    { k: 'bundle', n: '组合', icon: '⊞' },
-    { k: 'site', n: '站务', icon: '⌘' }
-  ];
-
-  function allModFilter() {
-    const tabs = $('#allTabs');
-    if (tabs) {
-      tabs.innerHTML = ALL_TABS.map(t => {
-        const n = t.k === 'feat' ? FEATURE_VIEWS.length : t.k === 'tool' ? TOOLS.length
-          : t.k === 'plan' ? PLANS.length : t.k === 'bundle' ? BUNDLES.length : SITE_PAGES.length;
-        return `<button class="allTab${state.allTab === t.k ? ' on' : ''}" type="button" role="tab" aria-selected="${state.allTab === t.k}" data-at="${t.k}">
-          <i aria-hidden="true">${t.icon}</i><b>${t.n}</b><span>${n}</span></button>`;
-      }).join('');
-      $$('#allTabs .allTab').forEach(b => b.onclick = () => {
-        state.allTab = b.dataset.at; state.allQuery = '';
-        const s = $('#allSearch'); if (s) s.value = '';
-        allModFilter(); renderAllList(); syncHash(); track('all_tab', { t: state.allTab });
-      });
-    }
-    const el = $('#allMods');
-    if (!el) return;
-    // 模块筛选只在「功能」分类下有意义——其他分类没有模块归属
-    if (state.allTab !== 'feat') { el.innerHTML = ''; el.hidden = true; return; }
-    el.hidden = false;
-    const opts = [{ id: 'all', n: '全部模块' }].concat(MODS.map(m => ({ id: m.id, n: (m.icon || '') + ' ' + m.name })));
-    el.innerHTML = opts.map(o =>
-      `<button class="preset ${state.allMod === o.id ? 'on' : ''}" data-am="${o.id}">${esc(o.n)}</button>`).join('');
-    $$('#allMods .preset').forEach(b => b.onclick = () => { state.allMod = b.dataset.am; allModFilter(); renderAllList(); });
-  }
-
-  function allRows() {
-    const q = (state.allQuery || '').trim().toLowerCase();
-    const hit = (s) => !q || String(s || '').toLowerCase().indexOf(q) >= 0;
-    const out = [];
-    if (state.allTab === 'feat') {
-      MODS.forEach(m => {
-        if (state.allMod !== 'all' && state.allMod !== m.id) return;
-        (m.features || []).forEach(f => {
-          if (!hit(f.name + ' ' + (f.line || ''))) return;
-          out.push(`<a class="srow" href="#${f.v}">
-            <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
-            <span class="sname"><i aria-hidden="true">${f.icon || '▸'}</i>${esc(f.name)}</span>
-            <span class="sdesc">${esc(f.line || '')}</span>
-            <span class="smod">${esc(m.name)}</span>
-            <span class="sar" aria-hidden="true">→</span></a>`);
-        });
-      });
-    } else if (state.allTab === 'tool') {
-      TOOLS.filter(t => hit(t.name + ' ' + (t.vendor || '') + ' ' + (t.tagline || '') + ' ' + (t.tags || []).join(' '))).forEach(t => {
-        out.push(`<button class="srow srowBtn" type="button" data-tool-open="${esc(t.id)}">
-          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
-          <span class="sname"><i aria-hidden="true">${esc(t.letter || '▸')}</i>${esc(t.name)}</span>
-          <span class="sdesc">${esc(t.tagline || '')}</span>
-          <span class="smod">${esc(t.cnDirect ? '国内直连' : '需境外')} · ${esc(t.license || '')}</span>
-          <span class="sar" aria-hidden="true">打开 →</span></button>`);
-      });
-    } else if (state.allTab === 'plan') {
-      PLANS.filter(p => hit(p.name + ' ' + (p.vendor || '') + ' ' + (p.tier || '') + ' ' + (p.formName || ''))).forEach(p => {
-        out.push(`<a class="srow" href="#plans">
-          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
-          <span class="sname"><i aria-hidden="true">${p.region === 'cn' ? '¥' : '$'}</i>${esc(p.name)} <em>${esc(p.tier || '')}</em></span>
-          <span class="sdesc">${esc(p.quota || '')}</span>
-          <span class="smod">${esc(p.vendor || '')} · ${esc(p.formName || '')}</span>
-          <span class="sar" aria-hidden="true">${p.currency === 'USD' ? '$' : '¥'}${esc(p.price)} →</span></a>`);
-      });
-    } else if (state.allTab === 'bundle') {
-      BUNDLES.filter(b => hit(b.name + ' ' + (b.summary || '') + ' ' + (b.tags || []).join(' '))).forEach(b => {
-        out.push(`<a class="srow" href="#bundles">
-          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
-          <span class="sname"><i aria-hidden="true">⊞</i>${esc(b.name)}</span>
-          <span class="sdesc">${esc(b.summary || '')}</span>
-          <span class="smod">¥${esc(b.monthlyCost)}/月</span>
-          <span class="sar" aria-hidden="true">→</span></a>`);
-      });
-    } else {
-      SITE_PAGES.filter(v => hit((VIEW_NAME[v] || v) + ' ' + ((PAGES[v] && PAGES[v].lede) || ''))).forEach(v => {
-        out.push(`<a class="srow" href="#${v}">
-          <span class="sidx">${String(out.length + 1).padStart(2, '0')}</span>
-          <span class="sname"><i aria-hidden="true">⌘</i>${esc(VIEW_NAME[v] || v)}</span>
-          <span class="sdesc">${esc((PAGES[v] && PAGES[v].lede) || '')}</span>
-          <span class="smod">站务</span>
-          <span class="sar" aria-hidden="true">→</span></a>`);
-      });
-    }
-    return out;
-  }
-
-  function renderAllList() {
-    const body = $('#allBody');
-    if (!body) return;
-    const rows = allRows();
-    body.innerHTML = rows.length
-      ? rows.join('')
-      : '<div class="empty">这个分类下没有匹配项，换个词试试（比如「价格」「诊断」「国内直连」）</div>';
-  }
-
-  /* 数据速览：把站内最有用的三个数字直接摆在控制台上 */
-  function allData() {
-    const el = $('#allData');
-    if (!el || el.dataset.done) return;
-    el.dataset.done = '1';
-    const cheap = BUNDLES.length ? Math.min.apply(null, BUNDLES.map(b => b.monthlyCost)) : null;
-    let bestOff = 0;
-    (PR.firstBuy || []).forEach(b => { if (b.list) bestOff = Math.max(bestOff, Math.round((1 - b.promo / b.list) * 100)); });
-    el.innerHTML = [
-      cheap != null ? `<a class="dcard" href="#bundles"><b>¥${cheap}</b><span>最低组合月成本</span><i>组合方案 →</i></a>` : '',
-      bestOff ? `<a class="dcard" href="#promos"><b>−${bestOff}%</b><span>首购最高折扣</span><i>优惠白嫖 →</i></a>` : '',
-      `<a class="dcard" href="#events"><b>${(EV.events || []).length}</b><span>条市场变动在档</span><i>时间轴 →</i></a>`
-    ].join('');
-  }
-
-  function renderAll() { allKpis(); allModFilter(); renderAllList(); allData(); }
 
   function render404() {
     const b = $('#nfLinks');
@@ -1180,19 +953,19 @@
       search: { h: '#search', n: '全站搜索' },
       mine: { h: '#mine', n: '个人中心' },
       home: { h: '#home', n: '首页诊断台' },
-      all: { h: '#all', n: '完整工具站' },
-      map: { h: '#map', n: '功能地图' },
-      src: { h: '#sources', n: '数据源与口径' },
-      health: { h: '#health', n: '数据健康' },
-      chg: { h: '#changelog', n: '更新日志' },
-      stack: { h: '#stack', n: '我的组合' },
-      plan: { h: '#plan', n: '落地执行包' },
-      report: { h: '#report', n: '决策报告' },
-      persona: { h: '#persona', n: '测试人诊断' },
-      roles: { h: '#roles', n: '角色阶梯' },
-      evalset: { h: '#evalset', n: 'AI 评测集' },
+      all: { h: '#plans', n: '价格页' },
+      map: { h: '#home', n: '首页' },
+      src: { h: '#data?sec=sources', n: '数据源与口径' },
+      health: { h: '#data?sec=health', n: '数据健康' },
+      chg: { h: '#data?sec=changelog', n: '更新日志' },
+      stack: { h: '#stacks?sec=stack', n: '我的组合' },
+      plan: { h: '#stacks?sec=plan', n: '落地执行包' },
+      report: { h: '#stacks?sec=report', n: '决策报告' },
+      persona: { h: '#career?sec=persona', n: '测试人自测' },
+      roles: { h: '#career?sec=roles', n: '角色阶梯' },
+      evalset: { h: '#library?sec=evalset', n: 'AI 评测集' },
       plans: { h: '#plans', n: '套餐对比' },
-      news: { h: '#news', n: 'AI 大事' },
+      news: { h: '#signal?sec=news', n: 'AI 大事' },
       privacy: { h: '#privacy', n: '隐私与条款' }
     };
   }
@@ -1232,8 +1005,7 @@
       <div class="gk">继续</div>
       <div class="gchips">
         <a class="gchip" href="#home">← 首页</a>
-        <a class="gchip" href="#map">功能地图</a>
-        <a class="gchip" href="#all">完整工具站</a>
+        <a class="gchip" href="#tools">工具</a>
         <a class="gchip" href="#search">⌕ 搜索</a>
         <a class="gchip" href="#mine">◍ 个人中心</a>
       </div>
@@ -1267,8 +1039,12 @@
   function searchIndex() {
     if (SIDX) return SIDX;
     const out = [];
-    MODS.forEach(m => (m.features || []).forEach(f =>
-      out.push({ k: 'feat', id: f.v, n: f.name, d: f.line || '', go: '#' + f.v, tag: m.name })));
+    // 页面和页内章节都进索引：搜「决策矩阵」要能直接落到 工具 → 决策矩阵 那一块
+    IA.forEach(p => {
+      out.push({ k: 'page', id: 'p:' + p.id, n: p.name, d: p.tag || '', go: '#' + p.id, tag: '页面' });
+      (p.secs || []).forEach(([s, label]) =>
+        out.push({ k: 'feat', id: s, n: label, d: '', go: '#' + p.id + '?sec=' + s, tag: p.name }));
+    });
     SITE_PAGES.forEach(v => out.push({ k: 'page', id: v, n: VIEW_NAME[v] || v, d: (PAGES[v] && PAGES[v].lede) || '', go: '#' + v, tag: '站务' }));
     TOOLS.forEach(t => out.push({ k: 'tool', id: t.id, n: t.name, d: (t.tagline || '') + ' · ' + (t.vendor || ''), go: '#tools', tag: t.kind === 'qa' ? 'AI 测试平台' : '编程外壳' }));
     PLANS.forEach(p => out.push({ k: 'plan', id: p.id, n: p.name + ' · ' + (p.tier || ''), d: (p.vendor || '') + ' · ' + (p.currency === 'USD' ? '$' : '¥') + p.price, go: '#plans', tag: p.region === 'cn' ? '国内' : '国际' }));
@@ -1386,7 +1162,7 @@
 
     const recList = RECENT.length
       ? RECENT.slice(0, 12).map(r => {
-          const name = VIEW_NAME[r.v] || (r.v.indexOf('mod-') === 0 ? (MODS.find(m => 'mod-' + m.id === r.v) || {}).name || r.v : r.v);
+          const name = VIEW_NAME[r.v] || r.v;
           return `<a class="mrow mrec" href="#${esc(r.v)}"><b>${esc(name)}</b><span>${ago(r.t)}</span></a>`;
         }).join('')
       : '<div class="empty">还没有浏览记录。这一栏只在你的浏览器里，不会上传。</div>';
@@ -1610,17 +1386,42 @@
   /* ---------- 主路由 ----------
      route() 只做一件事：把渲染异常接住；真正分派在 routeInner()。
      这样任何一个页面渲染抛错，用户看到的是「出错页 + 堆栈」，而不是白屏。 */
+  /* 每个页面的区块渲染器。合并前它们各自是一个页面，现在按页归拢，
+     进一次页面就把这一页所有区块画完——不再有「进来先看到空壳」的中间态。 */
+  const RENDERERS = {
+    tools: [renderTools, renderCaps, renderVersus, renderMatrix, renderOverview],
+    plans: [renderPlans, renderPromos, renderFree],
+    stacks: [renderBundles, renderStack, renderCalc, renderDiagRecs, renderPlan, renderReport, renderOpinion],
+    signal: [renderNews, renderEvents, renderImpact],
+    career: [renderRoles, renderRoadmap, renderPersona],
+    library: [renderCommunity, renderEvalset, renderAitest],
+    data: [renderHealth, renderSources, renderChangelog]
+  };
+
+  /* 临时关掉 CSS 的平滑滚动，把一个滚动动作变成瞬时。
+     不这么做的话，换页滚到顶和章节跳转是两段动画，会互相打断。 */
+  function scrollInstant(fn) {
+    const root = document.documentElement;
+    const prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    fn();
+    root.style.scrollBehavior = prev;
+  }
+
   function route() {
     try { routeInner(); }
     catch (err) { showError(err); }
   }
 
   function routeInner() {
-    // hash 可能是 #matrix?w=... 这种带参数的形态，取 ? 之前那段当视图名
-    let v = (location.hash || '#home').replace('#', '').split('?')[0];
-    // 旧地址重定向：模块 7→6 合并后 #mod-start 已不存在，但别人分享的旧链接还在
-    const rd = (NAV.redirects || {})[v];
-    if (rd) { history.replaceState(null, '', '#' + rd); v = rd; }
+    // hash 可能是 #tools?sec=matrix 这种带参数的形态，取 ? 之前那段当页面名
+    const rawHash = (location.hash || '#home').replace('#', '');
+    const qi = rawHash.indexOf('?');
+    let v = (qi >= 0 ? rawHash.slice(0, qi) : rawHash) || 'home';
+    const params = qi >= 0 ? rawHash.slice(qi + 1) : '';
+    // 旧地址重定向：25 个功能页合并成 8 页后，别人分享的旧链接还在
+    const rd = REDIRECTS[v] || (NAV.redirects || {})[v];
+    if (rd && rd !== v) { history.replaceState(null, '', '#' + rd + (params ? '?' + params : '')); v = rd; }
     // 未知地址不再静默回落到首页——给 404 页，把全部入口摆出来
     if (v && VIEWS.indexOf(v) < 0) v = '404';
     if (!v) v = 'home';
@@ -1628,51 +1429,39 @@
     state.view = v;
     pushRecent(v);
 
-    // 顶部主导航高亮（下拉按钮也算一项：我的 / 更多）
-    const navKey = v === 'home' ? 'home' : v === 'map' ? 'map' : v === 'all' ? 'all' : v === 'search' ? 'search'
-      : (v === 'mine' || v === 'opinion' || v === 'stack' || v === 'plan' || v === 'report') ? 'mine'
-      : (v === 'changelog' || v === 'sources' || v === 'health' || v === 'evalset'
-        || v === 'about' || v === 'help' || v === 'privacy' || v === 'contact' || v === 'feedback') ? 'more' : '';
+    // 顶部主导航高亮：8 个页面都在一级，站务页收在「更多」里
+    const navKey = FEATURE_VIEWS.indexOf(v) >= 0 ? v
+      : v === 'search' ? 'search'
+        : v === 'mine' ? 'mine'
+          : (SITE_PAGES.indexOf(v) >= 0 || v === '404' || v === 'error') ? 'more' : '';
     $$('.tnav a, .tnav .tddBtn').forEach(el => el.classList.toggle('on', el.dataset.nav === navKey));
 
     $$('.view').forEach(s => s.classList.toggle('on', s.id === 'v-' + v));
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    /* 站内是 html{scroll-behavior:smooth}：直接 scrollTo 会变成一段动画，
+       和紧接着的章节跳转抢滚动条，最后停在半路。换页要的是「立刻到顶」。 */
+    scrollInstant(() => window.scrollTo(0, 0));
 
     chromeFor(v);
     if (FEATURE_VIEWS.indexOf(v) >= 0) guideFor(v);
 
-    if (v === 'home') renderHome();
-    if (v === 'map') renderMap();
-    if (v === 'all') renderAll();
+    // 一页里有多个区块：整页的渲染器一次跑完，用户看到的是一个完整页面
+    const R = RENDERERS[v];
+    if (R) R.forEach(fn => fn());
     if (v === '404') render404();
     if (v === 'error') fillErrLinks();
     if (v === 'search') renderSearch();
     if (v === 'mine') renderMine();
     if (v === 'feedback') renderFeedback();
     if (v === 'about' || v === 'help' || v === 'privacy' || v === 'contact') renderStaticPage(v);
-    if (v.indexOf('mod-') === 0) renderModule(v.slice(4));
-    if (v === 'overview') renderOverview();
-    if (v === 'matrix') renderMatrix();
-    if (v === 'tools') renderTools();
-    if (v === 'capabilities') renderCaps();
-    if (v === 'plans') renderPlans();
-    if (v === 'promos') renderPromos();
-    if (v === 'bundles') renderBundles();
-    if (v === 'aitest') renderAitest();
-    if (v === 'events') renderEvents();
-    if (v === 'versus') renderVersus();
-    if (v === 'persona') renderPersona();
-    if (v === 'opinion') renderOpinion();
-    if (v === 'stack') { renderStack(); renderCalc(); renderDiagRecs(); }
-    if (v === 'plan') renderPlan();
-    if (v === 'news') renderNews();
-    if (v === 'impact') renderImpact();
-    if (v === 'roles') renderRoles();
-    if (v === 'free') renderFree();
-    if (v === 'community') renderCommunity();
-    if (v === 'evalset') renderEvalset();
-    if (v === 'health') renderHealth();
-    if (v === 'report') renderReport();
+
+    // ?sec=xxx：页顶章节条点的就是这个，直接滚到那一块
+    const sec = (params.match(/(?:^|&)sec=([a-z0-9-]+)/) || [])[1];
+    if (sec) {
+      const el = document.getElementById('sec-' + sec);
+      /* 延后一点再滚：同一轮里各区块还在渲染（热力图、表格会改高度），
+         立刻滚会滚到一个马上就不成立的位置，看起来像「点了没反应」。 */
+      if (el) setTimeout(() => scrollInstant(() => el.scrollIntoView({ block: 'start' })), 120);
+    }
 
     // 每页独立标题；首页用完整站名
     /* 首页标题要和 build.js 注入的静态 <title> 一致：搜索引擎会执行 JS，
@@ -5313,7 +5102,6 @@
     if (state.planSort && state.planSort.key) parts.push('so=' + state.planSort.key + '-' + state.planSort.dir);
     if (state.cmCat !== 'all') parts.push('cat=' + state.cmCat);
     if (state.cmSort !== 'pick') parts.push('cs=' + state.cmSort);
-    if (state.allTab !== 'feat') parts.push('tab=' + state.allTab);
     return parts.length ? parts.join('&') : '';
   }
 
@@ -5370,10 +5158,6 @@
     if (p.has('cs')) {
       const v = p.get('cs');
       if (CM_SORTS.some(s => s.id === v)) { state.cmSort = v; changed = true; }
-    }
-    if (p.has('tab')) {
-      const v = p.get('tab');
-      if (ALL_TABS.some(t => t.k === v)) { state.allTab = v; changed = true; }
     }
     return changed;
   }
@@ -5634,20 +5418,16 @@
       if (mx) mx.onclick = closeMnav;
       mnavEl.addEventListener('keydown', (e) => { if (e.key === 'Tab') trapTab(e, mnavEl); });
       const mods = $('#mnavMods');
-      if (mods) mods.innerHTML = MODS.map(m => `
+      if (mods) mods.innerHTML = IA.filter(p => p.id !== 'home').map(p => `
         <details class="mmod">
-          <summary><span class="mic" aria-hidden="true">${m.icon || ''}</span>${esc(m.name)}<span class="mcnt">${(m.features || []).length}</span></summary>
-          <div class="mmodLinks">${(m.features || []).map(f => `<a href="#${f.v}">${f.icon || ''} ${esc(f.name)}</a>`).join('')}</div>
+          <summary><span class="mic" aria-hidden="true">▸</span>${esc(p.name)}<span class="mcnt">${(p.secs || []).length}</span></summary>
+          <div class="mmodLinks"><a href="#${p.id}">进入${esc(p.name)}</a>${(p.secs || []).map(([s, label]) => `<a href="#${p.id}?sec=${s}">${esc(label)}</a>`).join('')}</div>
         </details>`).join('');
     }
 
     // tool search
     const ts = $('#toolSearch');
     if (ts) ts.oninput = () => { state.toolQuery = ts.value; renderTools(); };
-
-    // 完整工具站的搜索
-    const as = $('#allSearch');
-    if (as) as.oninput = () => { state.allQuery = as.value; renderAll(); track('search_all', {}); };
 
     // drawer close
     const scrim = $('#scrim');
@@ -5671,9 +5451,6 @@
 
     // 引导层先渲染一遍：打印「全部页面」和命令面板不依赖用户先走到那一页
     renderHome();
-    renderMap();
-    MODS.forEach(m => renderModule(m.id));
-    renderAll();
     render404();
 
     renderOverview();

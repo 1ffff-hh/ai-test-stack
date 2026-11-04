@@ -8,7 +8,7 @@
 - 改数据：贴官网链接 + 核验日期。
 - 改评分：说清哪一维、为什么、依据等级（official / measured / community / inferred）。
 - 改界面：贴改动前后的截图。
-- 新增页面：说明它在七个模块里归哪一个，并更新 data/modules.json。
+- 新增页面：说明它属于 8 个内容页里的哪一个（或单独成页），并更新 src/app.js 的 IA 与 build.js 的 IA_SECS。
 -->
 
 ## 自检
