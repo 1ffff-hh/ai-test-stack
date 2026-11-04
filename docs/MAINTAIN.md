@@ -265,6 +265,37 @@ git push
 
 不要用 `git reset --hard` 强推 `main`——线上站和本地历史会脱节，下一个人接手时看不懂。
 
+### 5.5 换域名
+
+一条命令，不用改代码：
+
+```bash
+npm run domain -- aiteststack.com     # 写入 CNAME，并打印该加的 DNS 记录
+npm run domain -- --check             # DNS 生效后，真的去查解析和 HTTPS
+npm run domain -- --off               # 退回 github.io 地址
+```
+
+绑上之后 `canonical`、`sitemap.xml`、`feed.xml`、`llms.txt`、发布目录里的 `CNAME`
+全部自动跟着变——站点地址只有一个来源：`scripts/site-base.js`。
+**不要在任何地方手写站点地址**，写死的那天就是换域名漏改的那天。
+
+DNS 记录（在买域名的那个后台加）：
+
+| 类型 | 主机 | 值 |
+|---|---|---|
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `<用户名>.github.io` |
+
+加完回仓库 Settings → Pages 填一次 Custom domain，等它显示 DNS check successful，
+再勾上 Enforce HTTPS。旧地址 `<用户名>.github.io/<仓库>/` 会自动跳转到新域名，
+不用自己做重定向。
+
+> 为什么要换：`<用户名>.github.io` 在国内经常打不开，而且记不住。
+> 自定义域名解析到 GitHub Pages 自己的 IP，可达性和「像个正经站」这两件事一起解决。
+
 ---
 
 ## 6. 脱敏：发布红线

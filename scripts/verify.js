@@ -1,5 +1,8 @@
 const { launch } = require('./browser');
 const path = require('path');
+/* canonical 必须和站点地址一致。地址来自 site-base（会认 CNAME / SITE_DOMAIN），
+   所以换域名时这条断言不用跟着改——写死 '/ai-test-stack/' 的话，一换域名门禁就红。 */
+const SITE_URL = require('./site-base').detect().url;
 const BASE = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
 // 42 个视图 = 24 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
 const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
@@ -686,7 +689,7 @@ async function fresh(browser, hash = '') {
       .filter(e => e && e.date && typeof e.price === 'number').length, 0);
 
     out.site = { head, home, ch, priceRows, opened, links, fixBox, histLines };
-    out.siteOk = /ai-test-stack\/$|localhost/.test(head.canonical)
+    out.siteOk = (SITE_URL.length > 1 ? head.canonical === SITE_URL : true)
       && /og\.png$/.test(head.ogImage)
       && head.ogUrl === head.canonical
       && head.twitter === 'summary_large_image'

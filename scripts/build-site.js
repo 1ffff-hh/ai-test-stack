@@ -17,7 +17,7 @@ const { execFileSync } = require('child_process');
 const { detect, ROOT } = require('./site-base');
 
 const OUT = path.join(ROOT, '_site');
-const { base, url, repoUrl, isRemote } = detect();
+const { base, url, repoUrl, isRemote, domain } = detect();
 
 // 1) 清空重建
 fs.rmSync(OUT, { recursive: true, force: true });
@@ -84,6 +84,14 @@ copied.push('404.html');
 
 // 6) 关掉 Pages 的 Jekyll 处理（下划线开头的文件不会被吃掉）
 fs.writeFileSync(path.join(OUT, '.nojekyll'), '', 'utf8');
+
+/* 6.5) CNAME：绑定自定义域名时，发布物根目录必须带这个文件，
+   否则 Pages 会把域名丢掉、退回 <user>.github.io/<repo>/。
+   域名来源是仓库根的 CNAME，这里只是把它带进发布目录。 */
+if (domain) {
+  fs.writeFileSync(path.join(OUT, 'CNAME'), domain + '\n', 'utf8');
+  copied.push('CNAME');
+}
 
 /* 7) Service Worker：让「可离线打开」这个说法在网页版上也成立（不只是 file://）。
    缓存版本号带上构建日期，新版本一上线旧缓存自动作废；

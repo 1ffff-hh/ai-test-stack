@@ -11,6 +11,7 @@
     "build": "node build.js",
     "site": "node scripts/build-site.js",
     "seo": "node scripts/build-seo-pages.js",
+    "domain": "node scripts/set-domain.js",
     "serve": "node scripts/serve.js",
     "preview": "node build.js && node scripts/build-site.js && node scripts/serve.js",
     "pii": "node scripts/check-pii.js",

@@ -6,14 +6,27 @@
    推导顺序：环境变量 → git remote origin → 本地相对路径（没有 remote 时）。
    本地没有 remote 不报错：站点本来就该能在 file:// 下双击打开。 */
 'use strict';
+const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
 const ROOT = path.join(__dirname, '..');
 
+/* 自定义域名：仓库根的 CNAME（GitHub Pages 的约定），或 SITE_DOMAIN 环境变量。
+   有域名时站点在根路径（base=''），canonical 用域名而不是 <user>.github.io。
+   这样换域名只需要放一个 CNAME 文件，不用改代码里任何一处。 */
+function readDomain() {
+  const norm = s => String(s || '').trim().split(/\s+/)[0]
+    .replace(/^https?:\/\//i, '').replace(/\/.*$/, '').toLowerCase();
+  const fromEnv = norm(process.env.SITE_DOMAIN);
+  if (fromEnv) return fromEnv;
+  try { return norm(fs.readFileSync(path.join(ROOT, 'CNAME'), 'utf8')); } catch (e) { return ''; }
+}
+
 function detect() {
   let owner = process.env.SITE_OWNER || '';
   let repo = process.env.SITE_REPO || '';
+  const domain = readDomain();
 
   if (!repo) {
     try {
@@ -31,10 +44,14 @@ function detect() {
     ? process.env.PAGES_BASE.replace(/\/$/, '')
     : (repo ? (isUserSite ? '' : '/' + repo) : '');
 
-  const host = owner ? `https://${owner}.github.io` : '';
+  // 绑了自定义域名就服务在根路径，子路径前缀全部作废
+  if (domain) base = '';
+
+  const host = domain ? `https://${domain}` : (owner ? `https://${owner}.github.io` : '');
   return {
     owner,
     repo,
+    domain,                                 // '' 或 'example.com'
     base,                                   // '' 或 '/ai-test-stack'
     url: host + base + '/',                 // 站点首页绝对地址；无 remote 时为 '/'
     repoUrl: owner && repo ? `https://github.com/${owner}/${repo}` : '',
