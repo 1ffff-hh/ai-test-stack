@@ -263,13 +263,8 @@
   {
    "id": "aliyun",
    "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview",
-   "plans": {
-    "bailian": {
-     "anchor": "个人版 Lite",
-     "window": 400,
-     "pattern": "限时\\s*(\\d+)\\s*元/月"
-    }
-   }
+   "mode": "manual",
+   "note": "概述页只讲「支持包月/包季/包年」，正文里已经没有价格（2026-11-04 实测：无「Lite」、无「限时 N 元/月」）。标价在购买页且要登录，规则解析不了，改由人工在控制台核对。之前那条 anchor「个人版 Lite」的规则已失效，留着每周报一次解析失败没有意义。"
   },
   {
    "id": "kimi",

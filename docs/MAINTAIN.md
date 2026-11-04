@@ -367,6 +367,8 @@ git push -u origin main
 | `build.js` 报夺冠率 >40% | 某款工具分数给得太满，评分表退化成假对比 | 按 `README.md` 的校准记录那样，只改有事实依据的分 |
 | `a11y-audit.js` 报浅色主题违规 | 新样式写死了亮色 | 改成 `-t` 结尾的变量；内联 `style` 也要用变量 |
 | `verify.js` 某组计数不对 | 数据条目数变了，断言没跟着改 | 数据变了就更新 `scripts/verify.js` 里的期望值，别改数据去凑断言 |
+| `npm run data` 报 `page.goto: ERR_CONNECTION_TIMED_OUT`（如 copilot） | 本机 Chromium 连不上该站；**Node 和 git 走的是两条路**——git 配了 `http.proxy`，Chromium/curl 不读它 | 先确认是不是只有本机这样：换 CI 跑一次。要本地跑通就给 Chromium 配代理（`scripts/pw.js` 的 launch 选项），或在能直连的网络下跑。别把这类失败当成规则坏了去改规则 |
+| 某个源报 `anchor-not-found` | 官网改版，锚点或正文没了 | 先手动打开那个页面确认「价格还在不在」：还在 → 改 anchor；不在了 → 把整条改成 `mode: "manual"` 并写清原因，别留一条每周报错的死规则 |
 | Pages 部署失败，门禁红 | 提交没本地跑过 | 本地 `npm run check` 修好再推；站点会自动停在上一版 |
 | 页面上数字和列表对不上 | 文案里写死了计数 | 把数字改成运行时计算，别手改数字 |
 | 下载链接 404 | `exports/` 没发布 | 确认 `scripts/build-site.js` 把 `exports` 拷进了 `_site/` |

@@ -53,7 +53,8 @@
       "url": "https://www.anthropic.com/rss.xml",
       "region": "global",
       "kind": "product",
-      "enabled": true
+      "enabled": false,
+      "note": "官方已不再提供 RSS：2026-11-04 实测 rss.xml / news/rss.xml / news/feed.xml / rss / news/feed 五个候选全部 404，新闻页也没有 rel=alternate。留一条永远红的源只会训练人忽略红色，所以关掉；Anthropic 的动态靠人工看官网补进 news.json。"
     },
     {
       "id": "googleai",
