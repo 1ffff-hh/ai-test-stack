@@ -39,7 +39,8 @@ jobs:
             [ "$c" = "200" ] || { echo "::error::$f 返回 $c"; fail=1; }
           done
           # 404 页必须真的返回 404（不然搜索引擎会把随机路径当正常页收录）
-          c=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "$URLno-such-path-9f3a/")
+          # 必须写 ${URL}：$URLno-such-path 会被 bash 当成变量名 URLno，直接 unbound variable
+          c=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 25 "${URL}no-such-path-9f3a/")
           echo "404 探测 → $c"
           [ "$c" = "404" ] || { echo "::warning::未知路径返回 $c，期望 404"; }
 
