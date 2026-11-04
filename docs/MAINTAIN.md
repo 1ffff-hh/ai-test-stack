@@ -173,7 +173,9 @@ Service Worker 作用域的问题，那样预览就只是「看起来像」。�
 | `index.html` | 站点本体 | `build.js` | 什么都没了 |
 | `exports/*` | 6 个可下载数据集（含 `plans-history.*`） | `build.js` | 下载链接 404 |
 | `feed.xml` | Atom 订阅 | `scripts/build-feed.js` | 订阅者永远收不到更新 |
-| `sitemap.xml` | 站点地图 | `scripts/build-site.js` | 搜索收录变慢（不致命） |
+| `t/*.html` | 每款工具一个独立页面（29 个）+ 工具索引 | `scripts/build-seo-pages.js` | 长尾搜索词没有落地页，只能靠首页一个地址 |
+| `p/*.html` | 每档套餐一个独立页面（59 个）+ 套餐索引 | `scripts/build-seo-pages.js` | 同上；「Kimi 会员多少钱」这类搜索搜不到本站 |
+| `sitemap.xml` | 站点地图，含全部 91 个地址 | `scripts/build-site.js` | 搜索收录变慢（不致命） |
 | `og.png` | 分享卡片大图 | `scripts/build-og.js` | 分享出去没有图，卡片退化成小卡 |
 | `sw.js` | 离线缓存 | `scripts/build-site.js` | 只有 `file://` 能离线，网页版不行 |
 | `llms.txt` | 给 AI 代理的站点说明书（含 `exports/` 清单） | `scripts/build-site.js` | 代理与 IDE 插件引用不到本站；数字随 data 重建，不会写死 |
@@ -182,6 +184,16 @@ Service Worker 作用域的问题，那样预览就只是「看起来像」。�
 `build-site.js` 会自检：产物缺一个、`index.html` 里缺 `canonical` / `og:image` / JSON-LD、
 或找不到指向仓库的纠错入口，都直接 `exit 1`。**`npm run check` 的最后一步就是它**，
 所以门禁绿 = 发布物齐。
+
+**长尾静态页（`t/` 与 `p/`）是给搜索引擎看的。** 整站是单页应用，所有内容挂在
+`#hash` 后面，搜索引擎只认一个地址——站里明明写着「Kimi 会员 ¥199」，但搜这个词
+找不到本站。`scripts/build-seo-pages.js` 用 `data/*.json` 生成 88 个独立页面，
+每页有自己的标题、描述、canonical，以及 `Product` / `SoftwareApplication` 结构化数据。
+
+- 改页面模板或标题写法：只动 `scripts/build-seo-pages.js`
+- 改价格、额度、优缺点：仍然只动 `data/*.json`，重新构建即同步
+- **不要手改 `_site/t/` 或 `_site/p/` 里的文件**，它们是产物，每次构建都会重建
+- 加一款工具或一档套餐：什么都不用做，下次构建自动多两个页面、站点地图自动多两条
 
 `og.png` 是唯一可能被跳过的：它要起真浏览器。本地没装 Playwright 时它会打一行「已跳过」，
 不阻塞；线上工作流装了 Playwright，所以线上一定有图。想在本机补：

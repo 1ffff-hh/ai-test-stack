@@ -1647,8 +1647,10 @@
     if (v === 'report') renderReport();
 
     // 每页独立标题；首页用完整站名
+    /* 首页标题要和 build.js 注入的静态 <title> 一致：搜索引擎会执行 JS，
+       两处不一致时它可能取运行时那个，等于静态标签白写了。 */
     document.title = v === 'home'
-      ? 'AI Test Stack · AI Agent × Coding Plan 选型与能力图谱'
+      ? `AI 编程工具与套餐价格对比（${TOOLS.length} 款 / ${PLANS.length} 档）· AI Test Stack`
       : (VIEW_NAME[v] || v) + ' · AI Test Stack';
     if (v !== from) track('view', { v, from });
   }
@@ -4033,10 +4035,15 @@
     const feed = SITE.url && SITE.url.length > 1 ? SITE.url + 'feed.xml' : '';
     const sf = $('#sfLinks');
     if (sf) {
+      /* 静态长尾页只在网页版存在（file:// 下没有 t/ 与 p/ 目录）。
+         给搜索引擎一条从首页进得去的内部链接，别让 88 个页面只能靠 sitemap 被发现。 */
+      const web = /^https?:$/.test(location.protocol);
       sf.innerHTML = [
         `<button type="button" data-fix='{"title":"数据纠错"}'>报告数据错误</button>`,
         feed ? `<a href="${esc(feed)}" target="_blank" rel="noopener">RSS 订阅</a>` : '',
-        SITE.repo ? `<a href="${esc(SITE.repo)}" target="_blank" rel="noopener">GitHub 源码</a>` : ''
+        SITE.repo ? `<a href="${esc(SITE.repo)}" target="_blank" rel="noopener">GitHub 源码</a>` : '',
+        web ? `<a href="t/">工具索引</a>` : '',
+        web ? `<a href="p/">套餐索引</a>` : ''
       ].filter(Boolean).join('');
     }
     const hf = $('#healthFix');

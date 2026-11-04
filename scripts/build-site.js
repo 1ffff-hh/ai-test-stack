@@ -2,7 +2,8 @@
 /* 生成可发布的静态目录 _site/ —— GitHub Pages 托管的就是这里面的内容。
    本地也能跑，用来预览「部署后的样子」（子路径 + http，和 file:// 双击打开略有差异）。
 
-   产物清单：index.html、exports/、404.html、robots.txt、sitemap.xml、
+   产物清单：index.html、exports/、404.html、robots.txt、sitemap.xml（含全部长尾页）、
+             t/ 与 p/（build-seo-pages.js 生成的长尾静态页）、
              feed.xml（build-feed.js）、sw.js（离线缓存）、og.png（build-og.js，失败不阻塞）
 
    用法：
@@ -39,14 +40,26 @@ for (const dir of ['exports']) {
   for (const f of fs.readdirSync(src)) { copied.push(dir + '/' + f); exportFiles.push(dir + '/' + f); }
 }
 
+/* 3.5) 长尾静态页：/t/<工具>.html 与 /p/<套餐>.html。
+   整站是单页应用，只有 / 一个地址可被收录；这一层把 29 款工具与 59 档套餐
+   各给一个独立地址，让「Kimi 会员多少钱」这类真实搜索词有落地页。
+   页面内容全部来自 data/*.json，改数据重新构建就同步。 */
+const seoPages = require('./build-seo-pages').generate(OUT, base, url);
+for (const p of seoPages) copied.push(p.loc.replace(url, ''));
+
 // 4) 访客协议 + 站点地图
+const sitemapUrls = [
+  { loc: url, lastmod: null, changefreq: 'weekly', priority: '1.0' },
+  ...seoPages
+].map(u => `  <url>
+    <loc>${u.loc}</loc>${u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ''}
+    <changefreq>${u.changefreq}</changefreq>
+    <priority>${u.priority}</priority>
+  </url>`).join('\n');
+
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>${url}</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
+${sitemapUrls}
 </urlset>
 `;
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sitemap, 'utf8');
@@ -91,14 +104,20 @@ const cnt = (rel, fallback) => {
   if (j && Array.isArray(j.items)) return j.items.length;
   return fallback;
 };
+/* 数据文件有两种形状：顶层数组（tools / plans），和带元信息的对象
+   （roles.json 的 roles、evalset.json 的 cases、news.json 的 events）。
+   只按「是不是数组」取长度，对象会静默返回 0——llms.txt 曾经因此
+   写着「0 个测试角色阶梯、0 个评测集、0 条大事」，等于告诉 AI 代理这个站是空的。 */
+const pick = (rel, key) => {
+  const j = readJson(rel);
+  if (!j) return 0;
+  if (Array.isArray(j)) return j.length;
+  return Array.isArray(j[key]) ? j[key].length : 0;
+};
 const dTools = readJson('data/tools.json') || [];
 const dPlans = readJson('data/plans.json') || [];
 const dBundles = readJson('data/bundles.json') || [];
-const dNews = readJson('data/news.json') || [];
-const dNewsAuto = readJson('data/news-auto.json') || [];
 const dChangelog = readJson('data/changelog.json') || [];
-const dRoles = readJson('data/roles.json') || [];
-const dEval = readJson('data/evalset.json') || [];
 const n = (x, fb) => (Array.isArray(x) ? x.length : fb);
 const llms = `# AI Test Stack
 
@@ -107,8 +126,8 @@ const llms = `# AI Test Stack
 
 ## 这个站回答四个问题
 - 买什么：${n(dTools, 0)} 款工具 × ${n(dPlans, 0)} 档套餐 × ${n(dBundles, 0)} 套组合，每个价格带出处与核验日，每个分数署编辑的名
-- 我在哪：${n(dRoles, 0)} 个测试角色阶梯、能力图谱、AI 测试专项与 ${n(dEval, 0)} 个评测集
-- 行业在变什么：${n(dNews, 0) + n(dNewsAuto, 0)} 条大事与对测试岗位的具体冲击
+- 我在哪：${pick('data/roles.json', 'roles')} 个测试角色阶梯、能力图谱、AI 测试专项与 ${pick('data/evalset.json', 'cases')} 条评测用例
+- 行业在变什么：${pick('data/news.json', 'events')} 条人工整理的大事（每条都写了「对测试的影响」），另有 ${pick('data/news-auto.json', 'events')} 条自动抓取的行业动态，默认不展示
 - 下一步：30 天落地执行包，以及可打印成 A4 的决策报告
 
 ## 机器可读数据（本仓库 exports/，线上同路径）
@@ -119,6 +138,11 @@ const llms = `# AI Test Stack
 - exports/evalset.json — 评测集清单
 - exports/manifest.json — 本次导出的清单与计数
 - feed.xml — 更新订阅源（${n(dChangelog, 0)} 条）
+
+## 逐条索引（每条一个独立地址，可直接引用）
+- t/ — ${n(dTools, 0)} 款工具的总索引；单条为 t/&lt;工具 id&gt;.html
+- p/ — ${n(dPlans, 0)} 档套餐的总索引；单条为 p/&lt;套餐 id&gt;.html
+- 单条页面包含：价格与额度、优缺点、九维评分或价格变动历史、同价位替代、核验日期与官网出处
 
 ## 使用约束（引用本站数据时请一并保留）
 - 所有价格是公开页面核验值，市场变动极快，下单前以厂商官网为准。
@@ -214,9 +238,13 @@ if (process.env.SKIP_OG) {
 }
 
 // 10) 自检：产物不全就别让工作流继续往下走到部署那一步
-for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml', 'llms.txt']) {
+for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml', 'llms.txt', 't/index.html', 'p/index.html']) {
   if (!fs.existsSync(path.join(OUT, need))) problems.push('产物缺失：' + need);
 }
+/* 站点地图是长尾页唯一的发现入口：如果哪天它退回到只剩首页，
+   等于 88 个页面白生成了，而且线上不会报错——所以在这里卡一道。 */
+const smCount = (fs.readFileSync(path.join(OUT, 'sitemap.xml'), 'utf8').match(/<loc>/g) || []).length;
+if (smCount < 10) problems.push('sitemap.xml 只有 ' + smCount + ' 个地址：长尾静态页没进站点地图');
 const idx = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
 for (const [what, pat] of [['canonical', /rel="canonical"/], ['og:image', /property="og:image"/], ['JSON-LD', /application\/ld\+json/]]) {
   if (!pat.test(idx)) problems.push('index.html 里没有 ' + what + '（先跑 node build.js，且 build.js 要能识别站点地址）');

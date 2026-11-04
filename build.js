@@ -727,10 +727,13 @@ const CNT = {
   log: (data.changelog || []).length
 };
 const SITE_NAME = data.meta.siteName || 'AI Test Stack';
-const TITLE_HOME = SITE_NAME + ' · AI 工具选型 × 测试角色 × AI 冲击';
-const DESC_HOME = `面向测试工程师的 AI 工具选型与职业判断看板：${CNT.tools} 款工具、`
-  + `${CNT.plans} 档国内外套餐、${CNT.free} 条免费额度、${CNT.cases} 条 AI 评测用例、`
-  + `${CNT.roles} 个测试角色、数据健康与可打印决策报告。`;
+/* 标题按「有人会搜什么」写，不按「我们想叫什么」写。
+   搜索框里出现的是「AI 编程工具 价格 对比」「Kimi 会员多少钱」，
+   不是站名；站名放尾部做品牌位。数字来自数据，不写死。 */
+const TITLE_HOME = `AI 编程工具与套餐价格对比（${CNT.tools} 款 / ${CNT.plans} 档）· ${SITE_NAME}`;
+const DESC_HOME = `Kimi、Claude Code、Cursor、Trae 等 ${CNT.tools} 款 AI 编程与测试工具的价格、额度与国内可用性对比，`
+  + `含 ${CNT.plans} 档国内外套餐、${CNT.free} 条免费额度与 ${CNT.cases} 条评测用例。`
+  + `每个价格标核验日期与官网出处，数据可下载核对。`;
 const OG_DESC = `${CNT.tools} 款 AI 工具 + ${CNT.plans} 档国内外套餐 + ${CNT.free} 条免费额度 + `
   + `${CNT.roles} 个测试角色 + ${CNT.cases} 条评测用例。含决策矩阵、能力图谱、组合方案与 90 天应对。`;
 const escAttr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
