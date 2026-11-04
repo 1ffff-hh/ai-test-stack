@@ -4,8 +4,8 @@ const path = require('path');
    所以换域名时这条断言不用跟着改——写死 '/ai-test-stack/' 的话，一换域名门禁就红。 */
 const SITE_URL = require('./site-base').detect().url;
 const BASE = 'file:///' + path.resolve(__dirname, '..', 'index.html').replace(/\\/g, '/');
-// 42 个视图 = 24 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
-const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
+// 43 个视图 = 25 个功能页 + home/map/all + 7 个站务页 + error + 6 个模块页 + 404
+const VIEWS = ['home','overview','report','matrix','tools','capabilities','plans','promos','free','community','bundles','persona','aitest','events','news','impact','roles','evalset','versus','roadmap','stack','plan','opinion','changelog','sources','health','map','all','search','mine','feedback','about','help','privacy','contact','error','mod-diagnose','mod-grow','mod-shift','mod-toolkit','mod-choose','mod-data','404'];
 // 站务页：不属于任何模块，面包屑只到「首页 › 页名」
 const SITE_PAGES = ['search','mine','feedback','about','help','privacy','contact'];
 
@@ -23,6 +23,20 @@ async function fresh(browser, hash = '') {
   const browser = await launch();
   const out = {};
   const allErrs = [];
+
+  /* 功能页数量从数据里算，不写死。
+     0.9.2 加「社区资源库」时，四处写死的 24 / 31 同时失效——
+     这正是站规「计数一律运行时算」要防的事，验收脚本自己先违反了。
+     现在只有一处真相：modules.json 里各模块 features 之和。 */
+  let FEAT_N = 0;
+  {
+    const c = await browser.newContext();
+    const p = await c.newPage();
+    await p.goto(BASE, { waitUntil: 'load' });
+    FEAT_N = await p.evaluate(() => (((window.__DATA__ || {}).modules) || { modules: [] }).modules
+      .reduce((n, m) => n + (m.features || []).length, 0));
+    await c.close();
+  }
 
   // ---------- 1. 15 个页面 ----------
   {
@@ -215,8 +229,9 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(250);
     const t2 = await p.evaluate(() => document.title);
     out.notFound = { ...nf, toolsTitle: t2 };
-    // 24 个功能页 + 7 个站务页：死路上也得能看见全部岔口
-    out.notFoundOk = nf.on && nf.links === 31 && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具库') >= 0;
+    // 功能页 + 7 个站务页：死路上也得能看见全部岔口
+    out.notFoundOk = nf.on && nf.links === FEAT_N + SITE_PAGES.length
+      && nf.title.indexOf('页面不存在') >= 0 && t2.indexOf('工具库') >= 0;
     allErrs.push(...errs);
     await c.close();
   }
@@ -247,8 +262,8 @@ async function fresh(browser, hash = '') {
     await p.waitForTimeout(300);
     const jump = await p.evaluate(() => location.hash);
     out.console = { base, afterQ, afterMod, jump };
-    out.consoleOk = base.kpi >= 5 && base.cards === 24 && base.direct && base.data >= 2
-      && afterQ > 0 && afterQ < 24 && afterMod.n === 6 && afterMod.on === 'diagnose'
+    out.consoleOk = base.kpi >= 5 && base.cards === FEAT_N && base.direct && base.data >= 2
+      && afterQ > 0 && afterQ < FEAT_N && afterMod.n === 6 && afterMod.on === 'diagnose'
       && jump === '#overview';
     allErrs.push(...errs);
     await c.close();
@@ -541,7 +556,7 @@ async function fresh(browser, hash = '') {
     out.invOk = inv.tools >= 28 && inv.plans >= 50 && inv.bundles >= 30 && inv.free >= 30
       && inv.news >= 30 && inv.roles >= 10 && inv.evalset === 30 && inv.kindOk && inv.planOk && inv.freeOk
       && inv.newsOk && inv.roleOk && inv.evalOk && inv.quad === 4 && inv.levels === 3
-      && home.feats === '24' && String(inv.tools) === home.tools;
+      && home.feats === String(FEAT_N) && String(inv.tools) === home.tools;
     allErrs.push(...errs);
     await c.close();
   }
@@ -711,6 +726,7 @@ async function fresh(browser, hash = '') {
     const { c, p, errs } = await fresh(browser);
     const crumbs = {};
     const blocks = {};
+    let leftoverToken = '';
     for (const v of SITE_PAGES) {
       await p.evaluate(v => { location.hash = '#' + v; }, v);
       await p.waitForTimeout(200);
@@ -720,6 +736,15 @@ async function fresh(browser, hash = '') {
         return { shown: !sub.hidden, items: sub.querySelectorAll('.crumbs a, .crumbs b').length, back: sub.querySelectorAll('.sibnav a').length };
       });
       blocks[v] = await p.evaluate(() => document.querySelectorAll('.view.on .panel, .view.on .mcard2, .view.on .fbk').length);
+      /* 文案里的 {count:xxx} 占位符必须全部替换掉。
+         写错 key 时它不会被替换，而是原样印在页面上——这种错没人会发现，
+         因为它看起来像排版符号。 */
+      const left = await p.evaluate(() => {
+        const m = (document.querySelector('.view.on') || {}).textContent || '';
+        const hit = m.match(/\{count:[a-z]+\}/);
+        return hit ? hit[0] : '';
+      });
+      if (left && !leftoverToken) leftoverToken = v + ' → ' + left;
     }
     // 模块 7 → 6 合并后，旧地址必须重定向，而不是掉进 404
     await p.evaluate(() => { location.hash = '#mod-start'; });
@@ -736,9 +761,10 @@ async function fresh(browser, hash = '') {
       reachable: ['about', 'help', 'privacy', 'contact', 'feedback', 'search', 'mine']
         .every(v => document.querySelector('#sfNav a[href="#' + v + '"], #tnav a[href="#' + v + '"]'))
     }));
-    out.sitePages = { crumbs, blocks, redirect, nav };
+    out.sitePages = { crumbs, blocks, redirect, nav, leftoverToken };
     out.sitePagesOk = Object.values(crumbs).every(x => x.shown && x.items >= 2 && x.back >= 3)
       && Object.values(blocks).every(n => n >= 1)
+      && !leftoverToken
       && redirect.hash === '#mod-diagnose' && redirect.on === 'v-mod-diagnose'
       && nav.top === 4 && nav.groups === 2 && nav.mobilePrim >= 8
       && nav.footGroups === 4 && nav.footLinks >= 25 && nav.reserved === 3 && nav.reachable;
@@ -892,7 +918,7 @@ async function fresh(browser, hash = '') {
       && /GLM Coding Lite/.test(dataForm.prev) && /¥138/.test(dataForm.prev)
       && opened.length === 1 && /data-correction\.yml/.test(opened[0])
       && carried.on === 'v-feedback' && carried.kind === 'bug' && carried.where === '套餐对比'
-      && errView.on === 'v-error' && errView.links === 31
+      && errView.on === 'v-error' && errView.links === FEAT_N + SITE_PAGES.length
       && /出错/.test(errView.title) && /TypeError|cannot read/i.test(errView.trace)
       && /渲染时抛了一个异常/.test(errView.msg);
     allErrs.push(...errs);
@@ -1043,6 +1069,135 @@ async function fresh(browser, hash = '') {
     await c.close();
   }
 
+  // ---------- 30. 0.9.2：社区资源库 ----------
+  /* 这一组锁三件事：
+     1) 每张卡都有真实星数（星数为 0 或 — 说明 stats 没抓到，等于在骗人）
+     2) 分类筛选与排序真的会变，而且写进 URL（分享出去要能还原）
+     3) 深链能直接落到某个分类 */
+  {
+    const { c, p, errs } = await fresh(browser, '#community');
+    await p.waitForTimeout(350);
+
+    const starsOf = () => [...document.querySelectorAll('#cmGrid .cmCard .cmStars')].map(e => {
+      const m = (e.textContent || '').replace(/[^\d.k]/gi, '');
+      return m ? (m.endsWith('k') ? parseFloat(m) * 1000 : parseFloat(m)) : null;
+    });
+
+    const base = await p.evaluate(() => {
+      const cards = [...document.querySelectorAll('#cmGrid .cmCard')];
+      return {
+        cards: cards.length,
+        cats: document.querySelectorAll('#cmCats .seg').length,
+        allHaveUse: cards.every(x => /测试怎么用/.test(x.textContent)),
+        allHaveRepo: cards.every(x => /github\.com\//.test((x.querySelector('h3 a') || {}).href || '')),
+        count: ((document.querySelector('#cmCount') || {}).textContent || '').trim()
+      };
+    });
+    const baseStars = await p.evaluate(starsOf);
+
+    // 点 MCP：卡片数变少、URL 出现 cat=mcp、选中态跟上
+    await p.evaluate(() => {
+      const b = [...document.querySelectorAll('#cmCats .seg')].find(x => x.dataset.cat === 'mcp');
+      if (b) b.click();
+    });
+    await p.waitForTimeout(280);
+    const filtered = await p.evaluate(() => {
+      const on = document.querySelector('#cmCats .seg.on');
+      return {
+        cards: document.querySelectorAll('#cmGrid .cmCard').length,
+        hash: location.hash,
+        on: on ? on.dataset.cat : ''
+      };
+    });
+
+    // 按星数排：必须单调不增
+    await p.evaluate(() => {
+      const b = [...document.querySelectorAll('#cmSort .seg')].find(x => x.dataset.sort === 'stars');
+      if (b) b.click();
+    });
+    await p.waitForTimeout(280);
+    const sortedStars = await p.evaluate(starsOf);
+    const starsSorted = sortedStars.length > 1 && sortedStars.every((v, i) => i === 0 || sortedStars[i - 1] >= v);
+
+    // 深链：直接打开 #community?cat=ai
+    await p.goto(BASE + '#community?cat=ai', { waitUntil: 'load' });
+    await p.waitForTimeout(450);
+    const deep = await p.evaluate(() => {
+      const on = document.querySelector('#cmCats .seg.on');
+      return { on: on ? on.dataset.cat : '', cards: document.querySelectorAll('#cmGrid .cmCard').length };
+    });
+
+    out.community = {
+      cards: base.cards, cats: base.cats, count: base.count,
+      allHaveUse: base.allHaveUse, allHaveRepo: base.allHaveRepo,
+      starsOk: baseStars.length > 0 && baseStars.every(x => x != null && x > 0),
+      filtered, starsSorted, deep
+    };
+    out.communityOk = base.cards >= 10 && base.cats >= 4
+      && base.allHaveUse && base.allHaveRepo
+      && out.community.starsOk
+      && /^\d+ 个$/.test(base.count)
+      && filtered.cards > 0 && filtered.cards < base.cards
+      && filtered.hash.indexOf('cat=mcp') > 0 && filtered.on === 'mcp'
+      && starsSorted
+      && deep.on === 'ai' && deep.cards > 0;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
+  // ---------- 31. 0.9.2：套餐表在手机上变成卡片 ----------
+  /* 8 列 × 59 档的宽表在 390px 上只能左右拖。这一组锁：
+     表头藏掉、每格用 data-label 补回列名、移动排序按钮可用且真的排、
+     页面不出现文档级横向溢出。 */
+  {
+    const c = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const p = await c.newPage();
+    const errs = [];
+    p.on('pageerror', e => errs.push(String(e)));
+    await p.goto(BASE + '#plans', { waitUntil: 'load' });
+    await p.waitForTimeout(700);
+
+    const m = await p.evaluate(() => {
+      const th = document.querySelector('#planTable thead');
+      const tr = document.querySelector('#planBody tr');
+      const tds = tr ? [...tr.querySelectorAll('td')] : [];
+      const labelled = tds.filter(td => {
+        const cs = getComputedStyle(td, '::before');
+        return cs.content && cs.content !== 'none' && cs.content !== 'normal' && cs.content.indexOf('attr(') < 0;
+      }).length;
+      const mini = document.querySelector('#pSortMini');
+      return {
+        theadHidden: th ? getComputedStyle(th).display === 'none' : false,
+        rows: document.querySelectorAll('#planBody tr').length,
+        tds: tds.length,
+        labelled,
+        sortMini: mini ? getComputedStyle(mini).display !== 'none' : false,
+        overflow: document.documentElement.scrollWidth - window.innerWidth
+      };
+    });
+
+    await p.evaluate(() => {
+      const b = [...document.querySelectorAll('#pSortMini .seg')].find(x => x.dataset.ps === 'price');
+      if (b) b.click();
+    });
+    await p.waitForTimeout(400);
+    /* 排序键是 p.price（人民币折算值）。不要从 textContent 里抠数字：
+       美元档是「$20 ≈ ¥145」，而价格备注紧跟着是日期，抠出来会变成 1452026。
+       表格行自带 data-price，读它。 */
+    const prices = await p.evaluate(() => [...document.querySelectorAll('#planBody tr')].map(tr => {
+      const td = tr.querySelector('td.pr');
+      const v = td ? td.getAttribute('data-price') : null;
+      return v == null || v === '' ? null : parseFloat(v);
+    }).filter(x => x != null));
+    const priceAsc = prices.length > 3 && prices.every((v, i) => i === 0 || prices[i - 1] <= v);
+
+    out.mobileTable = { ...m, prices: prices.length, priceAsc };
+    out.mobileTableOk = m.theadHidden && m.rows > 0 && m.tds >= 7
+      && m.labelled >= 5 && m.sortMini && m.overflow <= 1 && priceAsc;
+    allErrs.push(...errs);
+    await c.close();
+  }
+
   out.errs = allErrs;
   out.pass = out.viewsOk && out.themeOk && out.overflowOk
     && out.drawer.onOpen.open && out.drawer.afterEsc.open === false
@@ -1054,7 +1209,7 @@ async function fresh(browser, hash = '') {
     && out.newsOk && out.impactOk && out.rolesOk && out.freeOk && out.plans2Ok && out.invOk
     && out.healthOk && out.evalOk && out.reportOk && out.siteOk
     && out.sitePagesOk && out.searchOk && out.mineOk && out.feedbackOk
-    && out.uiFloorOk
+    && out.uiFloorOk && out.communityOk && out.mobileTableOk
     && allErrs.length === 0;
 
   console.log(JSON.stringify(out, null, 2));

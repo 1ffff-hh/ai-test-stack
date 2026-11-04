@@ -1,5 +1,20 @@
 [
  {
+  "date": "2026-11-04",
+  "kind": "feat",
+  "title": "v0.9.2：新增社区资源库，套餐表在手机上变成卡片",
+  "body": "补的是「买完工具之后」那一环：工具装什么、套餐在手机上怎么看。社区资源库不是论坛——不发帖、不注册、不收集信息，只做精选索引，星数与最近提交由 CI 每周从 GitHub 抓。",
+  "items": [
+   "新增 #community 社区资源库：35 个测试工程师用得上的开源项目，分 MCP Server / Agent Skill / AI 测试工具 / 测试基建四类，每项写明「测试怎么用」与坑",
+   "每条资源生成独立静态页 /c/<id>.html，进 sitemap；llms.txt 同步给出索引",
+   "星数、最近提交、许可证由 scripts/refresh-community.js 从 GitHub API 抓取，与人工判断分开存（community.json / community-stats.json），CI 刷新不会覆盖人写的内容",
+   "套餐表在 ≤760px 下改为卡片：藏掉表头，每格用 data-label 补回列名；表头藏起来后另给一组移动排序按钮",
+   "深链补全：#plans?ty=&rg=&so=、#community?cat=&cs=、#all?tab= 都能还原筛选与排序",
+   "新增 issue 模板 resource-submit.yml：提交资源要写清「测试怎么用」，不满足收录标准的会被拒并说明原因",
+   "新增门禁：社区页星数必须真实、分类筛选与排序必须生效并写进 URL、移动端表格必须卡片化且不横向溢出"
+  ]
+ },
+ {
   "date": "2026-11-03",
   "kind": "data",
   "title": "全量数据核验：59 档套餐 + 29 个工具 + 34 条免费额度",

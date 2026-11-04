@@ -29,8 +29,15 @@
   const ROLE = D.roles || { roles: [], levels: [], matrix: { rows: [] }, relation: { quads: [] }, sources: [] };
   const IMP = D.impact || { numbers: [], shifts: [], matrix: { rows: [] }, playbook: { phases: [] }, antiPatterns: [], selfCheck: { qs: [] }, sources: [] };
   const EVS = D.evalset || { categories: [], cases: [], howto: [], metrics: [], scoring: { bands: [] }, intro: {} };
+  /* 社区资源库：人工判断与脚本抓取分两份存。
+     CM 是人写的（这是什么、对测试怎么用），CMS 是每周从 GitHub 抓的（星数、最近提交）。
+     合起来渲染，但永远不互相覆盖——CI 刷新星数时不能碰人写的那半。 */
+  const CM = D.community || { categories: [], items: [], intro: {} };
+  const CMS = (D.communityStats || {}).repos || {};
+  const CM_CAT = {};
+  (CM.categories || []).forEach(c => { CM_CAT[c.id] = c; });
   const RR = D.refreshReport || null;
-  /* 信息架构配置：6 个模块把 24 个功能页组织成「地图 → 模块 → 功能」的引导路径 */
+  /* 信息架构配置：6 个模块把 25 个功能页组织成「地图 → 模块 → 功能」的引导路径 */
   const MODS = (D.modules && D.modules.modules) || [];
   /* 导航与站务页内容：从 data/nav.json / data/pages.json 读。
      以前顶栏、页脚、移动导航三处各写一份，加一页要改三处；现在只改配置。 */
@@ -127,6 +134,9 @@
     newsAuto: false,
     freeCat: 'all',
     freeRegion: 'all',
+    /* 社区资源库：分类与排序都进 URL，分享出去要能还原同一个视图 */
+    cmCat: 'all',
+    cmSort: 'pick',
     roleId: 'blackbox',
     roleStage: 1,
     impCheck: [],
@@ -176,12 +186,22 @@
      旧 16 个视图 id 原样保留 = 旧链接/旧分享链接零失效。
      新增：home（默认落地页）、map、all、mod-*（模块页）、404。
      ========================================================= */
-  const FEATURE_VIEWS = ['overview', 'report', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'evalset', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'health'];
+  const FEATURE_VIEWS = ['overview', 'report', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'evalset', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'health', 'community'];
   /* 站务页：不属于任何内容模块（它们不是「事」，是「站」本身）。
      和功能页一样是一级页面，但没有模块归属，所以面包屑只到「首页 › 页名」。 */
   const SITE_PAGES = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
   const MOD_VIEWS = MODS.map(m => 'mod-' + m.id);
   const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, 'map', 'all', ...MOD_VIEWS, '404', 'error'];
+  /* 文案里的计数占位符。站规是「计数一律运行时算」，但 data/pages.json 里
+     一直手写着「57 档」「29 款」——数据涨到 59 档，页面上就成了假话。
+     现在写 `{count:plans}`，渲染时从数据取。 */
+  const COUNTS = {
+    tools: TOOLS.length, plans: PLANS.length, bundles: BUNDLES.length,
+    caps: CAP_LIST.length, free: (FB.items || []).length,
+    news: (NEWS.events || []).length, roles: (ROLE.roles || []).length,
+    evalset: (EVS.cases || []).length, community: (CM.items || []).length,
+    views: FEATURE_VIEWS.length
+  };
   const VIEW_NAME = {
     home: '首页', map: '功能地图', all: '完整工具站', '404': '页面不存在', error: '页面出错',
     overview: '总览', matrix: '决策矩阵', tools: '工具库', capabilities: '能力图谱',
@@ -189,7 +209,7 @@
     events: '市场变动', versus: '两两 PK', persona: '测试人诊断', opinion: '我的判断',
     roadmap: '成长路线', stack: '我的组合', plan: '落地执行包', changelog: '更新日志', sources: '数据源',
     free: '白嫖地图', news: 'AI 大事', roles: '测试角色阶梯', impact: 'AI 对测试的冲击',
-    report: '决策报告', evalset: 'AI 评测集', health: '数据健康',
+    report: '决策报告', evalset: 'AI 评测集', health: '数据健康', community: '社区资源库',
     search: '全站搜索', mine: '个人中心', feedback: '反馈',
     about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式'
   };
@@ -1035,7 +1055,7 @@
       $$('#allTabs .allTab').forEach(b => b.onclick = () => {
         state.allTab = b.dataset.at; state.allQuery = '';
         const s = $('#allSearch'); if (s) s.value = '';
-        allModFilter(); renderAllList(); track('all_tab', { t: state.allTab });
+        allModFilter(); renderAllList(); syncHash(); track('all_tab', { t: state.allTab });
       });
     }
     const el = $('#allMods');
@@ -1181,6 +1201,8 @@
     let h = esc(s)
       .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
       .replace(/`([^`]+)`/g, '<code>$1</code>');
+    /* 计数占位符先替换：`{count:plans}` 带冒号，后面的链接占位符正则匹配不到它 */
+    h = h.replace(/\{count:([a-z]+)\}/g, (m, k) => (COUNTS[k] == null ? m : String(COUNTS[k])));
     return h.replace(/\{([a-z]+)\}/g, (m, k) => {
       const t = T[k];
       if (!t || !t.h) return m;
@@ -1240,7 +1262,7 @@
   /* ---------- 全站搜索 ----------
      索引在第一次进搜索页时构一次（约 400 条），之后只做过滤。
      不预建在 init 里：首页不需要它，没必要为一次搜索拖慢首屏。 */
-  const SEARCH_KIND = { feat: '功能', tool: '工具', plan: '套餐', bundle: '组合', news: '大事', cap: '能力', src: '来源', page: '站务' };
+  const SEARCH_KIND = { feat: '功能', tool: '工具', plan: '套餐', bundle: '组合', news: '大事', cap: '能力', src: '来源', page: '站务', community: '资源' };
   let SIDX = null;
   function searchIndex() {
     if (SIDX) return SIDX;
@@ -1254,6 +1276,11 @@
     (NEWS.events || []).forEach(e => out.push({ k: 'news', id: e.id, n: e.title || '', d: (e.impact || e.body || '').slice(0, 110), go: '#news', tag: e.date || '' }));
     CAP_LIST.forEach(c => out.push({ k: 'cap', id: c.id, n: c.name, d: c.desc || '', go: '#capabilities', tag: c.groupName || '' }));
     (SRC.groups || []).forEach(g => (g.items || []).forEach((s, i) => out.push({ k: 'src', id: g.id + ':' + i, n: s.n || '', d: s.d || '', go: '#sources', tag: g.name || '' })));
+    (CM.items || []).forEach(c => out.push({
+      k: 'community', id: c.id, n: c.name,
+      d: (c.what || '') + ' · ' + (c.use || ''),
+      go: '#community', tag: (CM_CAT[c.cat] || {}).name || c.cat
+    }));
     SIDX = out;
     return out;
   }
@@ -1352,7 +1379,7 @@
 
     const favList = FAV.length
       ? FAV.map(f => `<div class="mrow">
-          <a class="mgo2" href="${esc(f.go || '#home')}"><b>${esc(f.n)}</b><span>${esc(f.k === 'tool' ? '工具' : f.k === 'plan' ? '套餐' : f.k === 'bundle' ? '组合' : '页面')}</span></a>
+          <a class="mgo2" href="${esc(f.go || '#home')}"><b>${esc(f.n)}</b><span>${esc(f.k === 'tool' ? '工具' : f.k === 'plan' ? '套餐' : f.k === 'bundle' ? '组合' : f.k === 'community' ? '资源' : '页面')}</span></a>
           <button class="mx" type="button" data-mfav="${esc(f.k)}" data-fav-id="${esc(f.id)}" aria-label="取消收藏 ${esc(f.n)}">×</button>
         </div>`).join('')
       : '<div class="empty">还没有收藏。工具卡、组合卡、功能页底部都有 ☆，点一下就在这里。</div>';
@@ -1642,6 +1669,7 @@
     if (v === 'impact') renderImpact();
     if (v === 'roles') renderRoles();
     if (v === 'free') renderFree();
+    if (v === 'community') renderCommunity();
     if (v === 'evalset') renderEvalset();
     if (v === 'health') renderHealth();
     if (v === 'report') renderReport();
@@ -2275,6 +2303,16 @@
     return `<div class="prov${stale ? ' stale' : ''}">${stale ? '! 可能过期' : '✓ 已核'} ${esc(v || '—')}${days != null ? ` · ${days} 天前` : ''}${p.link ? ` · <a href="${esc(p.link)}" target="_blank" rel="noopener">源</a>` : ''}</div>`;
   }
 
+  /* 排序状态只有一处入口：桌面点表头、手机点 #pSortMini 都走这里。
+     两处各写一份的话，迟早会出现「手机点了价格、桌面表头还显示 ↕」。 */
+  function setPlanSort(key) {
+    if (!key) state.planSort = { key: '', dir: 'desc' };
+    else if (state.planSort.key !== key) state.planSort = { key, dir: key === 'score' ? 'desc' : 'asc' };
+    else state.planSort.dir = state.planSort.dir === 'asc' ? 'desc' : 'asc';
+    renderPlans();
+    syncHash();
+  }
+
   function renderPlans() {
     const rf = $('#pRegion');
     if (rf) {
@@ -2287,7 +2325,7 @@
         const n = o.id === 'all' ? PLANS.length : PLANS.filter(p => p.region === o.id).length;
         return `<button class="seg ${state.planRegion === o.id ? 'on' : ''}" data-r="${o.id}">${o.n}<span>${n}</span></button>`;
       }).join('');
-      $$('#pRegion .seg').forEach(b => b.onclick = () => { state.planRegion = b.dataset.r; state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
+      $$('#pRegion .seg').forEach(b => b.onclick = () => { state.planRegion = b.dataset.r; state.planSort = { key: '', dir: 'desc' }; renderPlans(); syncHash(); });
     }
     renderPlanLadder();
     const poolR = PLANS.filter(p => state.planRegion === 'all' || p.region === state.planRegion);
@@ -2304,7 +2342,7 @@
       pr.innerHTML = Object.entries(CRIT.planProfiles).map(([id, p]) =>
         `<button class="preset ${id === state.planProfile ? 'on' : ''}" data-p="${esc(id)}">${p.icon} ${esc(p.name)}</button>`
       ).join('');
-      $$('#pPresets .preset').forEach(b => b.onclick = () => { applyPlanProfile(b.dataset.p); state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
+      $$('#pPresets .preset').forEach(b => b.onclick = () => { applyPlanProfile(b.dataset.p); state.planSort = { key: '', dir: 'desc' }; renderPlans(); syncHash(); });
     }
 
     // 形态筛选（Coding / Token / Agent / 会员 / 按量）
@@ -2324,7 +2362,7 @@
         if (t.id !== 'all' && n === 0) return '';
         return `<button class="preset ${state.planType === t.id ? 'on' : ''}" data-ty="${esc(t.id)}">${esc(t.n)} <span style="opacity:.55;font-family:var(--mono);font-size:var(--fs-1)">${n}</span></button>`;
       }).join('');
-      $$('#pTypeFilter .preset').forEach(b => b.onclick = () => { state.planType = b.dataset.ty; state.planSort = { key: '', dir: 'desc' }; renderPlans(); });
+      $$('#pTypeFilter .preset').forEach(b => b.onclick = () => { state.planType = b.dataset.ty; state.planSort = { key: '', dir: 'desc' }; renderPlans(); syncHash(); });
 
       // 形态说明
       const fdesc = $('#pFormDesc');
@@ -2397,15 +2435,17 @@
       tb.innerHTML = shown.map((x, i) => {
         const p = x.p;
         const picked = state.pickedPlans.indexOf(p.id) >= 0;
+        /* data-label 是给移动端看的：≤760px 表头会被藏掉，每格用 ::before 把列名补回来，
+           否则一张 8 列的宽表在手机上只剩一堆没有表头的数字。 */
         return `<tr class="${picked ? 'picked' : ''}">
           <td class="pnum">${String(i + 1).padStart(2, '0')}</td>
           <td class="nm">${esc(p.name)}<small>${esc(p.tier)} · ${esc(p.vendor)} · ${p.region === 'cn' ? '国内' : '国际'}</small><div class="pmodels">${esc(p.models)}</div></td>
-          <td><span class="tag" style="white-space:nowrap">${esc(p.formName || '')}</span></td>
-          <td class="pr">${money(p)}<div class="mini">${esc(p.priceNote || '')}</div>${provHtml(p)}</td>
-          <td class="pscore">${rnd(x.s / 5 * 100)}</td>
-          <td>${esc(p.quota)}<div class="mini pmuted">${esc(p.quotaUnit || '—')} · ${esc(p.window || '—')}</div><div class="ptools">${esc(p.tools)}</div></td>
-          <td><span class="mini">超限：${esc(p.overage || '—')}</span><div class="mini pdanger">${esc(p.risk)}</div>${(p.restrictions || []).length ? `<div class="restr">${p.restrictions.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</td>
-          <td><button class="btn sm ${picked ? 'on' : ''}" data-pick="${esc(p.id)}">${picked ? '已选' : '选它'}</button></td>
+          <td data-label="形态"><span class="tag" style="white-space:nowrap">${esc(p.formName || '')}</span></td>
+          <td class="pr" data-label="月价" data-price="${p.price}">${money(p)}<div class="mini">${esc(p.priceNote || '')}</div>${provHtml(p)}</td>
+          <td class="pscore" data-label="综合分">${rnd(x.s / 5 * 100)}</td>
+          <td data-label="额度">${esc(p.quota)}<div class="mini pmuted">${esc(p.quotaUnit || '—')} · ${esc(p.window || '—')}</div><div class="ptools">${esc(p.tools)}</div></td>
+          <td data-label="风险">${(p.overage || p.risk) ? `<span class="mini">超限：${esc(p.overage || '—')}</span><div class="mini pdanger">${esc(p.risk)}</div>` : ''}${(p.restrictions || []).length ? `<div class="restr">${p.restrictions.map(x => `<span>${esc(x)}</span>`).join('')}</div>` : ''}</td>
+          <td data-label="选择"><button class="btn sm ${picked ? 'on' : ''}" data-pick="${esc(p.id)}">${picked ? '已选' : '选它'}</button></td>
         </tr>`;
       }).join('');
       $$('#planBody [data-pick]').forEach(b => b.onclick = () => {
@@ -2429,13 +2469,26 @@
       if (mark) mark.textContent = active ? (state.planSort.dir === 'asc' ? '↑' : '↓') : '↕';
       const btn = th.querySelector('button');
       if (btn) btn.onclick = () => {
-        if (state.planSort.key !== key) state.planSort = { key, dir: key === 'score' ? 'desc' : 'asc' };
-        else state.planSort.dir = state.planSort.dir === 'asc' ? 'desc' : 'asc';
-        renderPlans();
+        setPlanSort(key);
         const label = key === 'price' ? '月价' : '综合分';
         toast(`表格已按${label}${state.planSort.dir === 'asc' ? '从低到高' : '从高到低'}排（结论仍按综合分）`);
       };
     });
+
+    /* ---- 手机上的排序控件：≤760px 表头被藏掉了，不给一组按钮就点不到排序 ---- */
+    const mini = $('#pSortMini');
+    if (mini) {
+      const cur = state.planSort.key;
+      const opts = [
+        { k: '', n: '默认顺序' },
+        { k: 'price', n: '月价' + (cur === 'price' ? (state.planSort.dir === 'asc' ? ' ↑' : ' ↓') : '') },
+        { k: 'score', n: '综合分' + (cur === 'score' ? (state.planSort.dir === 'asc' ? ' ↑' : ' ↓') : '') }
+      ];
+      mini.innerHTML = opts.map(o =>
+        `<button class="seg ${cur === o.k ? 'on' : ''}" type="button" data-ps="${o.k}" aria-pressed="${cur === o.k}">${o.n}</button>`
+      ).join('');
+      $$('#pSortMini .seg').forEach(b => b.onclick = () => setPlanSort(b.dataset.ps));
+    }
 
     /* ---- v9：核验新鲜度条（阈值与数据健康页同源，不另立一套） ---- */
     const fresh = $('#pFresh');
@@ -4521,6 +4574,138 @@
   }
 
   /* =========================================================
+     COMMUNITY · 社区资源库
+     ---------------------------------------------------------
+     nav.json 里原本留了一个「测试社区」的坑。真正做的时候没有做社区本体：
+     注册、发帖、审核需要一个后端，而「零后端、可离线、不收集任何信息」
+     是这个站最硬的三条卖点，做社区就得先推翻它们；单人维护的社区
+     三个月后也一定是广告和死链。
+
+     所以这里做的是「精选索引」——不让人发帖，只把散在 GitHub 上、
+     测试工程师真的会装的东西筛一遍，写清「干什么用、测试怎么用、坑在哪」。
+     这部分是静态站能诚实做的全部。
+     ========================================================= */
+  const CM_SORTS = [
+    { id: 'pick', n: '编辑推荐' },
+    { id: 'stars', n: '星数' },
+    { id: 'pushed', n: '最近提交' }
+  ];
+  const cmStats = it => CMS[it.repo] || {};
+  const cmStars = it => {
+    const s = cmStats(it).stars;
+    return typeof s === 'number' ? s : null;
+  };
+  const cmPushed = it => cmStats(it).pushedAt || '';
+  const fmtStars = n => n == null ? '—'
+    : n >= 10000 ? (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k' : String(n);
+
+  function cmCard(it) {
+    const cat = CM_CAT[it.cat] || { name: it.cat, icon: '·' };
+    const st = cmStats(it);
+    const stars = cmStars(it);
+    const pushed = cmPushed(it);
+    const days = pushed ? daysAgo(pushed) : null;
+    const when = days == null ? '' : days <= 0 ? '今天有提交'
+      : days <= 60 ? `最近提交 ${days} 天前` : `最近提交 ${days} 天前（可能已放缓）`;
+    const fits = (it.fits || []).map(id => (TOOLS.find(t => t.id === id) || {}).name).filter(Boolean);
+    return `<article class="cmCard${it.pick ? ' pick' : ''}">
+      <div class="cmTop">
+        <span class="cmCat">${esc(cat.icon || '·')} ${esc(cat.name)}</span>
+        ${it.pick ? '<span class="cmPick">编辑推荐</span>' : ''}
+        <span class="cmStars" title="GitHub star 数，每周自动刷新">★ ${esc(fmtStars(stars))}</span>
+      </div>
+      <h3><a href="https://github.com/${esc(it.repo)}" target="_blank" rel="noopener">${esc(it.name)}<span class="cmOut" aria-hidden="true">↗</span></a></h3>
+      <div class="cmRepo">${esc(it.repo)} · ${st.license ? esc(st.license) : '许可证未标注'}${st.archived ? ' · <b class="cmArch">已归档</b>' : ''}</div>
+      <p class="cmWhat">${esc(it.what)}</p>
+      <div class="cmUse"><b>测试怎么用</b><p>${esc(it.use)}</p></div>
+      ${it.caveat ? `<div class="cmCaveat"><b>注意</b><p>${esc(it.caveat)}</p></div>` : ''}
+      <div class="cmFoot">
+        ${pushed ? `<span class="cmMeta" title="最近一次提交：${esc(pushed)}">${esc(when)}</span>` : ''}
+        ${fits.length ? `<span class="cmMeta">配 ${esc(fits.slice(0, 3).join(' / '))}</span>` : ''}
+        ${favBtn('community', it.id, it.name)}
+      </div>
+    </article>`;
+  }
+
+  function renderCommunity() {
+    const intro = CM.intro || {};
+    const head = $('#cmHead');
+    if (head) {
+      head.innerHTML = `
+        <div class="phIndex">CHOOSE / 05</div>
+        <h1>${esc(intro.title || '社区资源库')}</h1>
+        <p class="phLead">${esc(intro.lede || '')}</p>
+        <div class="phMeta">
+          <span>收录 <b>${(CM.items || []).length}</b></span>
+          <span>分类 <b>${(CM.categories || []).length}</b></span>
+          <span>星数抓取 <b>${esc((D.communityStats || {}).updated || '—')}</b></span>
+        </div>`;
+    }
+
+    const cf = $('#cmCats');
+    if (cf) {
+      const opts = [{ id: 'all', name: '全部', icon: '◌' }].concat(CM.categories || []);
+      cf.innerHTML = opts.map(c => {
+        const n = c.id === 'all' ? (CM.items || []).length : (CM.items || []).filter(x => x.cat === c.id).length;
+        return `<button class="seg ${state.cmCat === c.id ? 'on' : ''}" type="button" data-cat="${esc(c.id)}" aria-pressed="${state.cmCat === c.id}"><i>${esc(c.icon || '')}</i>${esc(c.name)}<span>${n}</span></button>`;
+      }).join('');
+      $$('#cmCats .seg').forEach(b => b.onclick = () => {
+        state.cmCat = b.dataset.cat;
+        renderCommunity(); syncHash();
+      });
+    }
+
+    const sf = $('#cmSort');
+    if (sf) {
+      sf.innerHTML = CM_SORTS.map(s =>
+        `<button class="seg ${state.cmSort === s.id ? 'on' : ''}" type="button" data-sort="${s.id}" aria-pressed="${state.cmSort === s.id}">${s.n}</button>`
+      ).join('');
+      $$('#cmSort .seg').forEach(b => b.onclick = () => {
+        state.cmSort = b.dataset.sort;
+        renderCommunity(); syncHash();
+      });
+    }
+
+    const cur = CM_CAT[state.cmCat];
+    const note = $('#cmNote');
+    if (note) note.textContent = cur ? cur.desc : (intro.note || '');
+
+    let list = (CM.items || []).filter(x => state.cmCat === 'all' || x.cat === state.cmCat);
+    const byStars = (a, b) => (cmStars(b) || 0) - (cmStars(a) || 0);
+    if (state.cmSort === 'stars') list = list.slice().sort(byStars);
+    else if (state.cmSort === 'pushed') list = list.slice().sort((a, b) => String(cmPushed(b)).localeCompare(String(cmPushed(a))));
+    else list = list.slice().sort((a, b) => ((b.pick ? 1 : 0) - (a.pick ? 1 : 0)) || byStars(a, b));
+
+    const cnt = $('#cmCount');
+    if (cnt) cnt.textContent = `${list.length} 个`;
+
+    const grid = $('#cmGrid');
+    if (grid) {
+      grid.innerHTML = list.length
+        ? list.map(cmCard).join('')
+        : '<div class="empty">这个分类下还没有条目。</div>';
+    }
+
+    const rules = $('#cmRules');
+    if (rules) {
+      rules.innerHTML = [
+        '先看「测试怎么用」，再看星数。星数说明有多少人在用，不说明它适合你。',
+        '装之前读一眼「注意」。多数 MCP 出事不是因为不能用，是权限给大了。',
+        '星数与最近提交由 CI 每周从 GitHub 抓；抓不到就保留上一次的值，不会变成 0。',
+        '想加一个：走下面的「提交资源」，写清它解决什么问题。不满足收录标准的会被拒，拒了会说为什么。'
+      ].map(x => `<li>${esc(x)}</li>`).join('');
+    }
+
+    const sub = $('#cmSubmit');
+    if (sub) {
+      sub.innerHTML = SITE.issue
+        ? `<a class="btn primary" href="${esc(SITE.issue)}?template=resource-submit.yml&title=${encodeURIComponent('[资源] ')}" target="_blank" rel="noopener">＋ 提交一个资源</a>
+           <span class="mini">走 GitHub issue。收录标准：与 AI 辅助测试直接相关、近一年有提交、许可证明确。</span>`
+        : '<span class="mini">本站未配置仓库地址，暂时不能提交。</span>';
+    }
+  }
+
+  /* =========================================================
      v6 · 数据健康 / AI 评测集 / 决策报告
      ========================================================= */
   function daysBetween(a, b) {
@@ -5121,6 +5306,14 @@
     if (state.pickedPlans && state.pickedPlans.length) {
       parts.push('pk=' + state.pickedPlans.join(','));
     }
+    /* 筛选与排序也进 URL：同事发过来的「看这 12 档 Coding Plan」应该真的落到那 12 档，
+       而不是落到默认视图再让他自己点一遍。只在偏离默认值时才写，避免 URL 变长。 */
+    if (state.planType !== 'all') parts.push('ty=' + state.planType);
+    if (state.planRegion !== 'all') parts.push('rg=' + state.planRegion);
+    if (state.planSort && state.planSort.key) parts.push('so=' + state.planSort.key + '-' + state.planSort.dir);
+    if (state.cmCat !== 'all') parts.push('cat=' + state.cmCat);
+    if (state.cmSort !== 'pick') parts.push('cs=' + state.cmSort);
+    if (state.allTab !== 'feat') parts.push('tab=' + state.allTab);
     return parts.length ? parts.join('&') : '';
   }
 
@@ -5153,6 +5346,34 @@
     if (p.has('pk')) {
       const ids = p.get('pk').split(',').filter(id => PLANS.some(x => x.id === id));
       if (ids.length) { state.pickedPlans = ids; changed = true; }
+    }
+    /* 视图内的筛选状态。非法值直接忽略而不是报错——旧链接、手改的 URL
+       都不该让页面崩掉，退回默认值就好。 */
+    if (p.has('ty')) {
+      const v = p.get('ty');
+      if (['all', 'coding', 'token', 'agent', 'member', 'paygo'].indexOf(v) >= 0) { state.planType = v; changed = true; }
+    }
+    if (p.has('rg')) {
+      const v = p.get('rg');
+      if (['all', 'cn', 'global'].indexOf(v) >= 0) { state.planRegion = v; changed = true; }
+    }
+    if (p.has('so')) {
+      const [k, d] = p.get('so').split('-');
+      if (['price', 'score'].indexOf(k) >= 0 && ['asc', 'desc'].indexOf(d) >= 0) {
+        state.planSort = { key: k, dir: d }; changed = true;
+      }
+    }
+    if (p.has('cat')) {
+      const v = p.get('cat');
+      if (v === 'all' || CM.categories.some(c => c.id === v)) { state.cmCat = v; changed = true; }
+    }
+    if (p.has('cs')) {
+      const v = p.get('cs');
+      if (CM_SORTS.some(s => s.id === v)) { state.cmSort = v; changed = true; }
+    }
+    if (p.has('tab')) {
+      const v = p.get('tab');
+      if (ALL_TABS.some(t => t.k === v)) { state.allTab = v; changed = true; }
     }
     return changed;
   }
@@ -5237,7 +5458,8 @@
      ========================================================= */
   function favGo(b) {
     const k = b.dataset.fav, id = b.dataset.favId;
-    return k === 'page' ? '#' + id : k === 'tool' ? '#tools' : k === 'bundle' ? '#bundles' : '#home';
+    return k === 'page' ? '#' + id : k === 'tool' ? '#tools' : k === 'bundle' ? '#bundles'
+      : k === 'community' ? '#community' : '#home';
   }
 
   function bindSitePages() {

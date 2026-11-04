@@ -61,6 +61,11 @@ const data = {
   roles: readJSON('roles.json'),
   impact: readJSON('impact.json'),
   evalset: readJSON('evalset.json'),
+  /* 社区资源库分两份：人工写的判断（community.json）和脚本抓的活跃度
+     （community-stats.json）。分开存是为了让每周 CI 刷新星数时，
+     永远不会覆盖掉「这东西对测试怎么用」这类只有人能写的内容。 */
+  community: readJSON('community.json'),
+  communityStats: readJSONSafe('community-stats.json', { updated: null, repos: {} }),
   refreshReport: readJSONSafe('_refresh-report.json', null),
   feeds: readJSONSafe('feed-sources.json', { feeds: [], pricing: [] })
 };
@@ -196,7 +201,7 @@ data.bundles.forEach(b => {
 /* ---------- 模块配置校验（信息架构：功能地图把 16 个功能页组织成 5–6 个模块） ----------
    缺了某个功能页、一个功能页归进两个模块、引用了不存在的组合——都会在构建期拦下来，
    不等上线后用户点进空模块才发现。 */
-const FEATURE_VIEW_IDS = ['overview', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'report', 'evalset', 'health'];
+const FEATURE_VIEW_IDS = ['overview', 'matrix', 'tools', 'capabilities', 'plans', 'promos', 'free', 'bundles', 'aitest', 'events', 'news', 'roles', 'impact', 'versus', 'persona', 'opinion', 'roadmap', 'stack', 'plan', 'changelog', 'sources', 'report', 'evalset', 'health', 'community'];
 /* 站务页：不属于任何一个内容模块（它们不属于「事」，是「站」本身）。
    导航、页脚、404、JSON-LD 都要认得它们，所以在这里单独登记一次。 */
 const SITE_PAGE_IDS = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
@@ -245,6 +250,37 @@ if (!Array.isArray(moduleList) || moduleList.length < 5 || moduleList.length > 6
     if (n === 0) errors.push(`功能页 ${v} 没有归入任何模块（功能地图会出现漏页）`);
     if (n > 1) errors.push(`功能页 ${v} 被归入了 ${n} 个模块（只能归一个）`);
   });
+}
+
+/* ---------- 社区资源库校验（community.json + community-stats.json） ----------
+   这一层最容易悄悄坏：加了一条资源但忘了抓 stats，页面上就是「★0 · 很久以前」。
+   所以「每条资源都必须有对应统计」在构建期是硬错误，不是警告——
+   一个星数是 0 的资源卡，比没有这张卡更伤可信度。 */
+{
+  const C = data.community || {};
+  const S = data.communityStats || { repos: {} };
+  const cats = new Set((C.categories || []).map(c => c.id));
+  if (!Array.isArray(C.categories) || !C.categories.length) errors.push('community.json 缺少 categories');
+  if (!Array.isArray(C.items) || !C.items.length) errors.push('community.json 缺少 items');
+  const seenRes = new Set();
+  (C.items || []).forEach((it, i) => {
+    const at = `community.json items[${i}]${it.id ? '（' + it.id + '）' : ''}`;
+    if (!it.id || !/^[a-z0-9-]+$/.test(it.id)) errors.push(`${at} 的 id 只能用小写字母、数字、连字符`);
+    else if (seenRes.has(it.id)) errors.push(`${at} 的 id 重复`);
+    else seenRes.add(it.id);
+    ['name', 'repo', 'what', 'use'].forEach(f => { if (!it[f]) errors.push(`${at} 缺少 ${f}`); });
+    if (!cats.has(it.cat)) errors.push(`${at} 的 cat「${it.cat}」不在 categories 里`);
+    if (it.repo && !/^[\w.-]+\/[\w.-]+$/.test(it.repo)) errors.push(`${at} 的 repo 要写成 owner/name`);
+    if (it.repo && !(S.repos || {})[it.repo]) {
+      errors.push(`${at} 的仓库 ${it.repo} 没有统计数据：先跑 node scripts/refresh-community.js`);
+    }
+    (it.fits || []).forEach(t => { if (!toolIds.has(t)) errors.push(`${at} 的 fits 引用了不存在的工具 ${t}`); });
+  });
+  // 星数是会变的：抓得太久就别装作它还是准的
+  if (S.updated && DATE_RE.test(S.updated) && DATE_RE.test(data.meta.lastBuilt)) {
+    const age = Math.round((Date.parse(data.meta.lastBuilt + 'T00:00:00Z') - Date.parse(S.updated + 'T00:00:00Z')) / 86400000);
+    if (age > 30) warns.push(`community-stats.json 是 ${age} 天前抓的，页面上的星数可能已经不准`);
+  }
 }
 
 /* ---------- 导航配置校验（nav.json） ----------
@@ -704,7 +740,8 @@ const css = [
   readText('v6.css'),
   readText('v7.css'),
   readText('v8.css'),
-  readText('v9.css')
+  readText('v9.css'),
+  readText('v10.css')
 ].join('\n\n');
 const js = readText('app.js');
 
@@ -930,14 +967,25 @@ const manifest = {
     freebies: (data.freebies.items || []).length,
     news: (data.news.events || []).length,
     roles: (data.roles.roles || []).length,
-    evalsetCases: (data.evalset.cases || []).length
+    evalsetCases: (data.evalset.cases || []).length,
+    community: (data.community.items || []).length
   },
   files: ['tools.json', 'plans.json', 'plans.csv', 'plans.md', 'plans-history.csv',
-    'plans-history.json', 'evalset.json', 'manifest.json']
+    'plans-history.json', 'evalset.json', 'community.json', 'manifest.json']
 };
 fs.writeFileSync(path.join(EXPORT_DIR, 'tools.json'), JSON.stringify(data.tools, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.json'), JSON.stringify(data.plans, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'evalset.json'), JSON.stringify(data.evalset, null, 2) + '\n', 'utf8');
+/* 社区资源也开放导出：星数是别人的，但「哪些值得装」这份判断是我们写的，
+   放进 exports/ 才能被别的清单引用、被 AI 代理读到。 */
+fs.writeFileSync(path.join(EXPORT_DIR, 'community.json'), JSON.stringify({
+  updated: data.community.updated,
+  intro: data.community.intro,
+  categories: data.community.categories,
+  items: (data.community.items || []).map(it => Object.assign({}, it, {
+    stats: (data.communityStats.repos || {})[it.repo] || null
+  }))
+}, null, 2) + '\n', 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.csv'), planCsv, 'utf8');
 fs.writeFileSync(path.join(EXPORT_DIR, 'plans.md'), planMd, 'utf8');
 

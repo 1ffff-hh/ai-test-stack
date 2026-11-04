@@ -1,0 +1,67 @@
+name: 提交资源
+description: 推荐一个测试工程师用得上的开源项目（MCP / Skill / AI 测试工具 / 测试基建）
+title: "[资源] "
+labels: ["community"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢推荐。这一栏只收**开源项目**，不收录闭源产品、课程、公众号和导流链接。
+
+        收录标准写在页面上，先对一遍：
+        1. 与 AI 辅助测试直接相关（不是"顺带能用在测试上"）；
+        2. 近一年有提交（僵尸项目会误导人）；
+        3. 许可证明确（没有许可证的项目，别人不能用）。
+
+        不满足的会被拒。拒的时候会说明是哪一条不满足，不是默默关掉。
+  - type: input
+    id: repo
+    attributes:
+      label: 仓库地址
+      description: GitHub 的 owner/name，或完整 URL
+      placeholder: 例：microsoft/playwright-mcp
+    validations:
+      required: true
+  - type: dropdown
+    id: cat
+    attributes:
+      label: 归到哪一类
+      options:
+        - MCP Server（把外部系统暴露成 Agent 能调用的工具）
+        - Agent Skill（可复用的方法论与提示词包）
+        - AI 测试工具（用模型直接驱动测试）
+        - 测试基建（Agent 写出来的测试最终落进去的框架）
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: 它是什么
+      description: 一两句话，说清它做什么。不要抄 README 的第一段。
+      placeholder: 例：把浏览器操作暴露成 MCP 工具，Agent 能自己开页面、点元素、读无障碍树。
+    validations:
+      required: true
+  - type: textarea
+    id: use
+    attributes:
+      label: 测试怎么用
+      description: 具体到场景。这一栏决定它会不会被收录——"提升效率"这种话没有信息量。
+      placeholder: 例：让 Agent 自己跑一遍主流程并把结果读回来，适合冒烟与探索性回归。
+    validations:
+      required: true
+  - type: textarea
+    id: caveat
+    attributes:
+      label: 有什么坑（可选）
+      description: 权限、成本、稳定性、许可证限制。写出来比藏着更有用。
+    validations:
+      required: false
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: 确认
+      options:
+        - label: 这个项目是开源的，且许可证明确
+          required: true
+        - label: 我不是作者，或我是作者且已在正文里说明
+          required: true

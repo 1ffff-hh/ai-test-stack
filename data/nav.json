@@ -24,6 +24,7 @@
         { "n": "角色阶梯", "go": "#roles", "icon": "▤" },
         { "n": "AI 评测集", "go": "#evalset", "icon": "◫" },
         { "n": "白嫖地图", "go": "#free", "icon": "◎" },
+        { "n": "社区资源库", "go": "#community", "icon": "⌘", "line": "测试工程师用得上的开源项目，星数每周自动刷" },
         { "n": "数据健康", "go": "#health", "icon": "◷" },
         { "n": "更新日志", "go": "#changelog", "icon": "↻" },
         { "n": "数据源", "go": "#sources", "icon": "⌘" },
@@ -61,6 +62,7 @@
         { "n": "角色阶梯", "go": "#roles" },
         { "n": "AI 评测集", "go": "#evalset" },
         { "n": "白嫖地图", "go": "#free" },
+        { "n": "社区资源库", "go": "#community" },
         { "n": "市场变动", "go": "#events" }
       ]
     },
@@ -100,6 +102,7 @@
       { "n": "AI 冲击", "go": "#impact" },
       { "n": "AI 评测集", "go": "#evalset" },
       { "n": "白嫖地图", "go": "#free" },
+      { "n": "社区资源库", "go": "#community" },
       { "n": "数据健康", "go": "#health" },
       { "n": "数据源", "go": "#sources" },
       { "n": "更新日志", "go": "#changelog" },
@@ -114,11 +117,11 @@
   },
   "reserved": [
     {
-      "n": "测试社区",
+      "n": "实战案例库",
       "note": "规划中",
-      "why": "技能推荐 / MCP 推荐 / 插件推荐 / 资源收集 / 实时数据 / 反馈入口",
+      "why": "真实项目里「AI 测试改造」的前后对比：改造前多少用例、改造后多少、谁来审。没有当事人授权就不写——编出来的案例比没有案例更伤人",
       "slots": ["primary.more", "footer.关于本站", "mobile.more"],
-      "data": "data/community.json"
+      "data": "data/cases.json"
     }
   ]
 }

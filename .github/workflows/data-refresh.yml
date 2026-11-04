@@ -28,6 +28,13 @@ jobs:
       - name: 抓取 RSS 与价格指纹
         run: node scripts/refresh.js || true
 
+      # 社区资源库的星数 / 最近提交 / 许可证会变，手抄一定过期。
+      # 这一步只写 community-stats.json，不碰 community.json 里人写的判断。
+      - name: 刷新社区资源的星数与活跃度
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/refresh-community.js || true
+
       # 指纹只说「页面变了」；这一步按规则把价格抽出来，能直接说出「变成多少」。
       # 解析失败也算结果——宁可报错，也不要一个看起来合理的错数。
       - name: 按规则解析官网价格

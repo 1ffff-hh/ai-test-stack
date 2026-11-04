@@ -1,7 +1,7 @@
 {
   "site": "AI Test Stack",
-  "version": "0.9.1",
-  "generatedAt": "2026-11-03",
+  "version": "0.9.2",
+  "generatedAt": "2026-11-04",
   "lastVerified": "2026-11-03",
   "fx": {
     "USD": 7.25,
@@ -14,7 +14,8 @@
     "freebies": 34,
     "news": 33,
     "roles": 11,
-    "evalsetCases": 30
+    "evalsetCases": 30,
+    "community": 35
   },
   "files": [
     "tools.json",
@@ -24,6 +25,7 @@
     "plans-history.csv",
     "plans-history.json",
     "evalset.json",
+    "community.json",
     "manifest.json"
   ]
 }

@@ -132,8 +132,9 @@ const llms = `# AI Test Stack
 > 给测试工程师的 AI 工具与套餐选型决策站。单文件、零后端、零第三方请求，可离线打开。
 > 版本 ${meta.version} ｜ 数据核验日 ${meta.lastVerified} ｜ 许可 MIT（代码与数据同许可）
 
-## 这个站回答四个问题
+## 这个站回答五个问题
 - 买什么：${n(dTools, 0)} 款工具 × ${n(dPlans, 0)} 档套餐 × ${n(dBundles, 0)} 套组合，每个价格带出处与核验日，每个分数署编辑的名
+- 装什么：${pick('data/community.json', 'items')} 个测试工程师用得上的开源项目（MCP Server / Agent Skill / AI 测试工具 / 测试基建），每项写明「测试怎么用」与坑，星数每周自动刷新
 - 我在哪：${pick('data/roles.json', 'roles')} 个测试角色阶梯、能力图谱、AI 测试专项与 ${pick('data/evalset.json', 'cases')} 条评测用例
 - 行业在变什么：${pick('data/news.json', 'events')} 条人工整理的大事（每条都写了「对测试的影响」），另有 ${pick('data/news-auto.json', 'events')} 条自动抓取的行业动态，默认不展示
 - 下一步：30 天落地执行包，以及可打印成 A4 的决策报告
@@ -150,7 +151,9 @@ const llms = `# AI Test Stack
 ## 逐条索引（每条一个独立地址，可直接引用）
 - t/ — ${n(dTools, 0)} 款工具的总索引；单条为 t/&lt;工具 id&gt;.html
 - p/ — ${n(dPlans, 0)} 档套餐的总索引；单条为 p/&lt;套餐 id&gt;.html
+- c/ — ${pick('data/community.json', 'items')} 个社区资源的总索引；单条为 c/&lt;资源 id&gt;.html
 - 单条页面包含：价格与额度、优缺点、九维评分或价格变动历史、同价位替代、核验日期与官网出处
+- 社区资源页只做介绍与指路，不评分（没有跑过别人的代码）
 
 ## 使用约束（引用本站数据时请一并保留）
 - 所有价格是公开页面核验值，市场变动极快，下单前以厂商官网为准。
@@ -246,13 +249,18 @@ if (process.env.SKIP_OG) {
 }
 
 // 10) 自检：产物不全就别让工作流继续往下走到部署那一步
-for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml', 'llms.txt', 't/index.html', 'p/index.html']) {
+for (const need of ['index.html', 'exports/plans.json', 'exports/plans.csv', '404.html', 'sitemap.xml', 'llms.txt', 't/index.html', 'p/index.html', 'c/index.html']) {
   if (!fs.existsSync(path.join(OUT, need))) problems.push('产物缺失：' + need);
 }
 /* 站点地图是长尾页唯一的发现入口：如果哪天它退回到只剩首页，
    等于 88 个页面白生成了，而且线上不会报错——所以在这里卡一道。 */
 const smCount = (fs.readFileSync(path.join(OUT, 'sitemap.xml'), 'utf8').match(/<loc>/g) || []).length;
 if (smCount < 10) problems.push('sitemap.xml 只有 ' + smCount + ' 个地址：长尾静态页没进站点地图');
+/* 社区资源是 0.9.2 新增的独立页面层：35 条资源 = 35 个可被收录的地址。
+   漏掉的话线上不会报错，只会静悄悄地少掉一层入口。 */
+if (pick('data/community.json', 'items') && !fs.existsSync(path.join(OUT, 'c', 'index.html'))) {
+  problems.push('c/index.html 缺失：社区资源页没生成');
+}
 const idx = fs.readFileSync(path.join(OUT, 'index.html'), 'utf8');
 for (const [what, pat] of [['canonical', /rel="canonical"/], ['og:image', /property="og:image"/], ['JSON-LD', /application\/ld\+json/]]) {
   if (!pat.test(idx)) problems.push('index.html 里没有 ' + what + '（先跑 node build.js，且 build.js 要能识别站点地址）');

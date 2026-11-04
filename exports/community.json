@@ -1,0 +1,770 @@
+{
+  "updated": "2026-11-04",
+  "intro": {
+    "title": "社区资源库",
+    "lede": "测试工程师真正用得上的开源项目，按「装到哪个环节」分四类。星数与最近提交由 CI 每周从 GitHub API 抓取，不是手抄的；描述与「怎么用」是编辑判断。",
+    "note": "收录标准：与 AI 辅助测试直接相关、近一年有提交、许可证明确。这不是排行榜，是清单——所以只收 35 个，不收 350 个。"
+  },
+  "categories": [
+    {
+      "id": "mcp",
+      "name": "MCP Server",
+      "icon": "⌘",
+      "desc": "把浏览器、数据库、集群暴露成 Agent 能直接调用的工具。装一个，Agent 就多一只手。"
+    },
+    {
+      "id": "skill",
+      "name": "Agent Skill",
+      "icon": "◇",
+      "desc": "可复用的方法论与提示词包。决定 Agent「怎么想」，而不是「能碰什么」。"
+    },
+    {
+      "id": "ai",
+      "name": "AI 测试工具",
+      "icon": "◈",
+      "desc": "用模型直接驱动测试、评测与观测的框架，不是给传统工具加个聊天框。"
+    },
+    {
+      "id": "base",
+      "name": "测试基建",
+      "icon": "▦",
+      "desc": "Agent 要写测试，先得有个能跑的框架。这些是它写出来的代码最终落进去的地方。"
+    }
+  ],
+  "items": [
+    {
+      "id": "playwright-mcp",
+      "name": "Playwright MCP",
+      "repo": "microsoft/playwright-mcp",
+      "cat": "mcp",
+      "what": "微软官方维护的浏览器自动化 MCP：开页面、点元素、填表单、读无障碍树、截图。",
+      "use": "让 Agent 自己跑一遍主流程并把结果读回来，适合冒烟与探索性回归；不用你先写好 Page Object。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "dsh",
+        "qcode"
+      ],
+      "caveat": "优先让它读无障碍树而不是截图——截图很吃上下文，长流程跑到一半就爆了。",
+      "pick": true,
+      "stats": {
+        "stars": 39148,
+        "pushedAt": "2026-11-03",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Playwright MCP server"
+      }
+    },
+    {
+      "id": "chrome-devtools-mcp",
+      "name": "Chrome DevTools MCP",
+      "repo": "ChromeDevTools/chrome-devtools-mcp",
+      "cat": "mcp",
+      "what": "Chrome 团队做的 MCP：性能轨迹、网络请求、控制台日志、DOM 与样式，都能被 Agent 读取。",
+      "use": "排查「页面能开但慢」「接口 200 但渲染错」这类问题；让 Agent 自己看 console 和 network，比贴日志快。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "antigravity"
+      ],
+      "caveat": "需要本机 Chrome。性能轨迹文件很大，别让它整段回读。",
+      "pick": true,
+      "stats": {
+        "stars": 54753,
+        "pushedAt": "2026-11-04",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Chrome DevTools for coding agents"
+      }
+    },
+    {
+      "id": "mcp-servers",
+      "name": "官方参考 Server 合集",
+      "repo": "modelcontextprotocol/servers",
+      "cat": "mcp",
+      "what": "MCP 官方维护的参考实现：filesystem、fetch、git、memory、sqlite、time 等。",
+      "use": "想自己写一个公司内部系统的 MCP 时，先照这里的实现抄结构；也是「最小可用 MCP」的样板。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "dsh"
+      ],
+      "caveat": "参考实现不是生产级产品，权限与错误处理要自己补。",
+      "stats": {
+        "stars": 91773,
+        "pushedAt": "2026-10-29",
+        "license": "",
+        "archived": false,
+        "desc": "Model Context Protocol Servers"
+      }
+    },
+    {
+      "id": "github-mcp-server",
+      "name": "GitHub MCP Server",
+      "repo": "github/github-mcp-server",
+      "cat": "mcp",
+      "what": "GitHub 官方 MCP：issue、PR、代码检索、Actions 运行记录。",
+      "use": "让 Agent 自己去看失败的 CI 日志、提 issue、开 PR；把「查一下这条流水线为什么红」变成一句话。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "copilot"
+      ],
+      "caveat": "token 权限按最小化给，别用全权限 PAT。",
+      "pick": true,
+      "stats": {
+        "stars": 34206,
+        "pushedAt": "2026-11-03",
+        "license": "MIT",
+        "archived": false,
+        "desc": "GitHub's official MCP Server"
+      }
+    },
+    {
+      "id": "mcp-inspector",
+      "name": "MCP Inspector",
+      "repo": "modelcontextprotocol/inspector",
+      "cat": "mcp",
+      "what": "MCP 的调试器：列出 server 暴露的工具、参数 schema，能直接手动调用。",
+      "use": "自己写 MCP 时先用它验证工具描述是否清楚——Agent 调错工具，八成是描述写得像谜语。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "是开发工具，不是运行时依赖。",
+      "stats": {
+        "stars": 11221,
+        "pushedAt": "2026-10-29",
+        "license": "",
+        "archived": false,
+        "desc": "Deterministic testing tools for MCP servers"
+      }
+    },
+    {
+      "id": "mobile-mcp",
+      "name": "Mobile MCP",
+      "repo": "mobile-next/mobile-mcp",
+      "cat": "mcp",
+      "what": "面向 iOS / Android 的 MCP：驱动模拟器与真机，读取界面结构、点击、输入。",
+      "use": "移动端冒烟：让 Agent 在模拟器上走一遍登录到下单，失败时回读当前界面。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor"
+      ],
+      "caveat": "真机比模拟器慢且不稳；先把模拟器跑顺。",
+      "stats": {
+        "stars": 10279,
+        "pushedAt": "2026-11-02",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Mobile MCP: let AI agents drive your iOS and Android apps. MCP server for simulators, emulators and real devices. Works with Claude Code, Co"
+      }
+    },
+    {
+      "id": "appium-mcp",
+      "name": "Appium MCP",
+      "repo": "appium/appium-mcp",
+      "cat": "mcp",
+      "what": "Appium 官方出的 MCP server，把 Appium 的会话与元素定位暴露给 Agent。",
+      "use": "团队已经在用 Appium 的话，用它比换一套新框架便宜——存量用例不用重写。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor"
+      ],
+      "caveat": "比 Mobile MCP 重，依赖完整的 Appium 环境。",
+      "stats": {
+        "stars": 515,
+        "pushedAt": "2026-11-04",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Appium MCP on Steroids!"
+      }
+    },
+    {
+      "id": "kubernetes-mcp-server",
+      "name": "Kubernetes MCP Server",
+      "repo": "containers/kubernetes-mcp-server",
+      "cat": "mcp",
+      "what": "K8s 与 OpenShift 的 MCP：查 pod、看事件、读日志、执行受控操作。",
+      "use": "测试环境挂了，让 Agent 自己去查 pod 为什么 CrashLoopBackOff，而不是你去翻 kubectl。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor"
+      ],
+      "caveat": "默认只读最安全；给写权限前想清楚爆炸半径。",
+      "stats": {
+        "stars": 2219,
+        "pushedAt": "2026-11-04",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Model Context Protocol (MCP) server for Kubernetes and OpenShift"
+      }
+    },
+    {
+      "id": "postgres-mcp",
+      "name": "Postgres MCP Pro",
+      "repo": "crystaldba/postgres-mcp",
+      "cat": "mcp",
+      "what": "PostgreSQL 的 MCP：可配置读写权限，带索引建议与执行计划分析。",
+      "use": "造测试数据、核对落库结果、查「这条用例为什么慢」；比让 Agent 猜 SQL 靠谱。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "dsh"
+      ],
+      "caveat": "一定用只读账号接测试库；生产库不要接。",
+      "stats": {
+        "stars": 3452,
+        "pushedAt": "2026-08-17",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Postgres MCP Pro provides configurable read/write access and performance analysis for you and your AI agents."
+      }
+    },
+    {
+      "id": "mcp-playwright-alt",
+      "name": "ExecuteAutomation Playwright MCP",
+      "repo": "executeautomation/mcp-playwright",
+      "cat": "mcp",
+      "what": "社区版 Playwright MCP，除浏览器外还带 HTTP API 调用工具。",
+      "use": "需要「浏览器 + 接口」混着跑时用它；官方版只做浏览器。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "opencode"
+      ],
+      "caveat": "更新频率低于官方版，遇到问题先看 issue。",
+      "stats": {
+        "stars": 5674,
+        "pushedAt": "2025-12-13",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Playwright Model Context Protocol Server - Tool to automate Browsers and APIs in Claude Desktop, Cline, Cursor IDE and More 🔌"
+      }
+    },
+    {
+      "id": "anthropic-skills",
+      "name": "Anthropic 官方 Skills",
+      "repo": "anthropics/skills",
+      "cat": "skill",
+      "what": "Agent Skills 的官方仓库：文档处理、表格、PDF、演示文稿等一批可直接用的 skill。",
+      "use": "当模板读。写自己的「用例生成 Skill」时，照它的 SKILL.md 结构组织，比自创格式更容易被 Agent 正确触发。",
+      "fits": [
+        "cc"
+      ],
+      "caveat": "官方示例偏办公场景，测试相关要自己写。",
+      "pick": true,
+      "stats": {
+        "stars": 187181,
+        "pushedAt": "2026-10-28",
+        "license": "",
+        "archived": false,
+        "desc": "Public repository for Agent Skills"
+      }
+    },
+    {
+      "id": "superpowers",
+      "name": "Superpowers",
+      "repo": "obra/superpowers",
+      "cat": "skill",
+      "what": "一套 agentic skills 框架与开发方法论：把「先想清楚再动手」拆成可执行的技能序列。",
+      "use": "想给团队统一「Agent 该怎么干活」时，拿它当骨架改，比从零写规范快。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "偏软件工程，测试流程要自己补；技能装多了会互相抢触发。",
+      "stats": {
+        "stars": 311997,
+        "pushedAt": "2026-11-03",
+        "license": "MIT",
+        "archived": false,
+        "desc": "An agentic skills framework & software development methodology that works."
+      }
+    },
+    {
+      "id": "mattpocock-skills",
+      "name": "Matt Pocock 的 Skills",
+      "repo": "mattpocock/skills",
+      "cat": "skill",
+      "what": "一位工程师从自己 .agents 目录里整理出来的实用技能集。",
+      "use": "看真实工程师怎么切分技能粒度——技能不是越大越好，一个技能只干一件事才稳。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "作者是 TypeScript 背景，示例偏前端。",
+      "stats": {
+        "stars": 311745,
+        "pushedAt": "2026-11-01",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Skills for Real Engineers. Straight from my .agents directory."
+      }
+    },
+    {
+      "id": "awesome-claude-skills",
+      "name": "Awesome Claude Skills",
+      "repo": "ComposioHQ/awesome-claude-skills",
+      "cat": "skill",
+      "what": "社区维护的 Skills 清单，按用途分类。",
+      "use": "找现成技能的第一站；找到后一定先读源码再装，清单里的质量参差。",
+      "fits": [
+        "cc"
+      ],
+      "caveat": "是清单不是代码，条目会过期。",
+      "stats": {
+        "stars": 78692,
+        "pushedAt": "2026-09-18",
+        "license": "",
+        "archived": false,
+        "desc": "A curated list of awesome Claude Skills, resources, and tools for customizing Claude AI workflows"
+      }
+    },
+    {
+      "id": "caveman",
+      "name": "Caveman",
+      "repo": "JuliusBrussee/caveman",
+      "cat": "skill",
+      "what": "让 Agent 用更少的 token 说话，压缩输出与上下文占用。",
+      "use": "跑长日志分析、大批量用例生成时省额度；测试场景里 token 往往花在贴日志上。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor"
+      ],
+      "caveat": "压得太狠会丢细节，排查阶段别开。",
+      "stats": {
+        "stars": 117289,
+        "pushedAt": "2026-11-03",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "🪨 why use many token when few token do trick. Viral skill + proxy for coding agents that cuts 65% of tokens by talking like a caveman."
+      }
+    },
+    {
+      "id": "midscene",
+      "name": "Midscene.js",
+      "repo": "web-infra-dev/midscene",
+      "cat": "ai",
+      "what": "用自然语言描述操作，让模型直接驱动 UI 的 E2E 框架，支持 Web 与移动端。",
+      "use": "写「登录后进入订单页，确认金额等于商品价加运费」这种断言，不用逐层选元素。",
+      "fits": [
+        "cc",
+        "cursor",
+        "qcode"
+      ],
+      "caveat": "模型判断有不确定性，关键断言仍要落到确定性的数值校验上。",
+      "pick": true,
+      "stats": {
+        "stars": 15492,
+        "pushedAt": "2026-11-04",
+        "license": "MIT",
+        "archived": false,
+        "desc": "See interfaces like a human. E2E testing in natural language."
+      }
+    },
+    {
+      "id": "browser-use",
+      "name": "Browser Use",
+      "repo": "browser-use/browser-use",
+      "cat": "ai",
+      "what": "Python 库，让 AI agent 操作浏览器；也提供云端浏览器与托管 agent API。",
+      "use": "做「让 Agent 自己探索一遍站点、报告哪里不对」的探索性测试。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "探索结果不可复现，不能替代回归用例。",
+      "stats": {
+        "stars": 119977,
+        "pushedAt": "2026-11-02",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Open-source Python library for AI browser agents, plus Browser Use Cloud: stealth browsers and a hosted agent API."
+      }
+    },
+    {
+      "id": "promptflow",
+      "name": "Prompt Flow",
+      "repo": "microsoft/promptflow",
+      "cat": "ai",
+      "what": "微软的 LLM 应用开发框架，覆盖原型、测试、评测到部署。",
+      "use": "你自己的 AI 功能要上线时，用它搭评测流水线——这也是「测试 AI 功能」而不是「用 AI 测试」。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "偏 LLM 应用侧，传统接口测试用不上。",
+      "stats": {
+        "stars": 11260,
+        "pushedAt": "2026-10-31",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Build high-quality LLM apps - from prototyping, testing to production deployment and monitoring."
+      }
+    },
+    {
+      "id": "evidently",
+      "name": "Evidently",
+      "repo": "evidentlyai/evidently",
+      "cat": "ai",
+      "what": "ML 与 LLM 的可观测与评测框架：数据漂移、输出质量、回归对比。",
+      "use": "模型换版本后，用它对比「同一批输入，输出变了多少」，比人肉抽查可信。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "要自己准备评测集，否则跑出来的是好看的图不是结论。",
+      "stats": {
+        "stars": 8037,
+        "pushedAt": "2026-09-29",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Evidently is ​​an open-source ML and LLM observability framework. Evaluate, test, and monitor any AI-powered system or data pipeline. From t"
+      }
+    },
+    {
+      "id": "wharttest",
+      "name": "WHartTest",
+      "repo": "MGdaasLab/WHartTest",
+      "cat": "ai",
+      "what": "AI 驱动的测试自动化平台：从需求生成可执行用例并管理。",
+      "use": "想看「需求→用例→执行」全链路怎么用 AI 串起来时，拿它当参考实现读。",
+      "fits": [
+        "cc",
+        "qcode"
+      ],
+      "caveat": "平台型项目，部署成本高于库；先用小项目验证再推广。",
+      "stats": {
+        "stars": 1084,
+        "pushedAt": "2026-11-03",
+        "license": "",
+        "archived": false,
+        "desc": "WHartTest 是一款AI驱动的测试自动化平台，实现从需求到可执行测试用例的自动化生成与管理，帮助测试团队提升效率与覆盖率。 (WHartTest is an AI-driven test automation platform that automates the gene"
+      }
+    },
+    {
+      "id": "playwright",
+      "name": "Playwright",
+      "repo": "microsoft/playwright",
+      "cat": "base",
+      "what": "跨 Chromium / Firefox / WebKit 的端到端测试框架，自带追踪查看器。",
+      "use": "Agent 生成的 UI 用例最终落在这里；trace viewer 是排查「AI 写的用例为什么红」最快的工具。",
+      "fits": [
+        "cc",
+        "codex",
+        "cursor",
+        "qcode",
+        "trae"
+      ],
+      "caveat": "别让 Agent 用固定 sleep，显式等待要写进规范。",
+      "pick": true,
+      "stats": {
+        "stars": 99226,
+        "pushedAt": "2026-11-03",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Playwright is a framework for Web Testing and Automation. It allows testing Chromium, Firefox and WebKit with a single API. "
+      }
+    },
+    {
+      "id": "playwright-python",
+      "name": "Playwright for Python",
+      "repo": "microsoft/playwright-python",
+      "cat": "base",
+      "what": "Playwright 的 Python 绑定，和 pytest 生态能直接接。",
+      "use": "测试团队主力是 Python 时用它；pytest + playwright 是国内最常见的一套。",
+      "fits": [
+        "cc",
+        "dsh",
+        "codex"
+      ],
+      "caveat": "和 Node 版 API 有细微差异，别让 Agent 混着写。",
+      "stats": {
+        "stars": 15085,
+        "pushedAt": "2026-11-04",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Python version of the Playwright testing and automation library."
+      }
+    },
+    {
+      "id": "pytest",
+      "name": "pytest",
+      "repo": "pytest-dev/pytest",
+      "cat": "base",
+      "what": "Python 测试框架的事实标准：夹具、参数化、插件体系。",
+      "use": "Agent 写 Python 测试的默认落点；夹具设计得好不好，直接决定 AI 生成的用例能不能维护。",
+      "fits": [
+        "cc",
+        "dsh",
+        "codex",
+        "qcode"
+      ],
+      "caveat": "conftest 层级别铺太深，Agent 很容易找错夹具。",
+      "pick": true,
+      "stats": {
+        "stars": 14665,
+        "pushedAt": "2026-11-02",
+        "license": "MIT",
+        "archived": false,
+        "desc": "The pytest framework makes it easy to write small tests, yet scales to support complex functional testing"
+      }
+    },
+    {
+      "id": "pytest-xdist",
+      "name": "pytest-xdist",
+      "repo": "pytest-dev/pytest-xdist",
+      "cat": "base",
+      "what": "pytest 的并行执行插件，也支持失败重跑到通过。",
+      "use": "用例上量后单进程跑不完时加它；注意夹具的隔离性，共享状态会在并行下暴露。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "并行不是免费的，数据库与文件系统要能隔离。",
+      "stats": {
+        "stars": 1931,
+        "pushedAt": "2026-11-02",
+        "license": "MIT",
+        "archived": false,
+        "desc": "pytest plugin for distributed testing and loop-on-failures testing modes. "
+      }
+    },
+    {
+      "id": "pytest-rerunfailures",
+      "name": "pytest-rerunfailures",
+      "repo": "pytest-dev/pytest-rerunfailures",
+      "cat": "base",
+      "what": "失败用例自动重跑的 pytest 插件。",
+      "use": "给已知不稳定的用例兜底；但重跑通过不等于没问题，要单独统计「第几次才过」。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "滥用会把真实缺陷藏起来。",
+      "stats": {
+        "stars": 482,
+        "pushedAt": "2026-10-07",
+        "license": "",
+        "archived": false,
+        "desc": "a pytest plugin that re-runs failed tests up to -n times to eliminate flakey failures"
+      }
+    },
+    {
+      "id": "allure-python",
+      "name": "Allure Python",
+      "repo": "allure-framework/allure-python",
+      "cat": "base",
+      "what": "给 pytest 等框架生成可视化报告的 Allure 集成。",
+      "use": "把 Agent 跑出来的结果变成人能看的报告：步骤、附件、失败截图。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "报告要另外起服务看，CI 里记得存 artifact。",
+      "stats": {
+        "stars": 820,
+        "pushedAt": "2026-11-02",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Allure integrations for Python test frameworks"
+      }
+    },
+    {
+      "id": "schemathesis",
+      "name": "Schemathesis",
+      "repo": "schemathesis/schemathesis",
+      "cat": "base",
+      "what": "基于 OpenAPI / GraphQL schema 自动生成并执行 API 测试。",
+      "use": "有接口文档就能跑，覆盖大量边界组合；Agent 不用一条条编用例。",
+      "fits": [
+        "cc",
+        "dsh",
+        "codex"
+      ],
+      "caveat": "生成的用例可读性差，适合发现崩溃不适合当回归基线。",
+      "pick": true,
+      "stats": {
+        "stars": 3742,
+        "pushedAt": "2026-11-04",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Catch API bugs before your users do"
+      }
+    },
+    {
+      "id": "hypothesis",
+      "name": "Hypothesis",
+      "repo": "HypothesisWorks/hypothesis",
+      "cat": "base",
+      "what": "Python 的基于属性测试库：给定规则，自动找反例。",
+      "use": "测「解析器 / 金额计算 / 状态机」这类逻辑时，比手写边界值覆盖得深。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "要先想清楚不变量，否则生成的是随机噪声。",
+      "stats": {
+        "stars": 9132,
+        "pushedAt": "2026-11-03",
+        "license": "",
+        "archived": false,
+        "desc": "The property-based testing library for Python"
+      }
+    },
+    {
+      "id": "testcontainers-python",
+      "name": "Testcontainers for Python",
+      "repo": "testcontainers/testcontainers-python",
+      "cat": "base",
+      "what": "用 Docker 容器起一次性依赖（数据库、消息队列、Redis）供测试使用。",
+      "use": "让 Agent 写的集成测试在本地就能跑，不依赖共享测试环境。",
+      "fits": [
+        "cc",
+        "dsh",
+        "codex"
+      ],
+      "caveat": "CI 上要能跑 Docker；镜像拉取会拖慢首次执行。",
+      "stats": {
+        "stars": 2319,
+        "pushedAt": "2026-10-09",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Testcontainers is a Python library that providing a friendly API to run Docker container. It is designed to create runtime environment to us"
+      }
+    },
+    {
+      "id": "pact-js",
+      "name": "Pact JS",
+      "repo": "pact-foundation/pact-js",
+      "cat": "base",
+      "what": "契约测试框架的 JS 实现，覆盖 HTTP 与异步消息。",
+      "use": "前后端并行开发时，用契约替代「等对方环境好」；Agent 改接口时契约会先红。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "要维护 broker，小团队成本不低。",
+      "stats": {
+        "stars": 1825,
+        "pushedAt": "2026-11-03",
+        "license": "",
+        "archived": false,
+        "desc": "JS version of Pact. Pact is a contract testing framework for HTTP APIs and non-HTTP asynchronous messaging systems."
+      }
+    },
+    {
+      "id": "mutmut",
+      "name": "mutmut",
+      "repo": "boxed/mutmut",
+      "cat": "base",
+      "what": "Python 变异测试工具：故意改坏代码，看测试能不能抓到。",
+      "use": "衡量「AI 写的测试到底有没有用」——覆盖率 90% 但变异存活率高，说明断言是空的。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "跑得慢，别放进每次提交的流水线。",
+      "pick": true,
+      "stats": {
+        "stars": 1523,
+        "pushedAt": "2026-10-28",
+        "license": "BSD-3-Clause",
+        "archived": false,
+        "desc": "Mutation testing system"
+      }
+    },
+    {
+      "id": "faker",
+      "name": "Faker",
+      "repo": "joke2k/faker",
+      "cat": "base",
+      "what": "生成假数据：姓名、地址、手机号、公司、日期，支持多语言。",
+      "use": "造测试数据的基本盘；配合固定 seed 才能复现。",
+      "fits": [
+        "cc",
+        "dsh",
+        "codex"
+      ],
+      "caveat": "随机数据不复现，回归用例要固定 seed。",
+      "stats": {
+        "stars": 19479,
+        "pushedAt": "2026-10-28",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Faker is a Python package that generates fake data for you."
+      }
+    },
+    {
+      "id": "appium",
+      "name": "Appium",
+      "repo": "appium/appium",
+      "cat": "base",
+      "what": "跨平台移动自动化框架，基于 W3C WebDriver 协议。",
+      "use": "移动端自动化的老牌底座；AI 生成移动用例时通常还是落到 Appium 或它的上层封装。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "环境配置是主要成本，新人先跑通再谈 AI。",
+      "stats": {
+        "stars": 22179,
+        "pushedAt": "2026-11-04",
+        "license": "Apache-2.0",
+        "archived": false,
+        "desc": "Cross-platform automation framework for all kinds of apps, built on top of the W3C WebDriver protocol"
+      }
+    },
+    {
+      "id": "k6",
+      "name": "k6",
+      "repo": "grafana/k6",
+      "cat": "base",
+      "what": "用 JavaScript 写压测脚本的负载测试工具，Go 实现。",
+      "use": "接口性能回归：把压测脚本当代码管理，Agent 改接口时能顺手更新。",
+      "fits": [
+        "cc",
+        "codex"
+      ],
+      "caveat": "AGPL 许可，商用前确认合规口径。",
+      "stats": {
+        "stars": 32123,
+        "pushedAt": "2026-11-03",
+        "license": "AGPL-3.0",
+        "archived": false,
+        "desc": "A modern load testing tool, using Go and JavaScript"
+      }
+    },
+    {
+      "id": "locust",
+      "name": "Locust",
+      "repo": "locustio/locust",
+      "cat": "base",
+      "what": "用纯 Python 写压测场景的负载测试工具，带 Web UI。",
+      "use": "Python 团队做压测最顺手；场景代码和业务代码同一套语言，Agent 改起来不容易出错。",
+      "fits": [
+        "cc",
+        "dsh"
+      ],
+      "caveat": "单机压不满时再考虑分布式，先别上。",
+      "stats": {
+        "stars": 28259,
+        "pushedAt": "2026-11-03",
+        "license": "MIT",
+        "archived": false,
+        "desc": "Write scalable load tests in plain Python 🚗💨"
+      }
+    }
+  ]
+}

@@ -25,6 +25,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const DATA = path.join(ROOT, 'data');
 const read = f => JSON.parse(fs.readFileSync(path.join(DATA, f), 'utf8'));
+const readSafe = (f, fb) => { try { return read(f); } catch (e) { return fb; } };
 
 /* ---------- 小工具 ---------- */
 const esc = s => String(s == null ? '' : s)
@@ -84,8 +85,10 @@ function linker(dir) {
     home: '../',
     tool: id => (dir === 't' ? `${id}.html` : `../t/${id}.html`),
     plan: id => (dir === 'p' ? `${id}.html` : `../p/${id}.html`),
+    res: id => (dir === 'c' ? `${id}.html` : `../c/${id}.html`),
     toolIndex: dir === 't' ? './' : '../t/',
-    planIndex: dir === 'p' ? './' : '../p/'
+    planIndex: dir === 'p' ? './' : '../p/',
+    resIndex: dir === 'c' ? './' : '../c/'
   };
 }
 
@@ -383,14 +386,94 @@ ${sections}
   });
 }
 
+/* ---------- 社区资源页 ----------
+   收录的都是别人的开源项目，所以这一页的立场是「介绍 + 指路」，
+   不是「评测」。评分、结论一律不写——我们没跑过人家的代码。 */
+function resPage(it, stats, cats, ctx) {
+  const { site, L } = ctx;
+  const st = stats[it.repo] || {};
+  const cat = cats.find(c => c.id === it.cat) || { name: it.cat };
+  const canonical = `${site}c/${it.id}.html`;
+  const title = `${it.name}：${cat.name} · 测试怎么用 · AI Test Stack`;
+  const desc = clip(`${it.what} 测试场景：${it.use}`, 150);
+
+  const facts = [
+    ['仓库', `<a href="https://github.com/${esc(it.repo)}" target="_blank" rel="noopener">${esc(it.repo)}</a>`],
+    ['分类', esc(cat.name)],
+    ['Star', st.stars == null ? '未抓取' : Number(st.stars).toLocaleString('zh-CN')],
+    ['最近提交', st.pushedAt ? esc(st.pushedAt) : '未抓取'],
+    ['许可证', st.license ? esc(st.license) : '<span class="dim">仓库未标注</span>']
+  ].map(([k, v]) => `<div class="fact"><b>${k}</b><span>${v}</span></div>`).join('');
+
+  const body = `
+<h1>${esc(it.name)}</h1>
+<p class="sub">${esc(cat.name)} · ${esc(it.repo)}</p>
+<div class="facts">${facts}</div>
+<h2>这是什么</h2>
+<p>${esc(it.what)}</p>
+<h2>测试怎么用</h2>
+<p>${esc(it.use)}</p>
+${it.caveat ? `<h2>注意</h2><p>${esc(it.caveat)}</p>` : ''}
+${(it.fits || []).length ? `<h2>配哪些工具</h2><p>${esc(it.fits.join(' / '))}</p>` : ''}
+<p class="dim" style="margin-top:22px">星数与最近提交由脚本每周从 GitHub 抓取，抓取日 ${esc((stats.__updated || '—'))}。本页只做介绍，没有跑过该项目，不提供评分。</p>
+<a class="cta" href="${L.resIndex}">看全部资源 →</a>`;
+  return shell({
+    title, desc, canonical,
+    jsonLd: {
+      '@context': 'https://schema.org', '@type': 'SoftwareSourceCode',
+      name: it.name, description: it.what,
+      codeRepository: `https://github.com/${it.repo}`,
+      ...(st.license ? { license: `https://spdx.org/licenses/${st.license}.html` } : {})
+    },
+    body, site, L,
+    crumbs: [{ name: '社区资源库', href: L.resIndex }, { name: it.name }]
+  });
+}
+
+function resIndex(items, stats, cats, ctx) {
+  const { site, L } = ctx;
+  const sections = cats.map(c => {
+    const rows = items.filter(x => x.cat === c.id).map(x => {
+      const st = stats[x.repo] || {};
+      return `<tr><td><a href="${L.res(x.id)}">${esc(x.name)}</a><br><span class="dim">${esc(x.repo)}</span></td>
+        <td class="dim">${esc(x.what)}</td>
+        <td>${st.stars == null ? '—' : Number(st.stars).toLocaleString('zh-CN')}</td>
+        <td class="dim">${esc(st.pushedAt || '—')}</td></tr>`;
+    }).join('');
+    return `<h2>${esc(c.name)}（${items.filter(x => x.cat === c.id).length}）</h2>
+      <p class="dim">${esc(c.desc)}</p>
+      <table><tr><th>项目</th><th>是什么</th><th>Star</th><th>最近提交</th></tr>${rows}</table>`;
+  }).join('');
+  const body = `
+<h1>社区资源库</h1>
+<p class="sub">${items.length} 个测试工程师用得上的开源项目，按「装到哪个环节」分 ${cats.length} 类。星数与最近提交由脚本每周从 GitHub 抓取。</p>
+${sections}
+<a class="cta" href="${L.home}">回到完整对比站 →</a>`;
+  return shell({
+    title: `社区资源库：${items.length} 个测试工程师用得上的开源项目 · AI Test Stack`,
+    desc: `${items.length} 个与 AI 辅助测试相关的开源项目：MCP Server、Agent Skill、AI 测试工具与测试基建。每项写明是什么、测试怎么用、坑在哪，星数每周自动刷新。`,
+    canonical: `${site}c/`, jsonLd: {
+      '@context': 'https://schema.org', '@type': 'CollectionPage',
+      name: '社区资源库', url: `${site}c/`
+    },
+    body, site, L, crumbs: [{ name: '社区资源库' }]
+  });
+}
+
 /* ---------- 主入口 ---------- */
 function generate(outDir, base, home) {
   const tools = read('tools.json');
   const plans = read('plans.json');
   const meta = read('meta.json');
   const criteria = read('criteria.json').criteria || [];
+  const community = readSafe('community.json', { categories: [], items: [] });
+  const statsRaw = readSafe('community-stats.json', { updated: null, repos: {} });
+  const stats = Object.assign({ __updated: statsRaw.updated || '—' }, statsRaw.repos || {});
+  const cats = community.categories || [];
+  const items = community.items || [];
   const ctxT = { site: home, L: linker('t'), criteria };
   const ctxP = { site: home, L: linker('p'), criteria };
+  const ctxC = { site: home, L: linker('c'), criteria };
 
   const pages = [];   // { loc, lastmod, priority, changefreq }
   const write = (rel, html, metaInfo) => {
@@ -419,6 +502,21 @@ function generate(outDir, base, home) {
       loc: `${home}p/${p.id}.html`, lastmod: p.verified || meta.lastVerified,
       priority: '0.7', changefreq: 'weekly'
     });
+  }
+  /* 社区资源：每条一个地址。这一层是 0.9.2 新增的，
+     和工具/套餐页同理——「Playwright MCP 怎么用」这种词得有自己的落地页。 */
+  if (items.length) {
+    write('c/index.html', resIndex(items, stats, cats, ctxC), {
+      loc: `${home}c/`, lastmod: statsRaw.updated || meta.lastVerified,
+      priority: '0.8', changefreq: 'weekly'
+    });
+    for (const it of items) {
+      write(`c/${it.id}.html`, resPage(it, stats, cats, ctxC), {
+        loc: `${home}c/${it.id}.html`,
+        lastmod: (stats[it.repo] && stats[it.repo].pushedAt) || statsRaw.updated || meta.lastVerified,
+        priority: '0.6', changefreq: 'monthly'
+      });
+    }
   }
   return pages;
 }

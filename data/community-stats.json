@@ -1,0 +1,251 @@
+{
+ "updated": "2026-11-04",
+ "source": "GitHub REST API",
+ "repos": {
+  "microsoft/playwright-mcp": {
+   "stars": 39148,
+   "pushedAt": "2026-11-03",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Playwright MCP server"
+  },
+  "ChromeDevTools/chrome-devtools-mcp": {
+   "stars": 54753,
+   "pushedAt": "2026-11-04",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Chrome DevTools for coding agents"
+  },
+  "modelcontextprotocol/servers": {
+   "stars": 91773,
+   "pushedAt": "2026-10-29",
+   "license": "",
+   "archived": false,
+   "desc": "Model Context Protocol Servers"
+  },
+  "github/github-mcp-server": {
+   "stars": 34206,
+   "pushedAt": "2026-11-03",
+   "license": "MIT",
+   "archived": false,
+   "desc": "GitHub's official MCP Server"
+  },
+  "modelcontextprotocol/inspector": {
+   "stars": 11221,
+   "pushedAt": "2026-10-29",
+   "license": "",
+   "archived": false,
+   "desc": "Deterministic testing tools for MCP servers"
+  },
+  "mobile-next/mobile-mcp": {
+   "stars": 10279,
+   "pushedAt": "2026-11-02",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Mobile MCP: let AI agents drive your iOS and Android apps. MCP server for simulators, emulators and real devices. Works with Claude Code, Co"
+  },
+  "appium/appium-mcp": {
+   "stars": 515,
+   "pushedAt": "2026-11-04",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Appium MCP on Steroids!"
+  },
+  "containers/kubernetes-mcp-server": {
+   "stars": 2219,
+   "pushedAt": "2026-11-04",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Model Context Protocol (MCP) server for Kubernetes and OpenShift"
+  },
+  "crystaldba/postgres-mcp": {
+   "stars": 3452,
+   "pushedAt": "2026-08-17",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Postgres MCP Pro provides configurable read/write access and performance analysis for you and your AI agents."
+  },
+  "executeautomation/mcp-playwright": {
+   "stars": 5674,
+   "pushedAt": "2025-12-13",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Playwright Model Context Protocol Server - Tool to automate Browsers and APIs in Claude Desktop, Cline, Cursor IDE and More 🔌"
+  },
+  "anthropics/skills": {
+   "stars": 187181,
+   "pushedAt": "2026-10-28",
+   "license": "",
+   "archived": false,
+   "desc": "Public repository for Agent Skills"
+  },
+  "obra/superpowers": {
+   "stars": 311997,
+   "pushedAt": "2026-11-03",
+   "license": "MIT",
+   "archived": false,
+   "desc": "An agentic skills framework & software development methodology that works."
+  },
+  "mattpocock/skills": {
+   "stars": 311745,
+   "pushedAt": "2026-11-01",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Skills for Real Engineers. Straight from my .agents directory."
+  },
+  "ComposioHQ/awesome-claude-skills": {
+   "stars": 78692,
+   "pushedAt": "2026-09-18",
+   "license": "",
+   "archived": false,
+   "desc": "A curated list of awesome Claude Skills, resources, and tools for customizing Claude AI workflows"
+  },
+  "JuliusBrussee/caveman": {
+   "stars": 117289,
+   "pushedAt": "2026-11-03",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "🪨 why use many token when few token do trick. Viral skill + proxy for coding agents that cuts 65% of tokens by talking like a caveman."
+  },
+  "web-infra-dev/midscene": {
+   "stars": 15492,
+   "pushedAt": "2026-11-04",
+   "license": "MIT",
+   "archived": false,
+   "desc": "See interfaces like a human. E2E testing in natural language."
+  },
+  "browser-use/browser-use": {
+   "stars": 119977,
+   "pushedAt": "2026-11-02",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Open-source Python library for AI browser agents, plus Browser Use Cloud: stealth browsers and a hosted agent API."
+  },
+  "microsoft/promptflow": {
+   "stars": 11260,
+   "pushedAt": "2026-10-31",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Build high-quality LLM apps - from prototyping, testing to production deployment and monitoring."
+  },
+  "evidentlyai/evidently": {
+   "stars": 8037,
+   "pushedAt": "2026-09-29",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Evidently is ​​an open-source ML and LLM observability framework. Evaluate, test, and monitor any AI-powered system or data pipeline. From t"
+  },
+  "MGdaasLab/WHartTest": {
+   "stars": 1084,
+   "pushedAt": "2026-11-03",
+   "license": "",
+   "archived": false,
+   "desc": "WHartTest 是一款AI驱动的测试自动化平台，实现从需求到可执行测试用例的自动化生成与管理，帮助测试团队提升效率与覆盖率。 (WHartTest is an AI-driven test automation platform that automates the gene"
+  },
+  "microsoft/playwright": {
+   "stars": 99226,
+   "pushedAt": "2026-11-03",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Playwright is a framework for Web Testing and Automation. It allows testing Chromium, Firefox and WebKit with a single API. "
+  },
+  "microsoft/playwright-python": {
+   "stars": 15085,
+   "pushedAt": "2026-11-04",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Python version of the Playwright testing and automation library."
+  },
+  "pytest-dev/pytest": {
+   "stars": 14665,
+   "pushedAt": "2026-11-02",
+   "license": "MIT",
+   "archived": false,
+   "desc": "The pytest framework makes it easy to write small tests, yet scales to support complex functional testing"
+  },
+  "pytest-dev/pytest-xdist": {
+   "stars": 1931,
+   "pushedAt": "2026-11-02",
+   "license": "MIT",
+   "archived": false,
+   "desc": "pytest plugin for distributed testing and loop-on-failures testing modes. "
+  },
+  "pytest-dev/pytest-rerunfailures": {
+   "stars": 482,
+   "pushedAt": "2026-10-07",
+   "license": "",
+   "archived": false,
+   "desc": "a pytest plugin that re-runs failed tests up to -n times to eliminate flakey failures"
+  },
+  "allure-framework/allure-python": {
+   "stars": 820,
+   "pushedAt": "2026-11-02",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Allure integrations for Python test frameworks"
+  },
+  "schemathesis/schemathesis": {
+   "stars": 3742,
+   "pushedAt": "2026-11-04",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Catch API bugs before your users do"
+  },
+  "HypothesisWorks/hypothesis": {
+   "stars": 9132,
+   "pushedAt": "2026-11-03",
+   "license": "",
+   "archived": false,
+   "desc": "The property-based testing library for Python"
+  },
+  "testcontainers/testcontainers-python": {
+   "stars": 2319,
+   "pushedAt": "2026-10-09",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Testcontainers is a Python library that providing a friendly API to run Docker container. It is designed to create runtime environment to us"
+  },
+  "pact-foundation/pact-js": {
+   "stars": 1825,
+   "pushedAt": "2026-11-03",
+   "license": "",
+   "archived": false,
+   "desc": "JS version of Pact. Pact is a contract testing framework for HTTP APIs and non-HTTP asynchronous messaging systems."
+  },
+  "boxed/mutmut": {
+   "stars": 1523,
+   "pushedAt": "2026-10-28",
+   "license": "BSD-3-Clause",
+   "archived": false,
+   "desc": "Mutation testing system"
+  },
+  "joke2k/faker": {
+   "stars": 19479,
+   "pushedAt": "2026-10-28",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Faker is a Python package that generates fake data for you."
+  },
+  "appium/appium": {
+   "stars": 22179,
+   "pushedAt": "2026-11-04",
+   "license": "Apache-2.0",
+   "archived": false,
+   "desc": "Cross-platform automation framework for all kinds of apps, built on top of the W3C WebDriver protocol"
+  },
+  "grafana/k6": {
+   "stars": 32123,
+   "pushedAt": "2026-11-03",
+   "license": "AGPL-3.0",
+   "archived": false,
+   "desc": "A modern load testing tool, using Go and JavaScript"
+  },
+  "locustio/locust": {
+   "stars": 28259,
+   "pushedAt": "2026-11-03",
+   "license": "MIT",
+   "archived": false,
+   "desc": "Write scalable load tests in plain Python 🚗💨"
+  }
+ }
+}
