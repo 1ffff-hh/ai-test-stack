@@ -7,7 +7,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const DB_PATH = path.join(__dirname, 'data.sqlite');
 
-/* 哪些集合进库。其余 JSON 仍然只走构建期，不进后台。 */
+/* 哪些集合进库。其余 JSON 仍然只走构建期，不进后台 */
 const COLLECTIONS = {
   tools: { file: 'data/tools.json', label: '工具', shape: 'array' },
   plans: { file: 'data/plans.json', label: '套餐', shape: 'array' },
@@ -24,8 +24,68 @@ function open() {
     PRIMARY KEY (collection, id)
   )`);
   db.exec('CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT)');
+  db.exec(`CREATE TABLE IF NOT EXISTS users (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    email      TEXT UNIQUE NOT NULL,
+    name       TEXT NOT NULL,
+    pass       TEXT NOT NULL,
+    role       TEXT NOT NULL DEFAULT 'user',
+    status     TEXT NOT NULL DEFAULT 'active',
+    created_at TEXT NOT NULL
+  )`);
+  db.exec(`CREATE TABLE IF NOT EXISTS sessions (
+    token      TEXT PRIMARY KEY,
+    user_id    INTEGER NOT NULL,
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  )`);
   return db;
 }
+
+/* 用户账户 */
+const publicUser = u => u && ({ id: u.id, email: u.email, name: u.name, role: u.role, status: u.status, created_at: u.created_at });
+
+function createUser(db, { email, name, pass, role = 'user' }) {
+  const now = new Date().toISOString();
+  const r = db.prepare('INSERT INTO users (email, name, pass, role, status, created_at) VALUES (?, ?, ?, ?, ?, ?)')
+    .run(String(email).toLowerCase(), name || email.split('@')[0], pass, role, 'active', now);
+  return publicUser(db.prepare('SELECT * FROM users WHERE id = ?').get(r.lastInsertRowid));
+}
+const userByEmail = (db, email) => db.prepare('SELECT * FROM users WHERE email = ?').get(String(email).toLowerCase());
+const userById = (db, id) => db.prepare('SELECT * FROM users WHERE id = ?').get(id);
+const listUsers = db => db.prepare('SELECT * FROM users ORDER BY id').all().map(publicUser);
+function patchUser(db, id, patch) {
+  const u = userById(db, id);
+  if (!u) return null;
+  const role = patch.role === undefined ? u.role : patch.role;
+  const status = patch.status === undefined ? u.status : patch.status;
+  if (['user', 'admin'].indexOf(role) < 0) throw new Error('角色只能是 user 或 admin');
+  if (['active', 'banned'].indexOf(status) < 0) throw new Error('状态只能是 active 或 banned');
+  db.prepare('UPDATE users SET role = ?, status = ? WHERE id = ?').run(role, status, id);
+  return publicUser(userById(db, id));
+}
+
+/* 会话 */
+function createSession(db, userId, days = 14) {
+  const token = require('crypto').randomBytes(32).toString('base64url');
+  const now = new Date();
+  const exp = new Date(now.getTime() + days * 864e5).toISOString();
+  db.prepare('INSERT INTO sessions (token, user_id, expires_at, created_at) VALUES (?, ?, ?, ?)')
+    .run(token, userId, exp, now.toISOString());
+  return { token, expiresAt: exp };
+}
+function sessionUser(db, token) {
+  if (!token) return null;
+  const s = db.prepare('SELECT * FROM sessions WHERE token = ?').get(token);
+  if (!s) return null;
+  if (new Date(s.expires_at) < new Date()) {
+    db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
+    return null;
+  }
+  const u = userById(db, s.user_id);
+  return u && u.status === 'active' ? publicUser(u) : null;
+}
+const dropSession = (db, token) => db.prepare('DELETE FROM sessions WHERE token = ?').run(token);
 
 function isEmpty(db, col) {
   const row = db.prepare('SELECT COUNT(*) AS n FROM docs WHERE collection = ?').get(col);
@@ -75,7 +135,7 @@ function remove(db, col, id) {
   return r.changes > 0;
 }
 
-/* 库 → data/*.json。导出后仍然由 build.js 走原来的校验，所以后台改坏了数据也过不了构建。 */
+/* 库 → data/*.json。导出后仍然由 build.js 走原来的校验，所以后台改坏了数据也过不了构建 */
 function exportFiles(db) {
   const out = [];
   for (const [col, cfg] of Object.entries(COLLECTIONS)) {
@@ -88,4 +148,8 @@ function exportFiles(db) {
   return out;
 }
 
-module.exports = { open, seed, list, get, put, remove, exportFiles, COLLECTIONS, DB_PATH };
+module.exports = {
+  open, seed, list, get, put, remove, exportFiles, COLLECTIONS, DB_PATH,
+  publicUser, createUser, userByEmail, userById, listUsers, patchUser,
+  createSession, sessionUser, dropSession
+};

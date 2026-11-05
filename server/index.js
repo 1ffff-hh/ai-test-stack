@@ -14,7 +14,7 @@ const PASS_FILE = path.join(__dirname, '.admin-pass');
 const SITE = path.join(ROOT, '_site');
 const DIR = fs.existsSync(path.join(SITE, 'index.html')) ? SITE : ROOT;
 
-/* ---------- 口令 ---------- */
+/* 口令 */
 function adminPass() {
   if (process.env.ADMIN_PASS) return process.env.ADMIN_PASS;
   if (fs.existsSync(PASS_FILE)) return fs.readFileSync(PASS_FILE, 'utf8').trim();
@@ -22,13 +22,32 @@ function adminPass() {
   fs.writeFileSync(PASS_FILE, p + '\n', { mode: 0o600 });
   return p;
 }
-const PASS = adminPass();
-const sessions = new Set();
+/* scrypt 是 Node 自带的，不引原生依赖，Windows 上不会卡在 node-gyp */
+function hashPassword(pw) {
+  const salt = crypto.randomBytes(16).toString('hex');
+  return salt + ':' + crypto.scryptSync(pw, salt, 64).toString('hex');
+}
+function verifyPassword(pw, stored) {
+  const i = String(stored || '').indexOf(':');
+  if (i < 0) return false;
+  const salt = stored.slice(0, i);
+  const want = Buffer.from(stored.slice(i + 1), 'hex');
+  const got = crypto.scryptSync(pw, salt, 64);
+  return want.length === got.length && crypto.timingSafeEqual(want, got);
+}
+
+const BOOT_PASS = adminPass();
 
 const db = dbm.open();
 const seeded = dbm.seed(db);
 
-/* ---------- 工具 ---------- */
+/* 第一次启动建一个管理员账号，口令沿用原来的 .admin-pass */
+const ADMIN_EMAIL = 'admin@local';
+if (!dbm.userByEmail(db, ADMIN_EMAIL)) {
+  dbm.createUser(db, { email: ADMIN_EMAIL, name: '管理员', pass: hashPassword(BOOT_PASS), role: 'admin' });
+}
+
+/* 工具 */
 const TYPES = { '.html': 'text/html; charset=utf-8', '.json': 'application/json; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.png': 'image/png', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
@@ -48,7 +67,8 @@ function cookies(req) {
   raw.split(';').forEach(p => { const i = p.indexOf('='); if (i > 0) out[p.slice(0, i).trim()] = p.slice(i + 1).trim(); });
   return out;
 }
-const authed = req => sessions.has(cookies(req).ats_admin);
+const cookieToken = req => cookies(req).ats_sid || '';
+const currentUser = req => dbm.sessionUser(db, cookieToken(req));
 function body(req) {
   return new Promise((resolve, reject) => {
     let buf = '';
@@ -102,29 +122,54 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   const p = decodeURIComponent(url.pathname);
 
-  /* ---------- 后台页面 ---------- */
+  /* 后台页面 */
   if (p === '/admin' || p === '/admin/') {
     const file = path.join(__dirname, 'admin.html');
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     return res.end(fs.readFileSync(file));
   }
 
-  /* ---------- 登录 ---------- */
-  if (p === '/api/login' && req.method === 'POST') {
-    const b = await body(req).catch(() => ({}));
-    if (String(b.password || '') !== PASS) return json(res, 401, { ok: false, msg: '口令不对' });
-    const token = crypto.randomBytes(24).toString('base64url');
-    sessions.add(token);
-    return json(res, 200, { ok: true }, { 'Set-Cookie': `ats_admin=${token}; HttpOnly; SameSite=Lax; Path=/` });
-  }
-  if (p === '/api/logout' && req.method === 'POST') {
-    sessions.delete(cookies(req).ats_admin);
-    return json(res, 200, { ok: true }, { 'Set-Cookie': 'ats_admin=; Max-Age=0; Path=/' });
-  }
-  if (p === '/api/me') return json(res, 200, { ok: authed(req) });
+  const SID = 'ats_sid';
+  const cookieFor = (token, maxAge) => `${SID}=${token}; HttpOnly; SameSite=Lax; Path=/` + (maxAge ? `; Max-Age=${maxAge}` : '');
 
-  /* ---------- 后台 API ---------- */
-  if (p.startsWith('/api/') && !authed(req)) return json(res, 401, { ok: false, msg: '请先登录' });
+  /* 注册 */
+  if (p === '/api/auth/register' && req.method === 'POST') {
+    const b = await body(req).catch(() => ({}));
+    const email = String(b.email || '').trim().toLowerCase();
+    const pass = String(b.password || '');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json(res, 400, { ok: false, msg: '邮箱格式不对' });
+    if (pass.length < 8) return json(res, 400, { ok: false, msg: '密码至少 8 位' });
+    if (dbm.userByEmail(db, email)) return json(res, 409, { ok: false, msg: '这个邮箱已经注册过' });
+    const u = dbm.createUser(db, { email, name: String(b.name || '').trim() || email.split('@')[0], pass: hashPassword(pass) });
+    const s = dbm.createSession(db, u.id);
+    return json(res, 200, { ok: true, user: u }, { 'Set-Cookie': cookieFor(s.token, 1209600) });
+  }
+  /* 登录 */
+  if (p === '/api/auth/login' && req.method === 'POST') {
+    const b = await body(req).catch(() => ({}));
+    const row = dbm.userByEmail(db, String(b.email || '').trim().toLowerCase());
+    if (!row || !verifyPassword(String(b.password || ''), row.pass)) {
+      return json(res, 401, { ok: false, msg: '邮箱或密码不对' });
+    }
+    if (row.status !== 'active') return json(res, 403, { ok: false, msg: '账号已被停用' });
+    const s = dbm.createSession(db, row.id);
+    return json(res, 200, { ok: true, user: dbm.publicUser(row) }, { 'Set-Cookie': cookieFor(s.token, 1209600) });
+  }
+  if (p === '/api/auth/logout' && req.method === 'POST') {
+    dbm.dropSession(db, cookieToken(req));
+    return json(res, 200, { ok: true }, { 'Set-Cookie': cookieFor('', 0) });
+  }
+  if (p === '/api/auth/me') {
+    const u = currentUser(req);
+    return json(res, 200, { ok: !!u, user: u || null });
+  }
+
+  /* 后台接口：先登录，再按角色放行 */
+  if (p.startsWith('/api/')) {
+    const u = currentUser(req);
+    if (!u) return json(res, 401, { ok: false, msg: '请先登录' });
+    if (u.role !== 'admin') return json(res, 403, { ok: false, msg: '需要管理员权限' });
+  }
 
   if (p === '/api/collections') {
     const list = Object.entries(dbm.COLLECTIONS).map(([k, c]) => ({
@@ -167,7 +212,22 @@ const server = http.createServer(async (req, res) => {
 
   if (p === '/api/publish' && req.method === 'POST') return json(res, 200, publish());
 
-  /* ---------- 站点静态文件 ---------- */
+  /* 用户管理 */
+  if (p === '/api/admin/users' && req.method === 'GET') {
+    return json(res, 200, { ok: true, users: dbm.listUsers(db) });
+  }
+  const um = p.match(/^\/api\/admin\/users\/(\d+)$/);
+  if (um && req.method === 'PATCH') {
+    const b = await body(req).catch(() => ({}));
+    try {
+      const u = dbm.patchUser(db, Number(um[1]), b);
+      return u ? json(res, 200, { ok: true, user: u }) : json(res, 404, { ok: false, msg: '没有这个用户' });
+    } catch (e) {
+      return json(res, 400, { ok: false, msg: String(e.message) });
+    }
+  }
+
+  /* 站点静态文件 */
   let file = path.join(DIR, p === '/' ? 'index.html' : p);
   if (!file.startsWith(DIR)) return send(res, 403, 'forbidden');
   if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, 'index.html');
@@ -183,6 +243,6 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`站点   http://localhost:${PORT}/`);
   console.log(`后台   http://localhost:${PORT}/admin`);
-  console.log(`口令   ${PASS}${process.env.ADMIN_PASS ? '（来自 ADMIN_PASS）' : '（写在 server/.admin-pass）'}`);
+  console.log(`口令   ${BOOT_PASS}${process.env.ADMIN_PASS ? '（来自 ADMIN_PASS）' : '（写在 server/.admin-pass）'}`);
   if (seeded.length) console.log('首次灌库：' + seeded.join(' · '));
 });
