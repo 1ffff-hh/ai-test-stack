@@ -10,18 +10,9 @@ const dbm = require('./db');
 
 const ROOT = path.join(__dirname, '..');
 const PORT = Number(process.env.PORT || 4174);
-const PASS_FILE = path.join(__dirname, '.admin-pass');
 const SITE = path.join(ROOT, '_site');
 const DIR = fs.existsSync(path.join(SITE, 'index.html')) ? SITE : ROOT;
 
-/* 口令 */
-function adminPass() {
-  if (process.env.ADMIN_PASS) return process.env.ADMIN_PASS;
-  if (fs.existsSync(PASS_FILE)) return fs.readFileSync(PASS_FILE, 'utf8').trim();
-  const p = crypto.randomBytes(9).toString('base64url');
-  fs.writeFileSync(PASS_FILE, p + '\n', { mode: 0o600 });
-  return p;
-}
 /* scrypt 是 Node 自带的，不引原生依赖，Windows 上不会卡在 node-gyp */
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -36,15 +27,17 @@ function verifyPassword(pw, stored) {
   return want.length === got.length && crypto.timingSafeEqual(want, got);
 }
 
-const BOOT_PASS = adminPass();
-
 const db = dbm.open();
 const seeded = dbm.seed(db);
 
-/* 第一次启动建一个管理员账号，口令沿用原来的 .admin-pass */
-const ADMIN_EMAIL = 'admin@local';
-if (!dbm.userByEmail(db, ADMIN_EMAIL)) {
-  dbm.createUser(db, { email: ADMIN_EMAIL, name: '管理员', pass: hashPassword(BOOT_PASS), role: 'admin' });
+/* 第一次启动建一个管理员账号。密码只打印一次，之后一律走邮箱 + 密码登录，
+   不再有「另设一个口令」这回事——那等于第二套凭据，只会让人困惑。 */
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@localhost';
+let bootPass = null;
+const hasAdmin = db.prepare("SELECT 1 FROM users WHERE role = 'admin' LIMIT 1").get();
+if (!hasAdmin) {
+  bootPass = process.env.ADMIN_PASS || crypto.randomBytes(9).toString('base64url');
+  dbm.createUser(db, { email: ADMIN_EMAIL, name: '管理员', pass: hashPassword(bootPass), role: 'admin' });
 }
 
 /* 工具 */
@@ -268,6 +261,11 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, () => {
   console.log(`站点   http://localhost:${PORT}/`);
   console.log(`后台   http://localhost:${PORT}/admin`);
-  console.log(`口令   ${BOOT_PASS}${process.env.ADMIN_PASS ? '（来自 ADMIN_PASS）' : '（写在 server/.admin-pass）'}`);
   if (seeded.length) console.log('首次灌库：' + seeded.join(' · '));
+  if (bootPass) {
+    console.log('');
+    console.log(`管理员账号 ${ADMIN_EMAIL}`);
+    console.log(`初始密码   ${bootPass}`);
+    console.log('只显示这一次。忘了就用 npm run admin:reset 重设。');
+  }
 });

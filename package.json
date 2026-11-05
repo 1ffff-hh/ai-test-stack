@@ -33,7 +33,8 @@
     "data:set": "node scripts/set-price.js",
     "shots": "node scripts/shots.js",
     "server": "node --no-warnings server/index.js",
-    "publish": "node --no-warnings server/publish.js"
+    "publish": "node --no-warnings server/publish.js",
+    "admin:reset": "node --no-warnings server/reset-admin.js"
   },
   "devDependencies": {
     "playwright": "^1.64.0"

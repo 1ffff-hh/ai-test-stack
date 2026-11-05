@@ -60,7 +60,7 @@ td.id{font-family:var(--mono);font-size:12px;color:var(--dim)}
 <div id="login" hidden>
   <form class="login" id="loginForm">
     <h1>内容后台</h1>
-    <p>口令在服务启动时打印在终端，也存在 <code>server/.admin-pass</code>。</p>
+    <p>账号是邮箱 + 密码。第一次启动会在终端打印管理员账号和初始密码；忘了就运行 <code>npm run admin:reset</code> 重设。</p>
     <input type="email" id="email" placeholder="邮箱" autocomplete="username">
     <input type="password" id="pass" placeholder="密码" autocomplete="current-password">
     <button class="btn primary" style="width:100%" type="submit">进入</button>
