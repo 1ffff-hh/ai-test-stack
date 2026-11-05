@@ -58,10 +58,28 @@ function body(req) {
   });
 }
 
+/* 发布前先给 data/*.json 拍快照。构建失败就把文件原样放回去——
+   后台允许存半成品，但仓库里的数据不能因为一次误操作就变成构建不过的状态。 */
+function snapshot() {
+  const snap = {};
+  for (const cfg of Object.values(dbm.COLLECTIONS)) {
+    const f = path.join(ROOT, cfg.file);
+    snap[f] = fs.existsSync(f) ? fs.readFileSync(f) : null;
+  }
+  return snap;
+}
+function restore(snap) {
+  for (const [f, buf] of Object.entries(snap)) {
+    if (buf === null) { if (fs.existsSync(f)) fs.unlinkSync(f); }
+    else fs.writeFileSync(f, buf);
+  }
+}
+
 let publishing = false;
 function publish() {
   if (publishing) return { ok: false, msg: '正在发布中' };
   publishing = true;
+  const snap = snapshot();
   try {
     const files = dbm.exportFiles(db);
     const out = execFileSync(process.execPath, [path.join(ROOT, 'build.js')], { cwd: ROOT, encoding: 'utf8' });
@@ -69,7 +87,12 @@ function publish() {
     execFileSync(process.execPath, [path.join(ROOT, 'scripts', 'build-site.js')], { cwd: ROOT, encoding: 'utf8' });
     return { ok: true, files, build: out.split('\n').slice(0, 3).join('\n') };
   } catch (e) {
-    return { ok: false, msg: String(e.stdout || e.message).slice(0, 800) };
+    restore(snap);
+    return {
+      ok: false,
+      rolledBack: true,
+      msg: '构建没通过，data/*.json 已回滚，站点没有受影响。\n\n' + String(e.stdout || e.message).slice(0, 1200)
+    };
   } finally {
     publishing = false;
   }

@@ -159,9 +159,26 @@ function render() {
 
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+/* 新建时照着现有条目的字段结构生成一张空表：直接给 {id:''} 的话，
+   用户只填个 id 就存，构建期会报一堆「缺少 xxx」，而且那时候已经发布过了。 */
+function blankFrom(sample) {
+  const o = {};
+  Object.keys(sample || {}).forEach(k => {
+    if (k === '_updatedAt') return;
+    const v = sample[k];
+    if (Array.isArray(v)) o[k] = [];
+    else if (typeof v === 'number') o[k] = 0;
+    else if (typeof v === 'boolean') o[k] = false;
+    else if (v && typeof v === 'object') o[k] = {};
+    else o[k] = '';
+  });
+  o.id = '';
+  return o;
+}
+
 function open(id) {
   ISNEW = !id;
-  CUR = id ? JSON.parse(JSON.stringify(ITEMS.find(x => x.id === id))) : { id: '' };
+  CUR = id ? JSON.parse(JSON.stringify(ITEMS.find(x => x.id === id))) : blankFrom(ITEMS[0]);
   $('#pTitle').textContent = ISNEW ? '新建' : (CUR.name || CUR.id);
   $('#pSub').textContent = ISNEW ? COL + ' / 新条目' : COL + ' / ' + CUR.id;
   $('#delBtn').hidden = ISNEW;
@@ -208,6 +225,7 @@ $('#saveBtn').onclick = async () => {
   let obj;
   try { obj = collect(); } catch (e) { return alert(e.message); }
   if (!obj.id) return alert('id 不能为空');
+  if (!obj.name) return alert('name 不能为空——构建期会把它当成缺字段拦下来');
   const r = ISNEW
     ? await api('/api/c/' + COL, { method: 'POST', body: JSON.stringify(obj) })
     : await api('/api/c/' + COL + '/' + encodeURIComponent(obj.id), { method: 'PUT', body: JSON.stringify(obj) });
