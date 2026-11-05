@@ -203,7 +203,10 @@
   /* 站务页：不属于任何内容模块（它们不是「事」，是「站」本身）。
      和功能页一样是一级页面，但没有模块归属，所以面包屑只到「首页 › 页名」。 */
   const SITE_PAGES = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
-  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, '404', 'error'];
+  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, '404', 'error', 'gate'];
+  /* 服务端按登录态打开：未登录时 D.gate 为 true，除首页外一律先过登录墙。
+     静态构建没有这个字段，所以 GitHub Pages 上那份仍然是全开的。 */
+  const GATED = !!(D && D.gate);
   /* 文案里的计数占位符。站规是「计数一律运行时算」，但 data/pages.json 里
      一直手写着「57 档」「29 款」——数据涨到 59 档，页面上就成了假话。
      现在写 `{count:plans}`，渲染时从数据取。 */
@@ -215,7 +218,7 @@
     views: FEATURE_VIEWS.length
   };
   const VIEW_NAME = {
-    home: '首页', '404': '页面不存在', error: '页面出错',
+    home: '首页', '404': '页面不存在', error: '页面出错', gate: '登录后可见',
     search: '全站搜索', mine: '个人中心', feedback: '反馈',
     about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式'
   };
@@ -931,6 +934,20 @@
     diagHtml();
   }
 
+  /* 登录墙。按钮直接叫起 auth.js 的弹层；登录成功后 auth.js 会 reload，
+     hash 还是用户点的那一个，所以会直接落到他想去的页面。 */
+  function renderGate() {
+    const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
+    set('gateTools', TOOLS.length);
+    set('gatePlans', PLANS.length);
+    set('gateBundles', BUNDLES.length);
+
+    const reg = document.getElementById('gateRegister');
+    const log = document.getElementById('gateLogin');
+    if (reg) reg.onclick = () => { if (window.ATS_AUTH) window.ATS_AUTH.open('register'); };
+    if (log) log.onclick = () => { if (window.ATS_AUTH) window.ATS_AUTH.open('login'); };
+  }
+
   function render404() {
     const b = $('#nfLinks');
     if (!b || b.dataset.done) return;
@@ -1431,6 +1448,14 @@
     // 未知地址不再静默回落到首页——给 404 页，把全部入口摆出来
     if (v && VIEWS.indexOf(v) < 0) v = '404';
     if (!v) v = 'home';
+    /* 登录墙：首页之外都要先登录。hash 保持用户点的那一个，
+       登录成功后 auth.js 会 reload，于是直接落回他想去的页面。 */
+    if (GATED && v !== 'home' && v !== 'gate') {
+      v = 'gate';
+    } else if (v === 'gate' && !GATED) {
+      history.replaceState(null, '', '#home');
+      v = 'home';
+    }
     const from = state.view;
     state.view = v;
     pushRecent(v);
@@ -1454,6 +1479,7 @@
     const R = RENDERERS[v];
     if (R) R.forEach(fn => fn());
     if (v === '404') render404();
+    if (v === 'gate') renderGate();
     if (v === 'error') fillErrLinks();
     if (v === 'search') renderSearch();
     if (v === 'mine') renderMine();

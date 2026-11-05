@@ -3711,6 +3711,24 @@ table.tb{min-width:0}
   border:1px solid var(--line);color:var(--dim2)}
 .authActs{display:flex;gap:8px}
 .authActs .btn{flex:1;justify-content:center;text-align:center}
+
+/* ===================== 登录墙（服务端按登录态打开） ===================== */
+.gate{min-height:calc(100vh - 140px);display:grid;place-items:center;padding:40px 20px}
+.gateCard{width:min(520px,100%);background:var(--panel);border:1px solid var(--line2);border-radius:20px;
+  padding:40px 36px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.gateIcon{font-size:30px;line-height:1;margin-bottom:12px}
+.gateCard h1{margin:8px 0 12px;font-size:28px;letter-spacing:-.025em}
+.gateCard p{margin:0 auto 22px;max-width:400px;color:var(--dim2);font-size:var(--fs-3);line-height:1.75}
+.gateList{list-style:none;margin:0 0 26px;padding:18px 20px;text-align:left;background:var(--bg2);
+  border:1px solid var(--line);border-radius:12px;display:grid;gap:10px}
+.gateList li{position:relative;padding-left:18px;font-size:var(--fs-2);color:var(--dim);line-height:1.6}
+.gateList li::before{content:'';position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--act)}
+.gateList b{color:var(--text);font-variant-numeric:tabular-nums}
+.gateActs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.gateActs .btn{min-width:150px;justify-content:center;text-align:center;height:44px}
+.gateBack{display:inline-block;margin-top:20px;font-size:var(--fs-2);color:var(--dim2)}
+.gateBack:hover{color:var(--act)}
+@media (max-width:520px){.gateCard{padding:28px 20px}.gateCard h1{font-size:22px}}
 .authErr{color:var(--rose);font-size:var(--fs-2);margin:0 0 10px}
 </style>
 </head>
@@ -3900,6 +3918,28 @@ table.tb{min-width:0}
         </div>
         <div class="hr"></div>
         <div class="gchips" id="nfLinks"></div>
+      </div>
+    </section>
+
+    <!-- ============ GATE · 未登录时的登录墙（只有服务端按登录态打开） ============ -->
+    <section class="view" id="v-gate">
+      <div class="gate">
+        <div class="gateCard">
+          <div class="gateIcon" aria-hidden="true">🔒</div>
+          <div class="kick">需要登录</div>
+          <h1>这部分注册后就能看</h1>
+          <p>首页和诊断台是公开的。下面的内容注册一个账号就全部打开——免费，不用验证码，也不会给你发营销邮件。</p>
+          <ul class="gateList">
+            <li><b id="gateTools">—</b> 款工具的实价、额度、支持的模型</li>
+            <li><b id="gatePlans">—</b> 档套餐横向对比，<b id="gateBundles">—</b> 套组合</li>
+            <li>收藏跨设备同步，诊断报告存在账号里</li>
+          </ul>
+          <div class="gateActs">
+            <button class="btn primary" type="button" id="gateRegister">注册账号</button>
+            <button class="btn" type="button" id="gateLogin">我已有账号</button>
+          </div>
+          <a class="gateBack" href="#home">← 先回首页看看</a>
+        </div>
       </div>
     </section>
 
@@ -5206,7 +5246,10 @@ table.tb{min-width:0}
   /* 站务页：不属于任何内容模块（它们不是「事」，是「站」本身）。
      和功能页一样是一级页面，但没有模块归属，所以面包屑只到「首页 › 页名」。 */
   const SITE_PAGES = ['search', 'mine', 'feedback', 'about', 'help', 'privacy', 'contact'];
-  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, '404', 'error'];
+  const VIEWS = ['home', ...FEATURE_VIEWS, ...SITE_PAGES, '404', 'error', 'gate'];
+  /* 服务端按登录态打开：未登录时 D.gate 为 true，除首页外一律先过登录墙。
+     静态构建没有这个字段，所以 GitHub Pages 上那份仍然是全开的。 */
+  const GATED = !!(D && D.gate);
   /* 文案里的计数占位符。站规是「计数一律运行时算」，但 data/pages.json 里
      一直手写着「57 档」「29 款」——数据涨到 59 档，页面上就成了假话。
      现在写 `{count:plans}`，渲染时从数据取。 */
@@ -5218,7 +5261,7 @@ table.tb{min-width:0}
     views: FEATURE_VIEWS.length
   };
   const VIEW_NAME = {
-    home: '首页', '404': '页面不存在', error: '页面出错',
+    home: '首页', '404': '页面不存在', error: '页面出错', gate: '登录后可见',
     search: '全站搜索', mine: '个人中心', feedback: '反馈',
     about: '关于本站', help: '帮助与说明', privacy: '隐私与条款', contact: '联系方式'
   };
@@ -5934,6 +5977,20 @@ table.tb{min-width:0}
     diagHtml();
   }
 
+  /* 登录墙。按钮直接叫起 auth.js 的弹层；登录成功后 auth.js 会 reload，
+     hash 还是用户点的那一个，所以会直接落到他想去的页面。 */
+  function renderGate() {
+    const set = (id, n) => { const el = document.getElementById(id); if (el) el.textContent = n; };
+    set('gateTools', TOOLS.length);
+    set('gatePlans', PLANS.length);
+    set('gateBundles', BUNDLES.length);
+
+    const reg = document.getElementById('gateRegister');
+    const log = document.getElementById('gateLogin');
+    if (reg) reg.onclick = () => { if (window.ATS_AUTH) window.ATS_AUTH.open('register'); };
+    if (log) log.onclick = () => { if (window.ATS_AUTH) window.ATS_AUTH.open('login'); };
+  }
+
   function render404() {
     const b = $('#nfLinks');
     if (!b || b.dataset.done) return;
@@ -6434,6 +6491,14 @@ table.tb{min-width:0}
     // 未知地址不再静默回落到首页——给 404 页，把全部入口摆出来
     if (v && VIEWS.indexOf(v) < 0) v = '404';
     if (!v) v = 'home';
+    /* 登录墙：首页之外都要先登录。hash 保持用户点的那一个，
+       登录成功后 auth.js 会 reload，于是直接落回他想去的页面。 */
+    if (GATED && v !== 'home' && v !== 'gate') {
+      v = 'gate';
+    } else if (v === 'gate' && !GATED) {
+      history.replaceState(null, '', '#home');
+      v = 'home';
+    }
     const from = state.view;
     state.view = v;
     pushRecent(v);
@@ -6457,6 +6522,7 @@ table.tb{min-width:0}
     const R = RENDERERS[v];
     if (R) R.forEach(fn => fn());
     if (v === '404') render404();
+    if (v === 'gate') renderGate();
     if (v === 'error') fillErrLinks();
     if (v === 'search') renderSearch();
     if (v === 'mine') renderMine();
@@ -10568,6 +10634,10 @@ table.tb{min-width:0}
   /* ---------- 弹层 ---------- */
   function togglePanel() {
     if (panel) return closePanel();
+    showPanel();
+  }
+
+  function showPanel() {
     panel = document.createElement('div');
     panel.className = 'authWrap';
     panel.innerHTML = user ? signedInHtml() : formHtml();
@@ -10578,6 +10648,13 @@ table.tb{min-width:0}
     wire();
     var first = panel.querySelector('input');
     if (first) first.focus();
+  }
+
+  /* 登录墙用：直接打开并指定是登录还是注册 */
+  function openPanel(nextMode) {
+    closePanel();
+    showPanel();
+    if (panel && !user && nextMode) setMode(nextMode);
   }
 
   function closePanel() {
@@ -10747,6 +10824,7 @@ table.tb{min-width:0}
 
   /* 收藏开关：app.js 在本地改完之后调这里，失败也不影响本地 */
   window.ATS_AUTH = {
+    open: openPanel,
     onFav: function (item, on) {
       if (!user) return;
       if (on) {

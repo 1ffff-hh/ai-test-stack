@@ -5,6 +5,8 @@ import { repoRoot, serverDir } from './env.js';
 import { COLLECTIONS, type CollectionKey } from './lib/collections.js';
 import { list } from './modules/content/service.js';
 import { logger } from './lib/logger.js';
+import { attachUser } from './middleware/auth.js';
+import type { PublicUser } from './types.js';
 
 const DATA_RE = /\/\*DATA_START\*\/([\s\S]*?)\/\*DATA_END\*\//;
 
@@ -12,7 +14,7 @@ let cache: { mtime: number; raw: string } | null = null;
 
 /* 前台是构建期生成的单文件站。这里把其中写死的数据块换成库里的最新内容，
    后台改完刷新就生效，不用等「发布」——发布只负责静态托管那份。 */
-export async function renderSite(): Promise<string> {
+export async function renderSite(user?: PublicUser): Promise<string> {
   const file = path.join(repoRoot, 'index.html');
   const stat = fs.statSync(file);
   if (!cache || cache.mtime !== stat.mtimeMs) {
@@ -36,6 +38,10 @@ export async function renderSite(): Promise<string> {
       return y;
     });
   }
+
+  /* 登录墙开关。首页的诊断台需要完整数据，所以没登录时数据仍然会下发，
+     这里关掉的是「其他页面的入口」——真正的保护在长尾静态页和后台接口那两层。 */
+  data.gate = !user;
 
   const payload = '/*DATA_START*/' + JSON.stringify(data) + '/*DATA_END*/';
   return cache.raw.replace(m[0], () => payload);
@@ -76,14 +82,25 @@ export function mountSite(app: Express) {
     });
   }
 
-  // 首页：按库渲染
-  app.get(['/', '/index.html'], async (_req, res, next) => {
+  // 首页：按库渲染，并按登录态决定要不要开登录墙
+  app.get(['/', '/index.html'], attachUser, async (req, res, next) => {
     try {
-      const html = await renderSite();
+      const html = await renderSite(req.user);
       res.set('Cache-Control', 'no-store').type('html').send(html);
     } catch (e) {
       next(e);
     }
+  });
+
+  /* 长尾页（t/ p/ c/ 那些）是整份内容的独立 HTML，不经过 SPA 的登录墙，
+     所以在这里拦一道——未登录直接送回来宾页。404 页保留，死路也该看得见。 */
+  const PUBLIC_HTML = new Set(['index.html', '404.html']);
+  app.use((req, res, next) => {
+    if (!req.path.endsWith('.html') || PUBLIC_HTML.has(path.basename(req.path))) return next();
+    attachUser(req, res, () => {
+      if (req.user) return next();
+      res.redirect(302, '/#gate');
+    });
   });
 
   // 其余静态文件（_site 里的长尾页、图片、sitemap 等）

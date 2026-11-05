@@ -82,6 +82,10 @@
   /* ---------- 弹层 ---------- */
   function togglePanel() {
     if (panel) return closePanel();
+    showPanel();
+  }
+
+  function showPanel() {
     panel = document.createElement('div');
     panel.className = 'authWrap';
     panel.innerHTML = user ? signedInHtml() : formHtml();
@@ -92,6 +96,13 @@
     wire();
     var first = panel.querySelector('input');
     if (first) first.focus();
+  }
+
+  /* 登录墙用：直接打开并指定是登录还是注册 */
+  function openPanel(nextMode) {
+    closePanel();
+    showPanel();
+    if (panel && !user && nextMode) setMode(nextMode);
   }
 
   function closePanel() {
@@ -261,6 +272,7 @@
 
   /* 收藏开关：app.js 在本地改完之后调这里，失败也不影响本地 */
   window.ATS_AUTH = {
+    open: openPanel,
     onFav: function (item, on) {
       if (!user) return;
       if (on) {
