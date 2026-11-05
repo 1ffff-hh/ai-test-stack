@@ -2,6 +2,13 @@
 node_modules/
 .env
 .env.*
+!.env.example
+!.env.*.example
+
+# 构建产物 / 临时目录
+.tmp/
+admin/dist/
+server/dist/
 
 # 本地运行产物
 .shots/
@@ -26,3 +33,6 @@ Thumbs.db
 # 本地全栈服务：数据库和后台口令不进仓库
 server/data.sqlite
 server/data.sqlite-*
+server/.data/
+server/prisma/*.db
+server/prisma/*.db-journal

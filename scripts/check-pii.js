@@ -11,6 +11,8 @@ const QUIET = process.argv.includes('--quiet');
 // 不扫描的目录（相对仓库根，正斜杠）
 const SKIP_DIRS = new Set([
   '.git', 'node_modules', '.shots', '_site', 'dist',
+  '.tmp',                  // 构建临时目录，里面是编译器缓存，内容不可控
+  '.data',                 // 本地 SQLite 数据目录（server/.data）
   'docs/internal'          // 内部材料，本来就不发布
 ]);
 // 不扫描的单文件：这些是本机运行产物或内部材料，已被 .gitignore 挡住，进不了公开仓库。

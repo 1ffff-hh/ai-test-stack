@@ -2,11 +2,15 @@
   "name": "ai-test-stack",
   "version": "0.9.7",
   "private": true,
-  "description": "单文件、零外部依赖、可离线打开的 AI 工具选型 × 测试角色 × AI 冲击决策站",
+  "description": "AI 工具选型 × 测试角色 × AI 冲击决策站：静态站 + Express/Prisma API + Vue 管理后台",
   "license": "MIT",
   "engines": {
     "node": ">=20"
   },
+  "workspaces": [
+    "server",
+    "admin"
+  ],
   "scripts": {
     "build": "node build.js",
     "site": "node scripts/build-site.js",
@@ -32,11 +36,19 @@
     "data:parse:test": "node scripts/parse-pricing.js --offline",
     "data:set": "node scripts/set-price.js",
     "shots": "node scripts/shots.js",
-    "server": "node --no-warnings server/index.js",
-    "publish": "node --no-warnings server/publish.js",
-    "admin:reset": "node --no-warnings server/reset-admin.js"
+
+    "server": "npm --workspace @ats/server run dev",
+    "admin": "npm --workspace @ats/admin run dev",
+    "dev": "concurrently -n api,admin -c cyan,magenta \"npm:server\" \"npm:admin\"",
+    "build:admin": "npm --workspace @ats/admin run build",
+    "build:server": "npm --workspace @ats/server run build",
+    "db:push": "npm --workspace @ats/server run db:push",
+    "db:seed": "npm --workspace @ats/server run seed",
+    "publish": "npm --workspace @ats/server run publish",
+    "admin:reset": "npm --workspace @ats/server run admin:reset"
   },
   "devDependencies": {
+    "concurrently": "^9.1.2",
     "playwright": "^1.64.0"
   }
 }

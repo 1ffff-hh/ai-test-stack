@@ -44,16 +44,33 @@ npm run preview        # 生成 _site/ 并端在 http://localhost:4173/ai-test-s
 
 ## 本地全栈模式（可选）
 
-仓库里还有一套本地服务：SQLite 做数据源，`/admin` 是内容后台，`/` 是站点。
-零第三方依赖——`node:http` + `node:sqlite`。
+仓库里还有一套完整的 B/S 版本：Express API + Prisma/SQLite + Vue 3 管理后台。
+静态站不需要它也能用；想要登录、收藏云同步、可视化改内容时再启动。
 
 ```bash
-npm run server     # 站点 http://localhost:4174/  后台 http://localhost:4174/admin
-npm run publish    # 库 → data/*.json → 重建静态站
+npm install          # 首次：装 server / admin 两个 workspace 的依赖
+npm run db:push      # 首次：按 schema 建库
+npm run dev          # API :4174 + 后台开发服务器 :5173（热更新）
 ```
 
-后台改完点「发布到静态站」，会先导出 JSON 再跑一遍 `build.js`，所以后台改坏了数据也过不了构建期校验。
-口令在服务启动时打印，存在 `server/.admin-pass`（已 gitignore）；数据库 `server/data.sqlite` 同样不进仓库。
+只用构建产物也行：
+
+```bash
+npm run build:admin  # 后台构建到 admin/dist
+npm run server       # 站点 http://localhost:4174/  后台 http://localhost:4174/admin
+```
+
+| 部分 | 技术 |
+|---|---|
+| API | Express 5 + TypeScript + zod 校验 + Prisma |
+| 数据库 | SQLite（`server/.data/app.db`，不进仓库）；换 Postgres 只改 provider |
+| 后台 | Vue 3 + Vite + TypeScript + Element Plus + Pinia + Vue Router |
+| 认证 | scrypt 哈希 + HttpOnly 会话 Cookie（库里只存 token 的 SHA-256） |
+
+- 首页由服务端按库渲染，后台改完**刷新就生效**，不需要发布。
+- 「发布」才会导出 `data/*.json` 并重建静态站；构建不过自动回滚。
+- 管理员账号在首次启动时创建并打印密码；忘了跑 `npm run admin:reset`。
+- 接口在 `/api/v1`：`auth` / `content` / `users` / `favorites` / `system`。
 
 静态站不受影响：`npm run check` 和 GitHub Pages 仍然只用 `data/*.json`，不依赖这个服务。
 
@@ -176,15 +193,15 @@ ai-test-stack/
 │   └── sources.json      数据来源与口径（40 条）
 ├── src/                  ← 模板与代码
 │   ├── index.html        页面骨架（含 __CSS__ / __DATA__ / __JS__ 占位符）
-│   ├── styles.css        基础样式（v1–v3）
-│   ├── v4.css            v4 覆盖层
-│   ├── v4-responsive.css v4 响应式
-│   ├── v5.css            v5「现场手册」覆盖层
-│   ├── v6.css            v6 组件层（健康 / 评测集 / 报告 / 打印）
-│   ├── v7.css            v7 深色数据台（整站视觉覆盖）
-│   ├── v8.css            v8 站务层组件 + 动效刻度
-│   ├── v9.css            v9 可读性地板 + 选中态统一 + 表格层级（必须最后）
-│   └── app.js            渲染逻辑（路由 + 诊断 + 执行包 + 站务层）
+│   ├── styles.css        整站样式（单一入口，含浅色 / 深色两套令牌）
+│   ├── app.js            渲染逻辑（路由 + 诊断 + 执行包 + 站务层）
+│   └── auth.js           登录 / 注册 / 收藏云同步（没有 API 时自动跳过）
+├── server/               ← API（Express 5 + TypeScript + Prisma）
+│   ├── src/              env / app / 中间件 / modules(auth·content·users·favorites·system)
+│   ├── prisma/           schema.prisma + 灌库 / 旧库迁移脚本
+│   └── .env.example      复制成 .env 后按需改
+├── admin/                ← 管理后台（Vue 3 + Vite + Element Plus）
+│   └── src/              views / layouts / stores / api
 ├── scripts/
 │   ├── refresh.js        自动更新：RSS 抓取 / 去重 / 标题过滤 / 价格指纹
 │   ├── verify.js         整体验收（无头 Chrome，42 视图 + 29 组断言）
