@@ -49,7 +49,17 @@ export function mountSite(app: Express) {
 
   // 后台 SPA
   if (fs.existsSync(path.join(adminDist, 'index.html'))) {
-    app.use('/admin', express.static(adminDist, { index: 'index.html', maxAge: '1h' }));
+    app.use(
+      '/admin',
+      express.static(adminDist, {
+        index: 'index.html',
+        setHeaders(res, filePath) {
+          // 入口不缓存，否则重新构建后浏览器还在用旧的一份；带哈希的资源可以长缓存
+          if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store');
+          else res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        },
+      }),
+    );
     app.use('/admin', (_req, res) => {
       res.sendFile(path.join(adminDist, 'index.html'));
     });

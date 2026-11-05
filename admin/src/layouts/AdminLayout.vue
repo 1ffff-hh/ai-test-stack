@@ -47,7 +47,7 @@ async function logout() {
 <template>
   <div class="shell">
     <aside class="side">
-      <div class="brand"><i /> AI Test Stack</div>
+      <div class="brand"><i /><span>AI Test Stack</span></div>
 
       <div class="group">总览</div>
       <router-link class="item" :class="{ on: route.name === 'dashboard' }" :to="{ name: 'dashboard' }">

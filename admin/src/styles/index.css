@@ -485,12 +485,40 @@ a {
   padding: 26px 28px 56px;
 }
 
+/* 窄屏收成图标栏，而不是整条藏掉——后台没了导航就没法用了 */
 @media (max-width: 980px) {
   .shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: 64px 1fr;
   }
   .side {
+    padding: 14px 8px;
+  }
+  .side .brand span,
+  .side .item span,
+  .side .item .count,
+  .side .group,
+  .side .foot {
     display: none;
+  }
+  .side .brand {
+    justify-content: center;
+    padding: 6px 0 18px;
+  }
+  .side .item {
+    justify-content: center;
+    padding: 10px 0;
+  }
+  .side .item.on::before {
+    left: -8px;
+  }
+  .content {
+    padding: 20px 16px 48px;
+  }
+  .topbar {
+    padding: 0 16px;
+  }
+  .page-head h1 {
+    font-size: 21px;
   }
 }
 
