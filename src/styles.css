@@ -510,26 +510,8 @@ table.tb td.pr{font-family:var(--mono);font-weight:700;color:var(--amber-t);font
    浅色不是把深色反相——反相会得到脏灰和刺眼的红绿；这里是重新配的
    一套值，对比度按 WCAG AA 校过。
    ========================================================= */
-:root[data-theme="light"]{
-  --bg:#f6f8fb; --bg2:#eef2f8; --panel:#ffffff; --panel2:#f9fbfe;
-  --line:rgba(14,30,55,.10); --line2:rgba(14,30,55,.19);
-  --text:#0f1a2b; --dim:#47566d; --dim2:#66748a;
-  --cyan:#0d9488; --blue:#2563eb; --violet:#7c3aed; --amber:#b45309; --rose:#dc2626;
-  --green:#15803d;
-  --shadow:0 2px 10px rgba(14,30,55,.07);
-}
 
 /* 未指定时跟随系统 */
-@media (prefers-color-scheme: light){
-  :root:not([data-theme]){
-    --bg:#f6f8fb; --bg2:#eef2f8; --panel:#ffffff; --panel2:#f9fbfe;
-    --line:rgba(14,30,55,.10); --line2:rgba(14,30,55,.19);
-    --text:#0f1a2b; --dim:#47566d; --dim2:#66748a;
-    --cyan:#0d9488; --blue:#2563eb; --violet:#7c3aed; --amber:#b45309; --rose:#dc2626;
-    --green:#15803d;
-    --shadow:0 2px 10px rgba(14,30,55,.07);
-  }
-}
 
 /* 浅色模式下几处硬编码的深色背景要单独处理 */
 :root[data-theme="light"] .topbar,:root[data-theme="light"] .subnav{background:rgba(255,255,255,.9)}
@@ -540,11 +522,6 @@ table.tb td.pr{font-family:var(--mono);font-weight:700;color:var(--amber-t);font
 :root[data-theme="light"] .vsbB{background:linear-gradient(90deg,#7c3aed,#c4b5fd)}
 :root[data-theme="light"] code,
 :root[data-theme="light"] kbd{background:rgba(14,30,55,.06)}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme]) .topbar,:root:not([data-theme]) .subnav{background:rgba(255,255,255,.9)}
-  :root:not([data-theme]) .drawer{background:#fff}
-  :root:not([data-theme]) .scrim{background:rgba(15,26,43,.35)}
-}
 
 /* ---------- 跳到主内容（键盘可达） ---------- */
 .skip:not(.lbl){
@@ -1229,13 +1206,6 @@ table.vstb td.vsbar{width:auto}
 :root[data-theme="light"] .evi{color:#0f766e;background:rgba(13,148,136,.06)}
 
 /* 能力热力图：浅色模式色相反向，亮度单调（每一级都能读出「比上一级好多少」） */
-:root[data-theme="light"]{
-  --lv1-bg:#e8f4f2; --lv1-fg:#0b5c55;
-  --lv2-bg:#c9e8e3; --lv2-fg:#0a4f49;
-  --lv3-bg:#9fd8d0; --lv3-fg:#07423c;
-  --lv4-bg:#4fc0b4; --lv4-fg:#032a26;
-  --lv5-bg:#0b5c55; --lv5-fg:#ffffff;
-}
 :root[data-theme="light"] table.hm td.cell:hover{outline-color:rgba(14,30,55,.5)}
 
 /* 价格轨迹图的手写 SVG 用的是内联颜色，浅色下线条要加深 */
@@ -1263,18 +1233,6 @@ table.vstb td.vsbar{width:auto}
 :root[data-theme="light"] .kd.del{color:#9f1239;background:rgba(220,38,38,.12)}
 
 /* ---- 可读性重构：浅色主题的文字色与硬编码亮字 ---- */
-:root[data-theme="light"]{
-  --cyan-t:#0b7268; --blue-t:#1d4ed8; --violet-t:#6d28d9;
-  --amber-t:#a35a06; --rose-t:#b91c1c; --green-t:#15803d;
-  --dim2:#5b6a80;
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme]){
-    --cyan-t:#0b7268; --blue-t:#1d4ed8; --violet-t:#6d28d9;
-    --amber-t:#a35a06; --rose-t:#b91c1c; --green-t:#15803d;
-    --dim2:#5b6a80;
-  }
-}
 
 /* 这些地方把亮色写死了（深色主题遗留），浅色下糊在背景上 */
 :root[data-theme="light"] .opJb,
@@ -1299,16 +1257,6 @@ table.vstb td.vsbar{width:auto}
 :root{
   --c1:#8ef0e6; --c2:#e6d5ac; --c3:#f0b3bb; --c4:#9ae6b4;
   --c5:#c8bce8; --c6:#b6cfe8; --c7:#f87171;
-}
-:root[data-theme="light"]{
-  --c1:#0b6b62; --c2:#7a4a06; --c3:#9f1239; --c4:#15803d;
-  --c5:#5b21b6; --c6:#1d4ed8; --c7:#b91c1c;
-}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme]){
-    --c1:#0b6b62; --c2:#7a4a06; --c3:#9f1239; --c4:#15803d;
-    --c5:#5b21b6; --c6:#1d4ed8; --c7:#b91c1c;
-  }
 }
 
 /* 表头/分组标题在浅色下用的是加深后的青，但底色是 --bg2（很浅），要再压一档 */
@@ -1540,9 +1488,6 @@ table.tb td{max-width:none}
 :root[data-theme="light"] .heroV3::before{background:
   linear-gradient(rgba(14,30,55,.055) 1px,transparent 1px) 0 0/100% 44px,
   linear-gradient(90deg,rgba(14,30,55,.055) 1px,transparent 1px) 0 0/44px 100%}
-@media (prefers-color-scheme: light){:root:not([data-theme]) .heroV3::before{background:
-  linear-gradient(rgba(14,30,55,.055) 1px,transparent 1px) 0 0/100% 44px,
-  linear-gradient(90deg,rgba(14,30,55,.055) 1px,transparent 1px) 0 0/44px 100%}}
 .heroCopy{position:relative;z-index:1}
 .heroV3 h1{margin:0 0 14px;font-size:clamp(30px,4.6vw,50px);line-height:1.16;letter-spacing:-1px;font-weight:800}
 .heroV3 h1 em{font-style:normal;color:var(--cyan-t)}
@@ -1585,7 +1530,6 @@ table.tb td{max-width:none}
 .dmsg.typing i:nth-child(3){animation-delay:.3s}
 @keyframes tp{40%{transform:translateY(-4px);opacity:.5}}
 :root[data-theme="light"] .dmsg.me{background:rgba(11,107,98,.08);border-color:rgba(11,107,98,.3)}
-@media (prefers-color-scheme: light){:root:not([data-theme]) .dmsg.me{background:rgba(11,107,98,.08);border-color:rgba(11,107,98,.3)}}
 .dopts{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 16px}
 .dchip{
   appearance:none;border:1px solid var(--line2);background:var(--panel2);color:var(--text);
@@ -1601,7 +1545,6 @@ table.tb td{max-width:none}
 .dchip:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
 .dchip:disabled{opacity:.5;cursor:default}
 :root[data-theme="light"] .dchip:hover{background:rgba(11,107,98,.06)}
-@media (prefers-color-scheme: light){:root:not([data-theme]) .dchip:hover{background:rgba(11,107,98,.06)}}
 .dmeter{display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--line);background:var(--panel2)}
 /* display:flex 会压过 UA 的 [hidden] 样式，必须显式关掉，否则假进度条常驻 */
 .dmeter[hidden]{display:none}
@@ -1769,9 +1712,6 @@ table.tb td{max-width:none}
   background:rgba(255,200,87,.13);color:#f0d69a;
 }
 :root[data-theme="light"] .ddSoon .soon{color:#7c3f0a;background:rgba(180,83,9,.13)}
-@media (prefers-color-scheme: light){
-  :root:not([data-theme]) .ddSoon .soon{color:#7c3f0a;background:rgba(180,83,9,.13)}
-}
 :root[data-theme="light"] .sitefoot .ddSoon{padding-left:0}
 .homeMods{margin-bottom:var(--sp-4)}
 
@@ -1919,23 +1859,6 @@ table.tb td{max-width:none}
   --fs-6:24px; --fs-7:34px; --fs-8:62px;
   --topbar-h:66px;
   --wrap:1200px;
-}
-:root[data-theme="light"]{
-  --bg:#f7f7f5;
-  --bg2:#f1f2ef;
-  --panel:#ffffff;
-  --panel2:#fafaf8;
-  --line:rgba(16,20,26,.10);
-  --line2:rgba(16,20,26,.18);
-  --line3:rgba(16,20,26,.36);
-  --text:#12161c;
-  --dim:#49525f;
-  --dim2:#5a636f;
-  --act:#0b7a70;
-  --act-ink:#ffffff;
-  --judge:#8a5600;
-  --risk:#bd2334;
-  --ok:#177a45;
 }
 
 /* 背景：删掉三层径向渐变，换一层极淡点阵，只在上方 420px 内可辨 */
@@ -2520,59 +2443,6 @@ body::before{
   --lv3-bg:#6f685c; --lv3-fg:#ffffff;
   --lv2-bg:#c9c2b4; --lv2-fg:#161513;
   --lv1-bg:#e8e2d6; --lv1-fg:#3b3730;
-}
-:root[data-theme="light"]{
-  --bg:#f2efe7;
-  --bg2:#eae6dc;
-  --panel:#fbf9f3;
-  --panel2:#f5f1e8;
-  --ink:#161513;
-  --text:#161513;
-  --dim:#4e4a43;
-  --dim2:#6b655b;
-  --line:rgba(22,21,19,.13);
-  --line2:rgba(22,21,19,.24);
-  --line3:rgba(22,21,19,.42);
-  --act:#b23a17;
-  --act-ink:#fffaf2;
-  --judge:#8a5a00;
-  --risk:#a51f2d;
-  --ok:#1f5c42;
-  --paper:#fbf9f3;
-  --rule:#161513;
-  --cyan:var(--act); --blue:#2a4fd6; --violet:#6b4fbb; --amber:var(--judge); --rose:var(--risk); --green:var(--ok);
-  --cyan-t:var(--act); --blue-t:#2340b8; --violet-t:#5b3fa8; --amber-t:var(--judge); --rose-t:var(--risk); --green-t:var(--ok);
-  --lv5-bg:#161513; --lv5-fg:#f7f3e8;
-  --lv4-bg:#4a453c; --lv4-fg:#fbf9f3;
-  --lv3-bg:#6f685c; --lv3-fg:#ffffff;
-  --lv2-bg:#c9c2b4; --lv2-fg:#161513;
-  --lv1-bg:#e8e2d6; --lv1-fg:#3b3730;
-}
-:root[data-theme="dark"]{
-  --bg:#111110;
-  --bg2:#171715;
-  --panel:#1a1a17;
-  --panel2:#201f1b;
-  --ink:#f2eee4;
-  --text:#f2eee4;
-  --dim:#b9b3a6;
-  --dim2:#979184;
-  --line:rgba(242,238,228,.11);
-  --line2:rgba(242,238,228,.21);
-  --line3:rgba(242,238,228,.36);
-  --act:#ff6b3d;
-  --act-ink:#1c0d06;
-  --judge:#e8b45a;
-  --risk:#ff7d8a;
-  --ok:#74d3a3;
-  --paper:#1a1a17;
-  --rule:#f2eee4;
-  --blue-t:#9db8ff; --violet-t:#c4b5fd;
-  --lv5-bg:#f2eee4; --lv5-fg:#111110;
-  --lv4-bg:#cfc7b8; --lv4-fg:#111110;
-  --lv3-bg:#8c8578; --lv3-fg:#0f0f0e;
-  --lv2-bg:#4a463e; --lv2-fg:#f2eee4;
-  --lv1-bg:#2a2823; --lv1-fg:#d8d2c4;
 }
 
 *{box-sizing:border-box}
@@ -3491,8 +3361,6 @@ time{margin-left:auto;border:none;padding:0}
 #bGrid .bform{border-radius:0!important;color:var(--dim)!important;border-color:var(--line2)!important}
 #bGrid .bwatch{border-left:2px solid var(--risk)!important;background:color-mix(in srgb,var(--risk) 5%,transparent)!important;padding-left:10px}
 #bGrid .bbars .t i{background:var(--act)!important;border-radius:0!important}
-:root[data-theme="light"]{--act-on-ink:#ff9b73;--on-ink:rgba(242,239,231,.74)}
-:root[data-theme="dark"]{--act-on-ink:#8f2b10;--on-ink:rgba(17,17,16,.72)}
 .mcard.maccent .me,.mcard.maccent .mtg{color:var(--on-ink)!important}
 .mcard.maccent .mic,.mcard.maccent .mgo{color:var(--act-on-ink)!important}
 /* 滑块与开关：直角、墨色、朱红滑块 */
@@ -3811,6 +3679,10 @@ input[type=range]::-moz-range-thumb{width:11px;height:16px;border-radius:0!impor
 /* ---------------- 令牌 ---------------- */
 :root,
 :root[data-theme="dark"]{
+  /* 从被删掉的旧调色板继承：这些变量只在那些块里定义过 */
+  --blue-t:#9db8ff;
+  --violet-t:#c4b5fd;
+  --act-on-ink:#8f2b10;
   --bg:#070b12;
   --bg2:#0c1220;
   --panel:rgba(17,24,39,.64);
@@ -3843,6 +3715,28 @@ input[type=range]::-moz-range-thumb{width:11px;height:16px;border-radius:0!impor
   --lv1-bg:#1e293b; --lv1-fg:#cbd5e1;
 }
 :root[data-theme="light"]{
+  /* 从被删掉的旧调色板继承：这些变量只在那些块里定义过 */
+  --c1:#0b6b62;
+  --c2:#7a4a06;
+  --c3:#9f1239;
+  --c4:#15803d;
+  --c5:#5b21b6;
+  --c6:#1d4ed8;
+  --c7:#b91c1c;
+  --cyan:var(--act);
+  --amber:var(--judge);
+  --rose:var(--risk);
+  --green:var(--ok);
+  --cyan-t:var(--act);
+  --blue-t:#2340b8;
+  --violet-t:#5b3fa8;
+  --amber-t:var(--judge);
+  --rose-t:var(--risk);
+  --green-t:var(--ok);
+  --act-on-ink:#ff9b73;
+  --sel-bg:rgba(8,145,178,.12);
+  --sel-line:rgba(8,145,178,.34);
+  --sel-fg:var(--act);
   /* 纸白而不是冷灰蓝：原来的 #eef2f8 带蓝调，配上满屏白面板显得发灰。 */
   --bg:#f7f6f2;
   --bg2:#efeee8;
@@ -5049,11 +4943,6 @@ html.ready #boot{opacity:0;pointer-events:none}
   /* 选中态：一套语言，三处复用 */
   --sel-bg:rgba(34,211,238,.14);
   --sel-line:rgba(34,211,238,.34);
-  --sel-fg:var(--act);
-}
-:root[data-theme="light"]{
-  --sel-bg:rgba(8,145,178,.12);
-  --sel-line:rgba(8,145,178,.34);
   --sel-fg:var(--act);
 }
 
