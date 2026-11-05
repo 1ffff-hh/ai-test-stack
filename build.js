@@ -849,7 +849,7 @@ const noscript = `<noscript>
 </noscript>`;
 
 html = html.replace('/*__CSS__*/', () => css);
-html = html.replace('/*__DATA__*/', () => json);
+html = html.replace('/*__DATA__*/', () => '/*DATA_START*/' + json + '/*DATA_END*/');
 html = html.replace('/*__JS__*/', () => js);
 html = html.replace('<!--__META__-->', () => metaTags
   + `\n<script type="application/ld+json">${JSON.stringify(jsonLd, null, 1)}</script>`);

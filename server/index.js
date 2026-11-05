@@ -88,6 +88,29 @@ function restore(snap) {
   }
 }
 
+/* 服务端渲染：把构建产物里的数据块换成库里的最新内容。
+   这样后台改完刷新页面就能看到，不用「发布 + 重建」——
+   否则前台只是「构建时写死的静态页」，不是 B/S。 */
+const CONTENT_KEYS = { tools: 'tools', plans: 'plans', bundles: 'bundles' };
+let siteCache = null;
+function renderSite() {
+  const file = path.join(ROOT, 'index.html');
+  if (!siteCache || siteCache.mtime !== fs.statSync(file).mtimeMs) {
+    siteCache = { mtime: fs.statSync(file).mtimeMs, raw: fs.readFileSync(file, 'utf8') };
+  }
+  const raw = siteCache.raw;
+  const m = raw.match(/\/\*DATA_START\*\/([\s\S]*?)\/\*DATA_END\*\//);
+  if (!m) return raw;
+  let data;
+  try { data = JSON.parse(m[1]); } catch (e) { return raw; }
+  for (const col of Object.keys(CONTENT_KEYS)) {
+    data[CONTENT_KEYS[col]] = dbm.list(db, col).map(x => {
+      const y = Object.assign({}, x); delete y._updatedAt; return y;
+    });
+  }
+  return raw.replace(m[0], '/*DATA_START*/' + JSON.stringify(data) + '/*DATA_END*/');
+}
+
 let publishing = false;
 function publish() {
   if (publishing) return { ok: false, msg: '正在发布中' };
@@ -243,6 +266,12 @@ const server = http.createServer(async (req, res) => {
     } catch (e) {
       return json(res, 400, { ok: false, msg: String(e.message) });
     }
+  }
+
+  /* 首页：按库里的数据实时渲染 */
+  if (p === '/' || p === '/index.html') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' });
+    return res.end(renderSite());
   }
 
   /* 站点静态文件 */

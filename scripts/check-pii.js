@@ -20,7 +20,9 @@ const SKIP_DIRS = new Set([
 const SKIP_FILES = new Set([
   'verify.json',
   'HANDOFF.md',
-  'errors.log'
+  'errors.log',
+  // 本地运行时数据库：里面有用户邮箱，永远不进仓库，也不该进脱敏扫描
+  'server/data.sqlite'
 ]);
 // 不扫描的二进制扩展名
 const SKIP_EXT = new Set([
