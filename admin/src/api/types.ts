@@ -3,7 +3,8 @@ export type Status = 'ACTIVE' | 'BANNED';
 
 export interface User {
   id: number;
-  email: string;
+  username: string;
+  email: string | null;
   name: string;
   role: Role;
   status: Status;

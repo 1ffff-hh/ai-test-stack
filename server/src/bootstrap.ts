@@ -9,19 +9,20 @@ export async function bootstrapAdmin(): Promise<string | null> {
   const admins = await prisma.user.count({ where: { role: 'ADMIN' } });
   if (admins > 0) return null;
 
-  const email = env.ADMIN_EMAIL.trim().toLowerCase();
-  const exists = await prisma.user.findUnique({ where: { email } });
+  const username = env.ADMIN_USERNAME.trim().toLowerCase();
+  const exists = await prisma.user.findUnique({ where: { username } });
 
   if (exists) {
-    await prisma.user.update({ where: { email }, data: { role: 'ADMIN', status: 'ACTIVE' } });
-    logger.warn({ email }, '已存在的账号被提升为管理员');
+    await prisma.user.update({ where: { username }, data: { role: 'ADMIN', status: 'ACTIVE' } });
+    logger.warn({ username }, '已存在的账号被提升为管理员');
     return null;
   }
 
   const password = env.ADMIN_PASS || randomBytes(9).toString('base64url');
   await prisma.user.create({
     data: {
-      email,
+      username,
+      email: env.ADMIN_EMAIL.trim().toLowerCase(),
       name: '管理员',
       password: hashPassword(password),
       role: 'ADMIN',

@@ -58,13 +58,20 @@ export async function register(req: Request, res: Response, input: RegisterInput
   const problem = passwordProblem(input.password);
   if (problem) throw badRequest(problem);
 
-  const exists = await prisma.user.findUnique({ where: { email: input.email } });
-  if (exists) throw conflict('这个邮箱已经注册过');
+  const exists = await prisma.user.findUnique({ where: { username: input.username } });
+  if (exists) throw conflict('这个账号已经被注册');
+
+  const email = input.email || null;
+  if (email) {
+    const mailTaken = await prisma.user.findUnique({ where: { email } });
+    if (mailTaken) throw conflict('这个邮箱已经注册过');
+  }
 
   const user = await prisma.user.create({
     data: {
-      email: input.email,
-      name: input.name || input.email.split('@')[0] || '用户',
+      username: input.username,
+      email,
+      name: input.name || input.username,
       password: hashPassword(input.password),
     },
   });
@@ -74,11 +81,14 @@ export async function register(req: Request, res: Response, input: RegisterInput
 }
 
 export async function login(req: Request, res: Response, input: LoginInput) {
-  const user = await prisma.user.findUnique({ where: { email: input.email } });
+  /* 账号一栏既能填用户名也能填邮箱：带 @ 就按邮箱找，否则按用户名找。 */
+  const user = input.account.includes('@')
+    ? await prisma.user.findUnique({ where: { email: input.account } })
+    : await prisma.user.findUnique({ where: { username: input.account } });
 
-  // 邮箱不存在和密码错误返回同一句话，避免被枚举账号
+  // 账号不存在和密码错误返回同一句话，避免被枚举
   if (!user || !verifyPassword(input.password, user.password)) {
-    throw unauthorized('邮箱或密码不对');
+    throw unauthorized('账号或密码不对');
   }
   if (user.status !== 'ACTIVE') throw forbidden('账号已被停用，请联系管理员');
 
@@ -103,9 +113,18 @@ export async function logout(req: Request, res: Response) {
 
 export async function updateMe(req: Request, input: UpdateMeInput) {
   const me = req.user!;
-  const data: { name?: string; password?: string } = {};
+  const data: { name?: string; password?: string; email?: string | null } = {};
 
   if (input.name) data.name = input.name;
+
+  if (input.email !== undefined) {
+    const email = input.email || null;
+    if (email) {
+      const taken = await prisma.user.findUnique({ where: { email } });
+      if (taken && taken.id !== me.id) throw conflict('这个邮箱已经被其他账号使用');
+    }
+    data.email = email;
+  }
 
   if (input.newPassword) {
     const row = await prisma.user.findUnique({ where: { id: me.id } });

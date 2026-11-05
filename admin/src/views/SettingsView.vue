@@ -63,10 +63,7 @@ async function saveName() {
 
 async function savePassword() {
   if (!password.current) return ElMessage.warning('请输入当前密码');
-  if (password.next.length < 8) return ElMessage.warning('新密码至少 8 位');
-  if (!/[a-zA-Z]/.test(password.next) || !/[0-9]/.test(password.next)) {
-    return ElMessage.warning('新密码要同时包含字母和数字');
-  }
+  if (password.next.length < 5) return ElMessage.warning('新密码至少 5 位');
   if (password.next !== password.confirm) return ElMessage.warning('两次输入的新密码不一致');
 
   savingPassword.value = true;
@@ -137,7 +134,7 @@ async function savePassword() {
             <div class="field-label">修改密码</div>
             <div style="display: grid; gap: 10px">
               <el-input v-model="password.current" type="password" show-password placeholder="当前密码" />
-              <el-input v-model="password.next" type="password" show-password placeholder="新密码（至少 8 位，含字母和数字）" />
+              <el-input v-model="password.next" type="password" show-password placeholder="新密码（至少 5 位）" />
               <el-input v-model="password.confirm" type="password" show-password placeholder="再输一次新密码" />
               <div>
                 <el-button type="primary" plain :loading="savingPassword" @click="savePassword">
@@ -156,7 +153,7 @@ async function savePassword() {
             <dt>接口地址</dt>
             <dd>/api/v1</dd>
             <dt>当前账号</dt>
-            <dd>{{ auth.user?.email }} · {{ auth.user?.role }}</dd>
+            <dd>@{{ auth.user?.username }} · {{ auth.user?.role }}</dd>
             <dt>内容条目</dt>
             <dd>
               {{ meta.collections.map((c) => `${c.label} ${c.count}`).join(' · ') || '—' }}

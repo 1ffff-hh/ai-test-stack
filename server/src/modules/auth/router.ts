@@ -10,13 +10,13 @@ export const authRouter = Router();
 
 authRouter.post('/register', authLimiter, validateBody(registerSchema), async (req, res) => {
   const { user } = await service.register(req, res, req.body);
-  await audit({ userId: user.id, action: 'auth.register', target: user.email, ip: req.ip });
+  await audit({ userId: user.id, action: 'auth.register', target: user.username, ip: req.ip });
   res.status(201).json({ ok: true, data: { user } });
 });
 
 authRouter.post('/login', authLimiter, validateBody(loginSchema), async (req, res) => {
   const { user } = await service.login(req, res, req.body);
-  await audit({ userId: user.id, action: 'auth.login', target: user.email, ip: req.ip });
+  await audit({ userId: user.id, action: 'auth.login', target: user.username, ip: req.ip });
   res.json({ ok: true, data: { user } });
 });
 
@@ -34,7 +34,7 @@ authRouter.patch('/me', requireAuth, writeLimiter, validateBody(updateMeSchema),
   await audit({
     userId: user.id,
     action: 'auth.update',
-    target: user.email,
+    target: user.username,
     detail: { fields: Object.keys(req.body) },
     ip: req.ip,
   });

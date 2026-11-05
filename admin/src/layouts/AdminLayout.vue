@@ -23,7 +23,7 @@ const crumbs = computed(() => {
   return [String(route.meta.title || '')];
 });
 
-const initial = computed(() => (auth.user?.name || auth.user?.email || '?').slice(0, 1).toUpperCase());
+const initial = computed(() => (auth.user?.name || auth.user?.username || '?').slice(0, 1).toUpperCase());
 
 onMounted(() => {
   void meta.load().catch(() => undefined);
@@ -104,13 +104,13 @@ async function logout() {
             <span class="avatar">{{ initial }}</span>
             <span class="who">
               {{ auth.user?.name }}
-              <span>{{ auth.user?.email }}</span>
+              <span>@{{ auth.user?.username }}</span>
             </span>
             <el-icon><ArrowDown /></el-icon>
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item disabled>{{ auth.user?.email }}</el-dropdown-item>
+              <el-dropdown-item disabled>@{{ auth.user?.username }}</el-dropdown-item>
               <el-dropdown-item divided @click="logout">
                 <el-icon><SwitchButton /></el-icon> 退出登录
               </el-dropdown-item>

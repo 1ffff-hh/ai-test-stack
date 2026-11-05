@@ -73,7 +73,7 @@
     if (!slot) return;
     slot.innerHTML = user
       ? '<button class="authBtn in" type="button" id="authOpen">' +
-        '<span class="authDot"></span>' + esc(user.name || user.email) + '</button>'
+        '<span class="authDot"></span>' + esc(user.name || user.username) + '</button>'
       : '<button class="authBtn" type="button" id="authOpen">登录</button>';
     var b = slot.querySelector('#authOpen');
     if (b) b.onclick = togglePanel;
@@ -117,13 +117,13 @@
   }
 
   function signedInHtml() {
-    var initial = (user.name || user.email || '?').slice(0, 1).toUpperCase();
+    var initial = (user.name || user.username || '?').slice(0, 1).toUpperCase();
     return '<div class="authCard" role="dialog" aria-modal="true">' +
       '<button class="authClose" type="button" id="authClose" aria-label="关闭">×</button>' +
       '<div class="authUser">' +
         '<div class="authAvatar">' + esc(initial) + '</div>' +
-        '<h3>' + esc(user.name || user.email) + '</h3>' +
-        '<p class="authSub">' + esc(user.email) + '</p>' +
+        '<h3>' + esc(user.name || user.username) + '</h3>' +
+        '<p class="authSub">@' + esc(user.username) + (user.email ? ' · ' + esc(user.email) : '') + '</p>' +
         '<div class="authMeta">' +
           '<span class="authTag">' + (user.role === 'ADMIN' ? '管理员' : '普通用户') + '</span>' +
           '<span class="authTag">收藏已同步</span>' +
@@ -148,20 +148,24 @@
         '<button class="authTab" type="button" data-mode="register">注册</button>' +
       '</div>' +
       '<div class="authBody">' +
-        '<div class="authField" id="nameField" hidden>' +
-          '<label for="authName">昵称（可选）</label>' +
-          '<input id="authName" type="text" autocomplete="nickname" maxlength="30" placeholder="怎么称呼你">' +
-        '</div>' +
         '<div class="authField">' +
-          '<label for="authEmail">邮箱</label>' +
-          '<input id="authEmail" type="email" autocomplete="username" placeholder="you@example.com">' +
+          '<label for="authAccount" id="accountLabel">账号或邮箱</label>' +
+          '<input id="authAccount" type="text" autocomplete="username" maxlength="120" placeholder="登录账号">' +
         '</div>' +
         '<div class="authField">' +
           '<label for="authPass">密码</label>' +
           '<div class="box">' +
-            '<input id="authPass" type="password" autocomplete="current-password" placeholder="至少 8 位，含字母和数字">' +
+            '<input id="authPass" type="password" autocomplete="current-password" placeholder="至少 5 位">' +
             '<button class="eye" type="button" id="authEye">显示</button>' +
           '</div>' +
+        '</div>' +
+        '<div class="authField" id="emailField" hidden>' +
+          '<label for="authEmail">邮箱（可选）</label>' +
+          '<input id="authEmail" type="email" autocomplete="email" maxlength="120" placeholder="只有找回密码时会用到">' +
+        '</div>' +
+        '<div class="authField" id="nameField" hidden>' +
+          '<label for="authName">昵称（可选）</label>' +
+          '<input id="authName" type="text" autocomplete="nickname" maxlength="30" placeholder="怎么称呼你">' +
         '</div>' +
         '<div class="authErr" id="authErr" hidden></div>' +
         '<button class="btn primary authSubmit" type="button" id="authGo">登录</button>' +
@@ -178,6 +182,10 @@
       ? '注册后收藏会同步到服务端，换设备登录能看到同一份。'
       : '登录后收藏跨设备同步；不登录也能用，只是存在这台机器上。';
     panel.querySelector('#nameField').hidden = !isReg;
+    panel.querySelector('#emailField').hidden = !isReg;
+    panel.querySelector('#accountLabel').textContent = isReg ? '账号' : '账号或邮箱';
+    panel.querySelector('#authAccount').placeholder = isReg ? '3–32 位，字母数字下划线' : '账号或邮箱';
+    panel.querySelector('#authPass').placeholder = isReg ? '至少 5 位' : '请输入密码';
     panel.querySelector('#authGo').textContent = isReg ? '注册并登录' : '登录';
     panel.querySelector('#authPass').setAttribute('autocomplete', isReg ? 'new-password' : 'current-password');
     panel.querySelectorAll('.authTab').forEach(function (t) {
@@ -202,25 +210,32 @@
 
   function submit() {
     if (busy) return;
-    var email = panel.querySelector('#authEmail').value.trim();
+    var account = panel.querySelector('#authAccount').value.trim();
     var pass = panel.querySelector('#authPass').value;
-    var nameEl = panel.querySelector('#authName');
-    var name = nameEl ? nameEl.value.trim() : '';
 
-    if (!email) return showError('请输入邮箱');
-    if (!/^[^@\s]+@[^@\s]+$/.test(email)) return showError('邮箱格式不对');
+    if (!account) return showError(mode === 'register' ? '请输入账号' : '请输入账号或邮箱');
     if (mode === 'register') {
-      if (pass.length < 8) return showError('密码至少 8 位');
-      if (!/[a-zA-Z]/.test(pass) || !/[0-9]/.test(pass)) return showError('密码要同时包含字母和数字');
+      if (!/^[a-zA-Z0-9_-]{3,32}$/.test(account)) {
+        return showError('账号 3–32 位，只能用字母、数字、下划线、短横线');
+      }
+      if (pass.length < 5) return showError('密码至少 5 位');
     } else if (!pass) {
       return showError('请输入密码');
     }
 
+    var body;
+    if (mode === 'register') {
+      body = { username: account, password: pass };
+      var mail = panel.querySelector('#authEmail').value.trim();
+      var nick = panel.querySelector('#authName').value.trim();
+      if (mail) body.email = mail;
+      if (nick) body.name = nick;
+    } else {
+      body = { account: account, password: pass };
+    }
+
     panel.querySelector('#authErr').hidden = true;
     setBusy(true);
-
-    var body = { email: email, password: pass };
-    if (mode === 'register' && name) body.name = name;
 
     post('/auth/' + mode, body).then(function (r) {
       if (!r.ok) {
@@ -265,7 +280,13 @@
     panel.querySelector('#authPass').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') submit();
     });
+    panel.querySelector('#authAccount').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submit();
+    });
     panel.querySelector('#authEmail').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') submit();
+    });
+    panel.querySelector('#authName').addEventListener('keydown', function (e) {
       if (e.key === 'Enter') submit();
     });
   }

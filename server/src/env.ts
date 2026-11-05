@@ -14,6 +14,7 @@ const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   PORT: z.coerce.number().int().positive().default(4174),
   DATABASE_URL: z.string().min(1).default('file:../.data/app.db'),
+  ADMIN_USERNAME: z.string().default('admin'),
   ADMIN_EMAIL: z.string().default('admin@localhost'),
   ADMIN_PASS: z.string().optional(),
   SESSION_DAYS: z.coerce.number().int().positive().max(365).default(14),

@@ -19,7 +19,7 @@ const listQuery = z.object({
 usersRouter.get('/', requireAdmin, async (req, res) => {
   const { q, page, pageSize } = listQuery.parse(req.query);
   const where = q
-    ? { OR: [{ email: { contains: q } }, { name: { contains: q } }] }
+    ? { OR: [{ username: { contains: q } }, { email: { contains: q } }, { name: { contains: q } }] }
     : {};
 
   const [total, rows] = await Promise.all([
@@ -71,7 +71,7 @@ usersRouter.patch('/:id', requireAdmin, validateBody(patchSchema), async (req, r
   await audit({
     userId: req.user!.id,
     action: 'user.update',
-    target: user.email,
+    target: user.username,
     detail: req.body,
     ip: req.ip,
   });
@@ -87,6 +87,6 @@ usersRouter.delete('/:id', requireAdmin, async (req, res) => {
   if (!target) throw notFound('没有这个用户');
 
   await prisma.user.delete({ where: { id } });
-  await audit({ userId: req.user!.id, action: 'user.delete', target: target.email, ip: req.ip });
+  await audit({ userId: req.user!.id, action: 'user.delete', target: target.username, ip: req.ip });
   res.json({ ok: true, data: null });
 });

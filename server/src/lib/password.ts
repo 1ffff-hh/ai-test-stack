@@ -37,10 +37,9 @@ export function verifyPassword(plain: string, stored: string): boolean {
   return want.length === got.length && timingSafeEqual(want, got);
 }
 
-/** 密码强度：至少 8 位，且不能是纯数字或纯字母 */
+/** 密码规则只有长度：至少 5 位，不限制字符种类 */
 export function passwordProblem(pw: string): string | null {
-  if (pw.length < 8) return '密码至少 8 位';
+  if (pw.length < 5) return '密码至少 5 位';
   if (pw.length > 128) return '密码最长 128 位';
-  if (!/[a-zA-Z]/.test(pw) || !/[0-9]/.test(pw)) return '密码要同时包含字母和数字';
   return null;
 }

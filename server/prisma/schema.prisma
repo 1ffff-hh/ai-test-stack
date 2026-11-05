@@ -13,7 +13,9 @@ datasource db {
 /// 取值在 zod 层校验（USER / ADMIN），换 Postgres 后可以再改成原生 enum。
 model User {
   id        Int        @id @default(autoincrement())
-  email     String     @unique
+  /// 登录账号。必填、唯一；邮箱只是找回密码用的辅助信息，可以留空。
+  username  String     @unique
+  email     String?    @unique
   name      String
   password  String
   role      String     @default("USER")

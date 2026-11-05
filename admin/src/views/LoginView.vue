@@ -11,12 +11,12 @@ const router = useRouter();
 const route = useRoute();
 
 const formRef = ref<FormInstance>();
-const form = reactive({ email: '', password: '' });
+const form = reactive({ account: '', password: '' });
 const loading = ref(false);
 const denied = route.query.denied === '1';
 
 const rules: FormRules = {
-  email: [{ required: true, message: '请输入邮箱', trigger: 'blur' }],
+  account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
 };
 
@@ -26,7 +26,7 @@ async function submit() {
 
   loading.value = true;
   try {
-    const user = await auth.login(form.email.trim(), form.password);
+    const user = await auth.login(form.account.trim(), form.password);
     if (user.role !== 'ADMIN') {
       await auth.logout();
       ElMessage.error('这个账号不是管理员');
@@ -66,7 +66,7 @@ async function submit() {
     <section class="login-form-wrap">
       <div class="login-card">
         <h2>登录</h2>
-        <p class="sub">用管理员邮箱和密码进入</p>
+        <p class="sub">用管理员账号和密码进入</p>
 
         <el-alert
           v-if="denied"
@@ -78,8 +78,8 @@ async function submit() {
         />
 
         <el-form ref="formRef" :model="form" :rules="rules" label-position="top" @submit.prevent="submit">
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="form.email" placeholder="admin@localhost" autocomplete="username" size="large" />
+          <el-form-item label="账号" prop="account">
+            <el-input v-model="form.account" placeholder="admin" autocomplete="username" size="large" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input

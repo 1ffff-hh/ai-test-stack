@@ -52,7 +52,7 @@ async function toggleRole(user: User) {
   const next = user.role === 'ADMIN' ? 'USER' : 'ADMIN';
   const verb = next === 'ADMIN' ? '设为管理员' : '取消管理员';
   try {
-    await ElMessageBox.confirm(`确定把 ${user.email} ${verb}？`, verb, {
+    await ElMessageBox.confirm(`确定把 @${user.username} ${verb}？`, verb, {
       confirmButtonText: verb,
       cancelButtonText: '取消',
       type: 'warning',
@@ -69,8 +69,8 @@ async function toggleStatus(user: User) {
   try {
     await ElMessageBox.confirm(
       next === 'BANNED'
-        ? `停用后 ${user.email} 会立刻掉线，且无法再登录。`
-        : `恢复 ${user.email} 的登录权限？`,
+        ? `停用后 @${user.username} 会立刻掉线，且无法再登录。`
+        : `恢复 @${user.username} 的登录权限？`,
       `${verb}账号`,
       { confirmButtonText: verb, cancelButtonText: '取消', type: 'warning' },
     );
@@ -83,7 +83,7 @@ async function toggleStatus(user: User) {
 async function remove(user: User) {
   try {
     await ElMessageBox.confirm(
-      `删除 ${user.email}？该用户的会话和收藏会一起删除，不能撤销。`,
+      `删除 @${user.username}？该用户的会话和收藏会一起删除，不能撤销。`,
       '删除用户',
       { confirmButtonText: '删除', cancelButtonText: '取消', type: 'warning' },
     );
@@ -118,7 +118,7 @@ onMounted(load);
         <div class="toolbar">
           <el-input
             v-model="keyword"
-            placeholder="搜索邮箱 / 昵称"
+            placeholder="搜索账号 / 邮箱 / 昵称"
             clearable
             :prefix-icon="Search"
             style="max-width: 320px"
@@ -135,9 +135,15 @@ onMounted(load);
         <el-table-column prop="id" label="#" width="64">
           <template #default="{ row }"><span class="mono">{{ row.id }}</span></template>
         </el-table-column>
-        <el-table-column prop="name" label="昵称" min-width="140" />
-        <el-table-column prop="email" label="邮箱" min-width="220">
-          <template #default="{ row }"><span class="mono">{{ row.email }}</span></template>
+        <el-table-column label="账号" min-width="150">
+          <template #default="{ row }"><b class="mono" style="font-weight: 600">@{{ row.username }}</b></template>
+        </el-table-column>
+        <el-table-column prop="name" label="昵称" min-width="130" />
+        <el-table-column label="邮箱" min-width="200">
+          <template #default="{ row }">
+            <span v-if="row.email" class="mono">{{ row.email }}</span>
+            <span v-else class="muted">—</span>
+          </template>
         </el-table-column>
         <el-table-column label="角色" width="110">
           <template #default="{ row }">
