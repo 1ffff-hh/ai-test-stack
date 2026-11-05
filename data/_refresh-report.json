@@ -1,5 +1,5 @@
 {
- "at": "2026-11-03T09:14:25.697Z",
+ "at": "2026-11-05T09:55:38.368Z",
  "dry": false,
  "offline": false,
  "feeds": [
@@ -7,15 +7,8 @@
    "id": "openai",
    "name": "OpenAI News",
    "ok": true,
-   "n": 0,
+   "n": 1,
    "err": ""
-  },
-  {
-   "id": "anthropic",
-   "name": "Anthropic News",
-   "ok": false,
-   "n": 0,
-   "err": "HTTP 404"
   },
   {
    "id": "googleai",
@@ -28,15 +21,15 @@
    "id": "deepmind",
    "name": "Google DeepMind",
    "ok": true,
-   "n": 0,
+   "n": 1,
    "err": ""
   },
   {
    "id": "hf",
    "name": "Hugging Face Blog",
-   "ok": true,
+   "ok": false,
    "n": 0,
-   "err": ""
+   "err": "timeout"
   },
   {
    "id": "github",
@@ -49,14 +42,14 @@
    "id": "techcrunch-ai",
    "name": "TechCrunch AI",
    "ok": true,
-   "n": 0,
+   "n": 1,
    "err": ""
   },
   {
    "id": "verge-ai",
    "name": "The Verge AI",
    "ok": true,
-   "n": 0,
+   "n": 3,
    "err": ""
   },
   {
@@ -70,7 +63,7 @@
    "id": "qbitai",
    "name": "量子位",
    "ok": true,
-   "n": 0,
+   "n": 3,
    "err": ""
   },
   {
@@ -84,7 +77,7 @@
    "id": "oschina",
    "name": "开源中国",
    "ok": true,
-   "n": 0,
+   "n": 1,
    "err": ""
   }
  ],
@@ -101,13 +94,13 @@
    "name": "OpenAI ChatGPT Pricing",
    "ok": false,
    "changed": false,
-   "err": "HTTP 403"
+   "err": "timeout"
   },
   {
    "id": "copilot",
    "name": "GitHub Copilot Plans",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -120,22 +113,22 @@
   {
    "id": "muse",
    "name": "Meta Muse Code",
-   "ok": true,
+   "ok": false,
    "changed": false,
-   "err": ""
+   "err": "timeout"
   },
   {
    "id": "grok",
    "name": "xAI Pricing",
    "ok": false,
    "changed": false,
-   "err": "HTTP 403"
+   "err": "timeout"
   },
   {
    "id": "kiro",
    "name": "Kiro Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -191,14 +184,14 @@
    "id": "deepseek",
    "name": "DeepSeek API Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "volcengine",
    "name": "火山方舟 Coding Plan",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -212,21 +205,21 @@
    "id": "aliyun",
    "name": "阿里云百炼 Token Plan",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "kimi",
    "name": "Kimi 会员价格",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
    "id": "minimax",
    "name": "MiniMax M Plan",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -254,7 +247,7 @@
    "id": "katalon",
    "name": "Katalon Pricing",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   },
   {
@@ -289,36 +282,99 @@
    "id": "hermes",
    "name": "Hermes Agent",
    "ok": true,
-   "changed": false,
+   "changed": true,
    "err": ""
   }
  ],
  "news": {
-  "feeds": 12,
-  "fetched": 0,
-  "total": 50
+  "feeds": 11,
+  "fetched": 10,
+  "total": 60
  },
  "priceChanges": [
   {
    "id": "anthropic",
    "name": "Anthropic Pricing",
    "url": "https://www.anthropic.com/pricing",
-   "old": "a0fcd5ee7c19b97a",
-   "now": "af23941c686ced47"
+   "old": "af23941c686ced47",
+   "now": "ae737e82524b5d68"
+  },
+  {
+   "id": "copilot",
+   "name": "GitHub Copilot Plans",
+   "url": "https://github.com/features/copilot/plans",
+   "old": "3a8a97b5bf6b5f89",
+   "now": "5beb9f73027814de"
   },
   {
    "id": "cursor",
    "name": "Cursor Pricing",
    "url": "https://cursor.com/pricing",
-   "old": "78a09598c32a7e22",
-   "now": "253c58989be6833e"
+   "old": "253c58989be6833e",
+   "now": "78a09598c32a7e22"
+  },
+  {
+   "id": "kiro",
+   "name": "Kiro Pricing",
+   "url": "https://kiro.dev/pricing/",
+   "old": "9570d0713d93789e",
+   "now": "6cc5b56b4412be58"
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek API Pricing",
+   "url": "https://api-docs.deepseek.com/quick_start/pricing",
+   "old": "b530894472053c7c",
+   "now": "833eb46180464611"
+  },
+  {
+   "id": "volcengine",
+   "name": "火山方舟 Coding Plan",
+   "url": "https://www.volcengine.com/docs/82379/1928261",
+   "old": "3917926d617a9930",
+   "now": "a90edff337a50493"
+  },
+  {
+   "id": "aliyun",
+   "name": "阿里云百炼 Token Plan",
+   "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview",
+   "old": "196a1c10cc008b18",
+   "now": "ab8762e2c467ef79"
+  },
+  {
+   "id": "kimi",
+   "name": "Kimi 会员价格",
+   "url": "https://www.kimi.com/help/membership/membership-pricing",
+   "old": "0fd89cd084564ea4",
+   "now": "a39c2ca249935abd"
+  },
+  {
+   "id": "minimax",
+   "name": "MiniMax M Plan",
+   "url": "https://www.minimax.cn/m-plan",
+   "old": "264187265f6885c7",
+   "now": "6309b5f7f1c717cc"
   },
   {
    "id": "mimo",
    "name": "小米 MiMo Token Plan",
    "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
-   "old": "2390b6bb44564db9",
-   "now": "7af07e54eed3d4fc"
+   "old": "7af07e54eed3d4fc",
+   "now": "2390b6bb44564db9"
+  },
+  {
+   "id": "katalon",
+   "name": "Katalon Pricing",
+   "url": "https://katalon.com/pricing",
+   "old": "e215665dae8c3db9",
+   "now": "3ca9b1347b4c81ce"
+  },
+  {
+   "id": "hermes",
+   "name": "Hermes Agent",
+   "url": "https://hermes-agent.nousresearch.com",
+   "old": "0a2cf54d57266550",
+   "now": "870e4d1fdea3b69a"
   }
  ],
  "freshness": [
@@ -326,52 +382,52 @@
    "file": "tools.json",
    "name": "工具",
    "date": "2026-11-03",
-   "days": 0,
+   "days": 2,
    "stale": false
   },
   {
    "file": "plans.json",
    "name": "套餐",
    "date": "2026-11-03",
-   "days": 0,
+   "days": 2,
    "stale": false
   },
   {
    "file": "promos.json",
    "name": "优惠",
    "date": "2026-10-30",
-   "days": 4,
+   "days": 6,
    "stale": false
   },
   {
    "file": "freebies.json",
    "name": "免费额度",
    "date": "2026-11-03",
-   "days": 0,
+   "days": 2,
    "stale": false
   },
   {
    "file": "news.json",
    "name": "AI 大事",
    "date": "2026-11-03",
-   "days": 0,
+   "days": 2,
    "stale": false
   },
   {
    "file": "roles.json",
    "name": "角色阶梯",
    "date": "2026-11-01",
-   "days": 2,
+   "days": 4,
    "stale": false
   },
   {
    "file": "impact.json",
    "name": "冲击数据",
    "date": "2026-11-01",
-   "days": 2,
+   "days": 4,
    "stale": false
   }
  ],
- "pendingCount": 3,
- "durationMs": 44873
+ "pendingCount": 12,
+ "durationMs": 75302
 }

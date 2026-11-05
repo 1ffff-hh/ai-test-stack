@@ -1,6 +1,135 @@
 {
- "updated": "2026-11-03",
+ "updated": "2026-11-05",
  "entries": [
+  {
+   "id": "hermes",
+   "name": "Hermes Agent",
+   "url": "https://hermes-agent.nousresearch.com",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [
+    "$22.00",
+    "$10.00",
+    "$110.00",
+    "$50.00",
+    "$220.00",
+    "$100.00"
+   ],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "katalon",
+   "name": "Katalon Pricing",
+   "url": "https://katalon.com/pricing",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "mimo",
+   "name": "小米 MiMo Token Plan",
+   "url": "https://mimo.mi.com/docs/zh-CN/price/token-plan",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "minimax",
+   "name": "MiniMax M Plan",
+   "url": "https://www.minimax.cn/m-plan",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "kimi",
+   "name": "Kimi 会员价格",
+   "url": "https://www.kimi.com/help/membership/membership-pricing",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "aliyun",
+   "name": "阿里云百炼 Token Plan",
+   "url": "https://help.aliyun.com/zh/model-studio/token-plan-overview",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "volcengine",
+   "name": "火山方舟 Coding Plan",
+   "url": "https://www.volcengine.com/docs/82379/1928261",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "deepseek",
+   "name": "DeepSeek API Pricing",
+   "url": "https://api-docs.deepseek.com/quick_start/pricing",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "kiro",
+   "name": "Kiro Pricing",
+   "url": "https://kiro.dev/pricing/",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [
+    "$5"
+   ],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "cursor",
+   "name": "Cursor Pricing",
+   "url": "https://cursor.com/pricing",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "copilot",
+   "name": "GitHub Copilot Plans",
+   "url": "https://github.com/features/copilot/plans",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
+  {
+   "id": "anthropic",
+   "name": "Anthropic Pricing",
+   "url": "https://www.anthropic.com/pricing",
+   "action": "reject",
+   "at": "2026-11-05",
+   "added": [],
+   "removed": [],
+   "firstDetectedAt": "2026-11-05"
+  },
   {
    "id": "codebuddy",
    "name": "CodeBuddy Pricing",
