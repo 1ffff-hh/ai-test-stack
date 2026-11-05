@@ -3843,18 +3843,19 @@ input[type=range]::-moz-range-thumb{width:11px;height:16px;border-radius:0!impor
   --lv1-bg:#1e293b; --lv1-fg:#cbd5e1;
 }
 :root[data-theme="light"]{
-  --bg:#eef2f8;
-  --bg2:#e6ecf5;
+  /* 纸白而不是冷灰蓝：原来的 #eef2f8 带蓝调，配上满屏白面板显得发灰。 */
+  --bg:#f7f6f2;
+  --bg2:#efeee8;
   --panel:#ffffff;
-  --panel2:#f1f5fb;
-  --ink:#0b1220;
-  --text:#1e293b;
-  --dim:#475569;
-  --dim2:#526176;
-  --line:rgba(15,23,42,.10);
-  --line2:rgba(15,23,42,.18);
-  --line3:rgba(15,23,42,.30);
-  --act:#155e75;
+  --panel2:#faf9f5;
+  --ink:#111418;
+  --text:#1a1d22;
+  --dim:#4f545c;
+  --dim2:#5f656d;
+  --line:rgba(28,25,18,.11);
+  --line2:rgba(28,25,18,.20);
+  --line3:rgba(28,25,18,.32);
+  --act:#0b6b62;
   --act-ink:#ffffff;
   --judge:#854d0e;
   --risk:#9f1239;
@@ -3868,11 +3869,12 @@ input[type=range]::-moz-range-thumb{width:11px;height:16px;border-radius:0!impor
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
   --r:14px; --r2:12px; --r-sm:8px; --r-md:14px; --r-lg:18px;
   --shadow:0 20px 50px -30px rgba(15,23,42,.35);
-  --lv5-bg:#0f172a; --lv5-fg:#ffffff;
-  --lv4-bg:#334155; --lv4-fg:#ffffff;
-  --lv3-bg:#64748b; --lv3-fg:#ffffff;
-  --lv2-bg:#cbd5e1; --lv2-fg:#0f172a;
-  --lv1-bg:#e2e8f0; --lv1-fg:#334155;
+  /* 热力图保留青色单色阶：换成石板灰会和其他中性面撞在一起，读不出「等级」 */
+  --lv5-bg:#0b5c55; --lv5-fg:#ffffff;
+  --lv4-bg:#4fc0b4; --lv4-fg:#032a26;
+  --lv3-bg:#9fd8d0; --lv3-fg:#07423c;
+  --lv2-bg:#c9e8e3; --lv2-fg:#0a4f49;
+  --lv1-bg:#e8f4f2; --lv1-fg:#0b5c55;
 }
 
 /* ---------------- 全局 ---------------- */
@@ -5142,13 +5144,13 @@ html.ready #boot{opacity:0;pointer-events:none}
 /* ---------- 4. 浅色主题的诊断台 ---------- */
 /* v7 把 .diag 的底色写死成 #0b1220，浅色下它是一块浮在白页上的深色孤岛。 */
 :root[data-theme="light"] .diag{
-  --text:#1e293b;--dim:#475569;--dim2:#526176;--ink:#0b1220;
-  --line:rgba(15,23,42,.10);--line2:rgba(15,23,42,.18);--line3:rgba(15,23,42,.30);
-  --panel:#ffffff;--panel2:#f1f5fb;
+  --text:#1a1d22;--dim:#4f545c;--dim2:#5f656d;--ink:#111418;
+  --line:rgba(28,25,18,.11);--line2:rgba(28,25,18,.20);--line3:rgba(28,25,18,.32);
+  --panel:#ffffff;--panel2:#faf9f5;
   --judge:#854d0e;--risk:#9f1239;--ok:#065f46;
-  --act:#155e75;--act-ink:#ffffff;
+  --act:#0b6b62;--act-ink:#ffffff;
   background-color:#ffffff;
-  background-image:linear-gradient(160deg,#ffffff,#f1f5fb);
+  background-image:linear-gradient(160deg,#ffffff,#faf9f5);
   color:var(--text);
   border-color:var(--line2);
   box-shadow:0 24px 60px -34px rgba(15,23,42,.35), inset 0 1px 0 #fff;
@@ -5579,3 +5581,30 @@ table.tb{min-width:1080px}
 .psec{padding:28px 0 8px;margin-top:32px}
 .psec:first-of-type{margin-top:16px;padding-top:0}
 .secNav{margin-bottom:4px}
+
+/* =========================================================
+   0.9.5 浅色主题
+   ---------------------------------------------------------
+   深色那套是「黑底 + 青」，浅色直接把它反相只会得到一片冷灰蓝：
+   页面 #eef2f8、面板纯白、再叠一层青色径向渐变，看起来像蒙了层雾。
+   这里换成纸白底 + 暖中性线，渐变收成几乎看不见的两点色温。
+   ========================================================= */
+:root[data-theme="light"] body::before{
+  background:
+    radial-gradient(900px 520px at 12% -10%,rgba(15,118,110,.055),transparent 62%),
+    radial-gradient(760px 480px at 88% 2%,rgba(180,83,9,.035),transparent 64%);
+}
+/* 首屏选项行原来是一块灰蓝底，在浅色下像禁用态；改成白底描边 */
+:root[data-theme="light"] #dopts .dchip{background:#fff;border-color:var(--line2);color:var(--text)}
+:root[data-theme="light"] #dopts .dchip:hover{background:var(--panel2);border-color:var(--act)}
+/* 诊断台面板的渐变也跟着换底色，别再用蓝白 */
+:root[data-theme="light"] .diag{background:linear-gradient(160deg,#fff,var(--panel2))}
+/* 吸顶条：纸白半透明，滚过去时不要露出底下的灰 */
+:root[data-theme="light"] .topbar,
+:root[data-theme="light"] .subnav,
+:root[data-theme="light"] .secNav{background:rgba(247,246,242,.94)}
+/* 诊断台里的分隔线：v7 用的是暖米色 14%，在纸白底上会显成一条条灰杠 */
+:root[data-theme="light"] .dopts{background:rgba(28,25,18,.07)}
+:root[data-theme="light"] .diag::before{background:radial-gradient(420px 220px at 88% -8%,rgba(15,118,110,.07),transparent 65%)}
+/* 首屏那团青色光斑是给黑底配的，浅色下 20% 的青会把标题泡在里面 */
+:root[data-theme="light"] .hglow{opacity:.35}
