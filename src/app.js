@@ -3992,8 +3992,7 @@
     const autoN = (NEWS_AUTO.events || []).length;
     if (head) {
       head.innerHTML = `
-        <div class="phIndex">SHIFT / 01</div>
-        <h1>${esc(intro.title || 'AI 大事')}</h1>
+        <h2 class="secH">${esc(intro.title || 'AI 大事')}</h2>
         <p class="phLead">${esc(intro.lead || '')}</p>
         <div class="phMeta">
           <span>人工核过 <b>${(NEWS.events || []).length}</b> 条</span>
@@ -4072,8 +4071,7 @@
     const head = $('#impactHead');
     if (head) {
       head.innerHTML = `
-        <div class="phIndex">SHIFT / 02</div>
-        <h1>${esc(IMP.intro.title)}</h1>
+        <h2 class="secH">${esc(IMP.intro.title)}</h2>
         <p class="phLead">${esc(IMP.intro.lead)}</p>
         <div class="phMeta"><span>数据 <b>${(IMP.numbers || []).length}</b> 组</span><span>活动 <b>${(IMP.matrix.rows || []).length}</b> 项</span><span>方案 <b>90</b> 天</span><span>更新 <b>${esc(IMP.updated)}</b></span></div>`;
     }
@@ -4183,8 +4181,7 @@
     const head = $('#rolesHead');
     if (head) {
       head.innerHTML = `
-        <div class="phIndex">GROW / 01</div>
-        <h1>${esc(ROLE.intro.title)}</h1>
+        <h2 class="secH">${esc(ROLE.intro.title)}</h2>
         <p class="phLead">${esc(ROLE.intro.lead)}</p>
         <div class="phMeta"><span>角色 <b>${(ROLE.roles || []).length}</b></span><span>级别 <b>3</b></span><span>象限 <b>4</b></span><span>更新 <b>${esc(ROLE.updated)}</b></span></div>`;
     }
@@ -4309,8 +4306,7 @@
     const head = $('#freeHead');
     if (head) {
       head.innerHTML = `
-        <div class="phIndex">CHOOSE / 03</div>
-        <h1>${esc(intro.title || '白嫖地图')}</h1>
+        <h2 class="secH">${esc(intro.title || '白嫖地图')}</h2>
         <p class="phLead">${esc(intro.lead || '')}</p>
         <div class="phMeta"><span>条目 <b>${(FB.items || []).length}</b></span><span>分类 <b>${(FB.categories || []).length}</b></span><span>更新 <b>${esc(FB.updated)}</b></span></div>`;
     }
@@ -4421,8 +4417,7 @@
     const head = $('#cmHead');
     if (head) {
       head.innerHTML = `
-        <div class="phIndex">CHOOSE / 05</div>
-        <h1>${esc(intro.title || '社区资源库')}</h1>
+        <h2 class="secH">${esc(intro.title || '社区资源库')}</h2>
         <p class="phLead">${esc(intro.lede || '')}</p>
         <div class="phMeta">
           <span>收录 <b>${(CM.items || []).length}</b></span>

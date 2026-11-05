@@ -24,17 +24,20 @@
   --wrap:1160px;
   --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
 
-  /* ---- 字号阶梯：7 档，覆盖原来 43 个声明值 ----
-     系统字体栈上 800/820/850/900 渲染宽度完全一致，所以字重只留 3 档。
-     正文 12px / 1.65 是中文密度和可读性的折中：再小就糊，再大就散。 */
-  --fs-1:11px;   /* 徽章、表头、微标签 */
-  --fs-2:12px;   /* 辅助说明、caption */
-  --fs-3:13px;   /* 正文主体 */
-  --fs-4:15px;   /* 小标题 */
-  --fs-5:18px;   /* 卡片大标题 */
-  --fs-6:22px;   /* 区块标题、关键数字 */
-  --fs-7:27px;   /* 页面 h1 */
-  --fs-8:36px;   /* 首屏巨型数字 */
+  /* ---- 字号阶梯：8 档 ----
+     0.9.4 重新排过：合并后实测 79% 的文字落在 11px，整页只有「11px 和 12.5px」
+     两个尺寸可用——不是页面密，是没有层级。现在正文抬到 15px，
+     11px 只留给真正的元信息（表头、脚注、格子里的数字）。
+     系统字体栈上 800/820/850/900 渲染宽度完全一致，所以字重只留 3 档。 */
+  --fs-1:12px;   /* 元信息：徽章、表头、脚注 */
+  --fs-2:13px;   /* 辅助说明、caption */
+  --fs-3:15px;   /* 正文主体 */
+  --fs-4:17px;   /* 小标题、卡片标题 */
+  --fs-5:20px;   /* 区块内标题 */
+  --fs-6:25px;   /* 页面内区块标题 */
+  --fs-7:34px;   /* 页面 h1 */
+  --fs-8:46px;   /* 首屏巨型数字 */
+  --fs-cell:11px;/* 热力图格子：29×20 的密集网格，只能这么大 */
 
   /* ---- 圆角：3 档 ---- */
   --r-sm:6px;    /* 徽章、tag、输入框 */
@@ -58,7 +61,7 @@ html{scroll-behavior:smooth}
 body{
   margin:0;background:var(--bg);color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  font-size:var(--fs-3);line-height:1.6;-webkit-font-smoothing:antialiased;
+  font-size:var(--fs-3);line-height:1.7;-webkit-font-smoothing:antialiased;
 }
 body::before{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
@@ -397,7 +400,7 @@ table.hm tbody th{
 }
 table.hm tbody th .vv{font-size:var(--fs-1);color:var(--dim2);font-weight:600;display:block}
 table.hm td.cell{
-  width:38px;height:34px;font-family:var(--mono);font-size:var(--fs-1);font-weight:700;
+  width:38px;height:34px;font-family:var(--mono);font-size:var(--fs-cell);font-weight:700;
   cursor:default;transition:.12s;color:#04121a;
 }
 table.hm td.cell:hover{outline:2px solid rgba(255,255,255,.55);outline-offset:-2px}
@@ -2324,7 +2327,7 @@ body::before{
 :root[data-theme="light"] .tbl tr:hover td,:root[data-theme="light"] .tb tr:hover td{background:rgba(16,20,26,.02)}
 
 /* 徽章 / 标签 / 药丸按钮 */
-.tag{border-radius:0;font-size:10.5px;padding:2px 7px;border:1px solid var(--line2);background:none}
+.tag{border-radius:0;font-size:var(--fs-1);padding:2px 7px;border:1px solid var(--line2);background:none}
 .gchip{border-radius:0;border:1px solid var(--line2);padding:7px 12px;font-size:12px;background:none}
 .gchip:hover{border-color:var(--act);color:var(--act)}
 .preset{border-radius:0;font-size:11.5px;padding:6px 11px;background:none;border:1px solid var(--line2)}
@@ -2371,7 +2374,7 @@ body::before{
 .tcard{border:1px solid var(--line);background:var(--panel)}
 .tcard:hover{border-color:var(--line2)}
 .tag{border-radius:0}
-.tcard .tag{background:none;border:1px solid var(--line2);font-size:10px;padding:2px 6px}
+.tcard .tag{background:none;border:1px solid var(--line2);font-size:var(--fs-1);padding:2px 6px}
 .drawer .panel,.drawer .box{border-radius:0}
 
 /* 诊断答题 / 其它交互行：同样走直角，选中态用边线而不是填充块 */
@@ -5475,3 +5478,104 @@ table.tb{min-width:1080px}
 @media (min-width:1100px){
   .homeMods>:last-child{grid-column:1/-1}
 }
+
+/* =========================================================
+   0.9.4 视觉层：层级、表面、节奏
+   ---------------------------------------------------------
+   上面的规则是历次迭代留下的组件样式，仍然生效；这一节只做三件事：
+   ① 用字号和留白建立层级，而不是再加方框；
+   ② 统一表面（卡片比页面亮一档，边框退到几乎看不见）；
+   ③ 给页内区块一个能数的开头。
+   改视觉优先改这里，别再去动上面那些带版本号的段落。
+   ========================================================= */
+
+/* ---- ① 页内区块：编号 + 更硬的标题，让「一页里有几块」一眼可数 ---- */
+.view.on{counter-reset:psec}
+.psec{counter-increment:psec}
+.psec .secH{font-size:var(--fs-6);line-height:1.2;letter-spacing:-.025em;font-weight:650;margin:0 0 12px}
+.psec .secH::before{
+  content:counter(psec,decimal-leading-zero);
+  font-family:var(--mono);font-size:var(--fs-1);font-weight:700;
+  color:var(--dim2);letter-spacing:.1em;margin-right:12px;vertical-align:3px;
+}
+.psec>.phead{padding:0 0 20px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+.psec>.phead p{font-size:var(--fs-3);line-height:1.75;max-width:72ch}
+
+/* ---- ② 章节条：看起来像能点的东西 ---- */
+.secNav{gap:6px;padding:12px 0}
+.secNav a{
+  font-size:var(--fs-2);padding:7px 14px;border-radius:999px;
+  border:1px solid var(--line2);background:rgba(255,255,255,.02);
+  color:var(--dim);font-weight:500;
+}
+.secNav a:hover{color:var(--text);border-color:var(--act);background:rgba(47,227,212,.08);text-decoration:none}
+.secNav a:first-child{color:var(--text);border-color:var(--line2)}
+
+/* ---- ③ 页面头：h1 变大之后，上下留白要收 ---- */
+.phead{padding:34px 0 22px}
+.phead h1{font-size:var(--fs-7);letter-spacing:-.03em;line-height:1.12;margin:0 0 14px}
+.phead p{font-size:var(--fs-3);line-height:1.8;max-width:68ch}
+
+/* ---- ④ 表面：卡片比页面亮一档，边框只做分隔不做装饰 ---- */
+.tcard,.bcard,.acard,.mcard,.cmCard,.crow{
+  background:var(--panel);
+  border-color:var(--line);
+}
+.tcard:hover,.bcard:hover,.acard:hover,.cmCard:hover{
+  border-color:var(--line2);
+  background:var(--panel2);
+}
+.tcard .td{font-size:var(--fs-3);line-height:1.75;color:var(--dim)}
+.tcard .tn{font-size:var(--fs-4);letter-spacing:-.01em}
+.tcard .tv{font-size:var(--fs-1);color:var(--dim2)}
+
+/* ---- ⑤ 表格：字号抬了，行高也要跟着松 ---- */
+.tb th,.tb td{padding:11px 12px}
+.tb th{font-size:var(--fs-1);letter-spacing:.06em}
+.tb td{font-size:var(--fs-2)}
+
+/* ---- ⑥ 首屏：去掉一段空转的留白 ---- */
+.hero{padding-top:8px}
+
+/* ---- ⑦ 套餐表：把「价格」做成这一行的锚点 ----
+   之前 8 列全是 11–12px，扫一列和扫一行一样费劲：没有起点，也没有终点。
+   现在价格最大、最亮；名称次之；额度是正文；坑和超限退成灰。 */
+#planTable tbody tr:nth-child(even){background:rgba(255,255,255,.014)}
+#planTable tbody tr:hover{background:rgba(47,227,212,.045)}
+#planTable td{vertical-align:top;line-height:1.7}
+#planTable td.pnum{
+  font-family:var(--mono);font-size:var(--fs-1);color:var(--dim2);
+  letter-spacing:.08em;padding-top:14px;
+}
+#planTable td.nm{font-size:var(--fs-2);color:var(--text)}
+#planTable td.nm b,#planTable td.nm strong{font-size:var(--fs-4);font-weight:650;letter-spacing:-.01em}
+#planTable td.pr{white-space:normal}
+#planTable td.pr b,#planTable td.pr strong{font-size:var(--fs-5);color:var(--amber-t);font-weight:700;letter-spacing:-.01em}
+#planTable td.pr .mini{font-size:var(--fs-1);color:var(--dim2);line-height:1.6}
+#planTable td.pscore{
+  font-family:var(--mono);font-size:var(--fs-5);font-weight:700;color:var(--text);
+  text-align:center;letter-spacing:-.02em;
+}
+#planTable td .tag{font-size:var(--fs-1)}
+
+/* 表头吸顶后要有底色，否则行内容会从下面透上来 */
+#planTable thead th{background:var(--bg2);border-bottom:1px solid var(--line2)}
+
+/* 字号抬到 15px 后，价格列 114px 装不下「限时价，原价 ¥60」这行，会溢出到下一列。
+   表格按内容自动排，价格列给下限，注释允许折行。 */
+#planTable{table-layout:auto}
+#planTable td.pr{min-width:150px}
+#planTable td.pr .mini{white-space:normal}
+#planTable td.nm{white-space:normal;min-width:220px}
+#planTable td.pr .prov{display:flex;flex-wrap:wrap;white-space:normal;gap:4px;width:auto;max-width:100%}
+#planTable td.pr{min-width:190px}
+#planTable td.pscore{min-width:58px}
+#planTable td.pr .mini{font-size:var(--fs-1);line-height:1.55;color:var(--dim2)}
+#planTable td.pr .prov{margin-top:4px}
+#planTable td.pr .mini{text-wrap:pretty}
+
+/* 章节条和第一块之间原本空了 130px：.psec 的 margin + padding 各 40。
+   区块之间的呼吸感要留，但「刚进页面就一大片空白」只会让人以为没加载出来。 */
+.psec{padding:28px 0 8px;margin-top:32px}
+.psec:first-of-type{margin-top:16px;padding-top:0}
+.secNav{margin-bottom:4px}
