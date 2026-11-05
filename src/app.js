@@ -256,10 +256,16 @@
   function favHas(k, id) { return FAV.some(x => x.k === k && x.id === id); }
   function favToggle(item) {
     const i = FAV.findIndex(x => x.k === item.k && x.id === item.id);
-    if (i >= 0) { FAV.splice(i, 1); lsSet(LS.fav, FAV); return false; }
+    if (i >= 0) {
+      FAV.splice(i, 1); lsSet(LS.fav, FAV);
+      if (window.ATS_AUTH) window.ATS_AUTH.onFav(item, false);
+      return false;
+    }
     FAV.unshift(Object.assign({ t: Date.now() }, item));
     if (FAV.length > 120) FAV.length = 120;
     lsSet(LS.fav, FAV);
+    // 登录了就同步到服务端；没登录或没 API 时 ATS_AUTH 不存在，纯本地
+    if (window.ATS_AUTH) window.ATS_AUTH.onFav(item, true);
     return true;
   }
   /* 收藏按钮：一个模板函数，工具卡 / 组合卡 / 功能页底部共用，

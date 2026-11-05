@@ -33,6 +33,14 @@ function open() {
     status     TEXT NOT NULL DEFAULT 'active',
     created_at TEXT NOT NULL
   )`);
+  db.exec(`CREATE TABLE IF NOT EXISTS favorites (
+    user_id    INTEGER NOT NULL,
+    kind       TEXT NOT NULL,
+    ref_id     TEXT NOT NULL,
+    name       TEXT,
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (user_id, kind, ref_id)
+  )`);
   db.exec(`CREATE TABLE IF NOT EXISTS sessions (
     token      TEXT PRIMARY KEY,
     user_id    INTEGER NOT NULL,

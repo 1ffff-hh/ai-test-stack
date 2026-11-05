@@ -3662,7 +3662,26 @@ table.tb{min-width:0}
 :root[data-theme="light"] .dopts{background:rgba(28,25,18,.07)}
 :root[data-theme="light"] .diag::before{background:radial-gradient(420px 220px at 88% -8%,rgba(15,118,110,.07),transparent 65%)}
 /* 首屏那团青色光斑是给黑底配的，浅色下 20% 的青会把标题泡在里面 */
-:root[data-theme="light"] .hglow{opacity:.35}</style>
+:root[data-theme="light"] .hglow{opacity:.35}
+/* ===================== 前台登录（有 API 时才出现） ===================== */
+#authSlot{display:inline-flex}
+.authBtn{border:1px solid var(--line2);background:transparent;color:var(--dim);border-radius:999px;
+  padding:6px 14px;font:inherit;font-size:var(--fs-2);cursor:pointer;max-width:150px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.authBtn:hover{color:var(--act);border-color:var(--act)}
+.authBtn.in{color:var(--text)}
+.authWrap{position:fixed;inset:0;z-index:200;background:rgba(3,5,9,.62);display:grid;place-items:center;padding:20px}
+.authCard{width:min(380px,92vw);background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:24px}
+.authCard h3{margin:0 0 6px;font-size:18px;letter-spacing:-.01em}
+.authSub{margin:0 0 16px;font-size:var(--fs-2);color:var(--dim2);line-height:1.65}
+.authNote{margin:0 0 4px;font-size:var(--fs-2);color:var(--dim);line-height:1.65}
+.authCard input{width:100%;margin-bottom:10px;background:var(--bg2);border:1px solid var(--line2);
+  border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:var(--fs-3)}
+.authCard input:focus{outline:2px solid var(--act);outline-offset:1px}
+.authActs{display:flex;gap:8px;margin-top:14px}
+.authActs .btn{flex:1;justify-content:center;text-align:center}
+.authErr{color:var(--rose);font-size:var(--fs-2);margin:0 0 10px}
+</style>
 </head>
 <body>
 
@@ -3751,6 +3770,7 @@ table.tb{min-width:0}
       </span>
     </nav>
     <div class="tools">
+      <span id="authSlot"></span>
       <button class="tbtn" id="palBtn" aria-label="搜索功能、工具、套餐（Ctrl+K）" title="搜索 Ctrl+K">
         <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.2"/><path d="M13 13l4 4"/></svg><span class="tbn">搜索</span>
       </button>
@@ -5208,10 +5228,16 @@ table.tb{min-width:0}
   function favHas(k, id) { return FAV.some(x => x.k === k && x.id === id); }
   function favToggle(item) {
     const i = FAV.findIndex(x => x.k === item.k && x.id === item.id);
-    if (i >= 0) { FAV.splice(i, 1); lsSet(LS.fav, FAV); return false; }
+    if (i >= 0) {
+      FAV.splice(i, 1); lsSet(LS.fav, FAV);
+      if (window.ATS_AUTH) window.ATS_AUTH.onFav(item, false);
+      return false;
+    }
     FAV.unshift(Object.assign({ t: Date.now() }, item));
     if (FAV.length > 120) FAV.length = 120;
     lsSet(LS.fav, FAV);
+    // 登录了就同步到服务端；没登录或没 API 时 ATS_AUTH 不存在，纯本地
+    if (window.ATS_AUTH) window.ATS_AUTH.onFav(item, true);
     return true;
   }
   /* 收藏按钮：一个模板函数，工具卡 / 组合卡 / 功能页底部共用，
@@ -10425,6 +10451,158 @@ table.tb{min-width:0}
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
+})();
+
+/* 前台登录态。静态站照旧能用：没有 API 时这个文件什么都不做，
+   收藏继续走 localStorage；检测到 /api 才挂登录按钮和云同步。 */
+(function () {
+  var API = (location.protocol === 'http:' || location.protocol === 'https:') ? '/api' : null;
+  if (!API) return;
+
+  var user = null;
+  var slot = null;
+
+  function req(path, opt) {
+    return fetch(API + path, Object.assign({ credentials: 'same-origin' }, opt || {}))
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); })
+      .catch(function () { return { ok: false, offline: true }; });
+  }
+
+  function favLocal() {
+    try { var v = JSON.parse(localStorage.getItem('ats_fav') || '[]'); return Array.isArray(v) ? v : []; }
+    catch (e) { return []; }
+  }
+  function favSave(list) { try { localStorage.setItem('ats_fav', JSON.stringify(list)); } catch (e) {} }
+
+  /* 登录后把本机收藏和服务器上的并起来，再把本机独有的推上去 */
+  function mergeFavorites() {
+    return req('/favorites').then(function (r) {
+      if (!r.ok) return;
+      var local = favLocal();
+      var seen = {};
+      r.items.forEach(function (x) { seen[x.kind + '/' + x.id] = true; });
+      var push = local.filter(function (x) { return !seen[x.k + '/' + x.id]; });
+      push.forEach(function (x) {
+        req('/favorites', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: x.k, id: x.id, name: x.n || '' })
+        });
+      });
+      var merged = r.items.map(function (x) { return { k: x.kind, id: x.id, n: x.name, t: Date.parse(x.created_at) || Date.now() }; });
+      var have = {};
+      merged.forEach(function (x) { have[x.k + '/' + x.id] = true; });
+      local.forEach(function (x) { if (!have[x.k + '/' + x.id]) merged.push(x); });
+      favSave(merged);
+    });
+  }
+
+  function btnHtml() {
+    if (user) {
+      return '<button class="authBtn in" type="button" id="authOpen" title="' + esc(user.email) + '">' +
+        esc(user.name || user.email) + '</button>';
+    }
+    return '<button class="authBtn" type="button" id="authOpen">登录</button>';
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]; }); }
+
+  function render() {
+    if (!slot) return;
+    slot.innerHTML = btnHtml();
+    var b = slot.querySelector('#authOpen');
+    if (b) b.onclick = openPanel;
+  }
+
+  var panel = null;
+  function openPanel() {
+    if (panel) { panel.remove(); panel = null; return; }
+    panel = document.createElement('div');
+    panel.className = 'authWrap';
+    panel.innerHTML = user ? signedInHtml() : formHtml();
+    document.body.appendChild(panel);
+    panel.addEventListener('click', function (e) { if (e.target === panel) closePanel(); });
+    wire();
+  }
+  function closePanel() { if (panel) { panel.remove(); panel = null; } }
+
+  function signedInHtml() {
+    return '<div class="authCard">' +
+      '<h3>' + esc(user.name || user.email) + '</h3>' +
+      '<p class="authSub">' + esc(user.email) + ' · ' + (user.role === 'admin' ? '管理员' : '普通用户') + '</p>' +
+      '<p class="authNote">收藏已同步到服务端，换设备登录能看到同一份。</p>' +
+      '<div class="authActs"><a class="btn" href="/admin">进后台</a><button class="btn" id="authOut">退出</button></div>' +
+      '</div>';
+  }
+  function formHtml() {
+    return '<div class="authCard">' +
+      '<h3 id="authTitle">登录</h3>' +
+      '<p class="authSub">登录后收藏跨设备同步；不登录也能用，只是存在这台机器上。</p>' +
+      '<input id="authEmail" type="email" placeholder="邮箱" autocomplete="username">' +
+      '<input id="authPass" type="password" placeholder="密码（至少 8 位）" autocomplete="current-password">' +
+      '<div class="authErr" id="authErr" hidden></div>' +
+      '<div class="authActs"><button class="btn primary" id="authGo">登录</button>' +
+      '<button class="btn" id="authMode">没有账号？注册</button></div>' +
+      '</div>';
+  }
+
+  var mode = 'login';
+  function wire() {
+    var out = panel.querySelector('#authOut');
+    if (out) {
+      out.onclick = function () {
+        req('/auth/logout', { method: 'POST' }).then(function () { location.reload(); });
+      };
+      return;
+    }
+    var go = panel.querySelector('#authGo');
+    var sw = panel.querySelector('#authMode');
+    sw.onclick = function () {
+      mode = mode === 'login' ? 'register' : 'login';
+      panel.querySelector('#authTitle').textContent = mode === 'login' ? '登录' : '注册';
+      go.textContent = mode === 'login' ? '登录' : '注册';
+      sw.textContent = mode === 'login' ? '没有账号？注册' : '已有账号？登录';
+      panel.querySelector('#authErr').hidden = true;
+    };
+    go.onclick = function () {
+      var email = panel.querySelector('#authEmail').value.trim();
+      var pass = panel.querySelector('#authPass').value;
+      var err = panel.querySelector('#authErr');
+      go.disabled = true;
+      req('/auth/' + mode, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pass })
+      }).then(function (r) {
+        go.disabled = false;
+        if (!r.ok) { err.hidden = false; err.textContent = r.msg || '失败了'; return; }
+        return mergeFavorites().then(function () { location.reload(); });
+      });
+    };
+  }
+
+  /* 收藏开关：app.js 在本地改完之后调这里，失败也不影响本地 */
+  window.ATS_AUTH = {
+    onFav: function (item, on) {
+      if (!user) return;
+      if (on) {
+        req('/favorites', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kind: item.k, id: item.id, name: item.n || '' })
+        });
+      } else {
+        req('/favorites/' + encodeURIComponent(item.k) + '/' + encodeURIComponent(item.id), { method: 'DELETE' });
+      }
+    }
+  };
+
+  function boot() {
+    slot = document.getElementById('authSlot');
+    req('/auth/me').then(function (r) {
+      user = r.ok ? r.user : null;
+      render();
+      if (user) mergeFavorites();
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
 })();
 </script>
 <script>

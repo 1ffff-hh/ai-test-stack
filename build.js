@@ -715,7 +715,7 @@ let html = readText('index.html');
    每改一次视觉就再盖一层，最后没人说得清某条规则到底被谁覆盖。
    0.9.3 按原来的加载顺序拼成一份，级联结果不变，但从此只有一处真相。 */
 const css = readText('styles.css');
-const js = readText('app.js');
+const js = readText('app.js') + String.fromCharCode(10) + readText('auth.js');
 
 const json = JSON.stringify(data);
 

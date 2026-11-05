@@ -164,11 +164,36 @@ const server = http.createServer(async (req, res) => {
     return json(res, 200, { ok: !!u, user: u || null });
   }
 
-  /* 后台接口：先登录，再按角色放行 */
+  /* 接口分级：公开的登录注册 → 登录即可用的收藏 → 仅管理员的后台 */
+  const ADMIN_AREA = p === '/api/publish' || p.startsWith('/api/admin/') ||
+    p === '/api/collections' || p.startsWith('/api/c/');
   if (p.startsWith('/api/')) {
     const u = currentUser(req);
     if (!u) return json(res, 401, { ok: false, msg: '请先登录' });
-    if (u.role !== 'admin') return json(res, 403, { ok: false, msg: '需要管理员权限' });
+    if (ADMIN_AREA && u.role !== 'admin') return json(res, 403, { ok: false, msg: '需要管理员权限' });
+    req.user = u;
+  }
+
+  /* 收藏：登录后跨设备同步 */
+  if (p === '/api/favorites' && req.method === 'GET') {
+    const rows = db.prepare('SELECT kind, ref_id AS id, name, created_at FROM favorites WHERE user_id = ? ORDER BY created_at DESC')
+      .all(req.user.id);
+    return json(res, 200, { ok: true, items: rows });
+  }
+  if (p === '/api/favorites' && req.method === 'POST') {
+    const b = await body(req).catch(() => ({}));
+    const kind = String(b.kind || '').slice(0, 20);
+    const id = String(b.id || '').slice(0, 80);
+    if (!kind || !id) return json(res, 400, { ok: false, msg: '缺少 kind 或 id' });
+    db.prepare('INSERT OR REPLACE INTO favorites (user_id, kind, ref_id, name, created_at) VALUES (?, ?, ?, ?, ?)')
+      .run(req.user.id, kind, id, String(b.name || '').slice(0, 120), new Date().toISOString());
+    return json(res, 200, { ok: true });
+  }
+  const fm = p.match(/^\/api\/favorites\/([a-z]+)\/(.+)$/);
+  if (fm && req.method === 'DELETE') {
+    db.prepare('DELETE FROM favorites WHERE user_id = ? AND kind = ? AND ref_id = ?')
+      .run(req.user.id, fm[1], decodeURIComponent(fm[2]));
+    return json(res, 200, { ok: true });
   }
 
   if (p === '/api/collections') {

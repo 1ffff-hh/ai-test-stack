@@ -3475,3 +3475,21 @@ table.tb{min-width:0}
 :root[data-theme="light"] .diag::before{background:radial-gradient(420px 220px at 88% -8%,rgba(15,118,110,.07),transparent 65%)}
 /* 首屏那团青色光斑是给黑底配的，浅色下 20% 的青会把标题泡在里面 */
 :root[data-theme="light"] .hglow{opacity:.35}
+/* ===================== 前台登录（有 API 时才出现） ===================== */
+#authSlot{display:inline-flex}
+.authBtn{border:1px solid var(--line2);background:transparent;color:var(--dim);border-radius:999px;
+  padding:6px 14px;font:inherit;font-size:var(--fs-2);cursor:pointer;max-width:150px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.authBtn:hover{color:var(--act);border-color:var(--act)}
+.authBtn.in{color:var(--text)}
+.authWrap{position:fixed;inset:0;z-index:200;background:rgba(3,5,9,.62);display:grid;place-items:center;padding:20px}
+.authCard{width:min(380px,92vw);background:var(--panel);border:1px solid var(--line2);border-radius:16px;padding:24px}
+.authCard h3{margin:0 0 6px;font-size:18px;letter-spacing:-.01em}
+.authSub{margin:0 0 16px;font-size:var(--fs-2);color:var(--dim2);line-height:1.65}
+.authNote{margin:0 0 4px;font-size:var(--fs-2);color:var(--dim);line-height:1.65}
+.authCard input{width:100%;margin-bottom:10px;background:var(--bg2);border:1px solid var(--line2);
+  border-radius:8px;padding:9px 12px;color:var(--text);font:inherit;font-size:var(--fs-3)}
+.authCard input:focus{outline:2px solid var(--act);outline-offset:1px}
+.authActs{display:flex;gap:8px;margin-top:14px}
+.authActs .btn{flex:1;justify-content:center;text-align:center}
+.authErr{color:var(--rose);font-size:var(--fs-2);margin:0 0 10px}
