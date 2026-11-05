@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>内容后台 · AI Test Stack</title>
+<style>
+:root{--bg:#080b12;--panel:#111826;--panel2:#151d2e;--line:rgba(255,255,255,.09);
+  --line2:rgba(255,255,255,.16);--text:#e9eef8;--dim:#95a3ba;--dim2:#7f8fa9;
+  --act:#22d3ee;--ok:#4ade80;--rose:#ff7a8a;--amber:#ffc857;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.7 -apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+button,input,textarea,select{font:inherit;color:inherit}
+a{color:var(--act)}
+.top{display:flex;align-items:center;gap:16px;padding:12px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(8,11,18,.92);backdrop-filter:blur(10px);z-index:5}
+.top b{font-size:15px;letter-spacing:-.01em}
+.top .sp{flex:1}
+.top .hint{font-size:12px;color:var(--dim2);font-family:var(--mono)}
+.btn{border:1px solid var(--line2);background:var(--panel);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+.btn:hover{border-color:var(--act);color:var(--act)}
+.btn.primary{background:var(--act);border-color:var(--act);color:#04121a;font-weight:700}
+.btn.danger:hover{border-color:var(--rose);color:var(--rose)}
+.wrap{display:grid;grid-template-columns:200px 1fr;min-height:calc(100vh - 53px)}
+.side{border-right:1px solid var(--line);padding:14px 10px}
+.side a{display:flex;justify-content:space-between;padding:8px 12px;border-radius:8px;color:var(--dim);text-decoration:none;font-size:13px}
+.side a.on,.side a:hover{background:var(--panel2);color:var(--text)}
+.side .n{font-family:var(--mono);font-size:11px;color:var(--dim2)}
+.main{padding:20px 24px;min-width:0}
+.bar{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+.bar input{flex:1;max-width:320px;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:7px 12px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;letter-spacing:.06em;color:var(--dim2);font-family:var(--mono);font-weight:600}
+tr:hover td{background:var(--panel2);cursor:pointer}
+td.id{font-family:var(--mono);font-size:12px;color:var(--dim)}
+.drawer{position:fixed;inset:0;background:rgba(3,5,9,.6);display:none;z-index:20}
+.drawer.on{display:block}
+.panel{position:absolute;right:0;top:0;bottom:0;width:min(720px,94vw);background:var(--bg);border-left:1px solid var(--line2);overflow:auto;padding:18px 22px 90px}
+.panel h2{margin:0 0 4px;font-size:18px}
+.panel .sub{color:var(--dim2);font-size:12px;font-family:var(--mono);margin-bottom:16px}
+.f{margin-bottom:14px}
+.f label{display:block;font-size:11px;font-family:var(--mono);color:var(--dim2);margin-bottom:5px;letter-spacing:.04em}
+.f input[type=text],.f input[type=number],.f textarea,.f select{width:100%;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 11px}
+.f textarea{min-height:70px;resize:vertical;font-family:var(--mono);font-size:12.5px;line-height:1.6}
+.f.wide textarea{min-height:130px}
+.acts{position:fixed;bottom:0;right:0;width:min(720px,94vw);display:flex;gap:10px;padding:14px 22px;background:rgba(8,11,18,.96);border-top:1px solid var(--line2)}
+.acts .sp{flex:1}
+.msg{margin-top:12px;font-size:13px;padding:10px 14px;border-radius:8px;border:1px solid var(--line2);background:var(--panel);white-space:pre-wrap;font-family:var(--mono);font-size:12px}
+.msg.ok{border-color:rgba(74,222,128,.5);color:var(--ok)}
+.msg.err{border-color:rgba(255,122,138,.5);color:var(--rose)}
+.login{max-width:340px;margin:16vh auto;padding:26px;border:1px solid var(--line2);border-radius:14px;background:var(--panel)}
+.login h1{font-size:17px;margin:0 0 6px}
+.login p{color:var(--dim);font-size:13px;margin:0 0 16px}
+.login input{width:100%;background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:9px 12px;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div id="login" hidden>
+  <form class="login" id="loginForm">
+    <h1>内容后台</h1>
+    <p>口令在服务启动时打印在终端，也存在 <code>server/.admin-pass</code>。</p>
+    <input type="password" id="pass" placeholder="管理口令" autocomplete="current-password">
+    <button class="btn primary" style="width:100%" type="submit">进入</button>
+    <div class="msg err" id="loginErr" hidden></div>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <div class="top">
+    <b>内容后台</b>
+    <span class="hint" id="stat"></span>
+    <span class="sp"></span>
+    <button class="btn" id="publishBtn">发布到静态站</button>
+    <button class="btn" id="logoutBtn">退出</button>
+  </div>
+  <div class="wrap">
+    <nav class="side" id="side"></nav>
+    <div class="main">
+      <div class="bar">
+        <input id="q" placeholder="搜索 id / 名称">
+        <button class="btn" id="newBtn">新建</button>
+      </div>
+      <div id="list"></div>
+      <div class="msg" id="pubMsg" hidden></div>
+    </div>
+  </div>
+  <div class="drawer" id="drawer">
+    <div class="panel">
+      <h2 id="pTitle">编辑</h2>
+      <div class="sub" id="pSub"></div>
+      <div id="fields"></div>
+    </div>
+    <div class="acts">
+      <button class="btn danger" id="delBtn">删除</button>
+      <span class="sp"></span>
+      <button class="btn" id="cancelBtn">取消</button>
+      <button class="btn primary" id="saveBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let COL = 'tools', ITEMS = [], CUR = null, ISNEW = false, COLS = [];
+const $ = s => document.querySelector(s);
+const api = async (url, opt) => {
+  const r = await fetch(url, Object.assign({ headers: { 'Content-Type': 'application/json' } }, opt || {}));
+  const j = await r.json().catch(() => ({ ok: false, msg: '响应不是 JSON' }));
+  if (r.status === 401 && url !== '/api/login') { showLogin(); throw new Error('未登录'); }
+  return j;
+};
+
+function showLogin() { $('#login').hidden = false; $('#app').hidden = true; }
+function showApp() { $('#login').hidden = true; $('#app').hidden = false; }
+
+$('#loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const r = await api('/api/login', { method: 'POST', body: JSON.stringify({ password: $('#pass').value }) });
+  if (r.ok) { $('#loginErr').hidden = true; boot(); }
+  else { $('#loginErr').hidden = false; $('#loginErr').textContent = r.msg || '登录失败'; }
+};
+$('#logoutBtn').onclick = async () => { await api('/api/logout', { method: 'POST' }); showLogin(); };
+
+async function boot() {
+  const me = await api('/api/me');
+  if (!me.ok) return showLogin();
+  showApp();
+  const r = await api('/api/collections');
+  COLS = r.collections || [];
+  $('#side').innerHTML = COLS.map(c =>
+    `<a href="#" data-c="${c.key}" class="${c.key === COL ? 'on' : ''}">${c.label}<span class="n">${c.count}</span></a>`).join('');
+  $('#side').querySelectorAll('a').forEach(a => a.onclick = e => {
+    e.preventDefault(); COL = a.dataset.c;
+    $('#side').querySelectorAll('a').forEach(x => x.classList.toggle('on', x.dataset.c === COL));
+    load();
+  });
+  load();
+}
+
+async function load() {
+  const r = await api('/api/c/' + COL);
+  ITEMS = r.items || [];
+  $('#stat').textContent = COL + ' · ' + ITEMS.length + ' 条';
+  render();
+}
+
+function render() {
+  const q = $('#q').value.trim().toLowerCase();
+  const rows = ITEMS.filter(it => !q || (it.id + ' ' + (it.name || '')).toLowerCase().includes(q));
+  $('#list').innerHTML = `<table><thead><tr><th>id</th><th>名称</th><th>摘要</th><th>更新</th></tr></thead><tbody>` +
+    rows.map(it => `<tr data-id="${esc(it.id)}">
+      <td class="id">${esc(it.id)}</td>
+      <td>${esc(it.name || it.title || '')}</td>
+      <td>${esc((it.tagline || it.summary || it.why || '').slice(0, 70))}</td>
+      <td class="id">${esc((it._updatedAt || '').slice(0, 10))}</td></tr>`).join('') + `</tbody></table>`;
+  $('#list').querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = () => open(tr.dataset.id));
+}
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function open(id) {
+  ISNEW = !id;
+  CUR = id ? JSON.parse(JSON.stringify(ITEMS.find(x => x.id === id))) : { id: '' };
+  $('#pTitle').textContent = ISNEW ? '新建' : (CUR.name || CUR.id);
+  $('#pSub').textContent = ISNEW ? COL + ' / 新条目' : COL + ' / ' + CUR.id;
+  $('#delBtn').hidden = ISNEW;
+  renderFields();
+  $('#drawer').classList.add('on');
+}
+
+function renderFields() {
+  const keys = Object.keys(CUR).filter(k => k !== '_updatedAt');
+  $('#fields').innerHTML = keys.map(k => {
+    const v = CUR[k];
+    const long = typeof v === 'string' && (v.length > 70 || v.includes('\n'));
+    const wide = ['what', 'use', 'why', 'summary', 'tagline', 'pros', 'cons', 'risk', 'verdict', 'quota', 'models', 'tools'].includes(k);
+    if (typeof v === 'boolean') {
+      return `<div class="f"><label>${k}</label><select data-k="${k}"><option value="true"${v ? ' selected' : ''}>true</option><option value="false"${!v ? ' selected' : ''}>false</option></select></div>`;
+    }
+    if (typeof v === 'number') {
+      return `<div class="f"><label>${k}</label><input type="number" step="any" data-k="${k}" value="${v}"></div>`;
+    }
+    if (v && typeof v === 'object') {
+      return `<div class="f wide"><label>${k}（JSON）</label><textarea data-k="${k}" data-json="1">${esc(JSON.stringify(v, null, 1))}</textarea></div>`;
+    }
+    if (long || wide) {
+      return `<div class="f wide"><label>${k}</label><textarea data-k="${k}">${esc(v == null ? '' : v)}</textarea></div>`;
+    }
+    return `<div class="f"><label>${k}</label><input type="text" data-k="${k}" value="${esc(v == null ? '' : v)}"></div>`;
+  }).join('');
+}
+
+function collect() {
+  const out = {};
+  $('#fields').querySelectorAll('[data-k]').forEach(el => {
+    const k = el.dataset.k;
+    if (el.dataset.json) {
+      try { out[k] = JSON.parse(el.value); } catch (e) { throw new Error(k + ' 不是合法 JSON'); }
+    } else if (el.type === 'number') out[k] = Number(el.value);
+    else if (el.tagName === 'SELECT') out[k] = el.value === 'true';
+    else out[k] = el.value;
+  });
+  return out;
+}
+
+$('#saveBtn').onclick = async () => {
+  let obj;
+  try { obj = collect(); } catch (e) { return alert(e.message); }
+  if (!obj.id) return alert('id 不能为空');
+  const r = ISNEW
+    ? await api('/api/c/' + COL, { method: 'POST', body: JSON.stringify(obj) })
+    : await api('/api/c/' + COL + '/' + encodeURIComponent(obj.id), { method: 'PUT', body: JSON.stringify(obj) });
+  if (!r.ok) return alert(r.msg || '保存失败');
+  $('#drawer').classList.remove('on');
+  await load(); await boot();
+};
+$('#delBtn').onclick = async () => {
+  if (!confirm('删除 ' + CUR.id + '？')) return;
+  const r = await api('/api/c/' + COL + '/' + encodeURIComponent(CUR.id), { method: 'DELETE' });
+  if (!r.ok) return alert(r.msg || '删除失败');
+  $('#drawer').classList.remove('on');
+  await load(); await boot();
+};
+$('#cancelBtn').onclick = () => $('#drawer').classList.remove('on');
+$('#newBtn').onclick = () => open(null);
+$('#q').oninput = render;
+
+$('#publishBtn').onclick = async () => {
+  const m = $('#pubMsg');
+  m.hidden = false; m.className = 'msg'; m.textContent = '发布中…';
+  const r = await api('/api/publish', { method: 'POST' });
+  m.className = 'msg ' + (r.ok ? 'ok' : 'err');
+  m.textContent = r.ok ? ('已导出：' + r.files.join(' · ') + '\n' + (r.build || '')) : (r.msg || '发布失败');
+};
+
+boot();
+</script>
+</body>
+</html>

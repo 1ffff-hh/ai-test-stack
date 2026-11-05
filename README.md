@@ -42,6 +42,21 @@ npm run preview        # 生成 _site/ 并端在 http://localhost:4173/ai-test-s
 
 ---
 
+## 本地全栈模式（可选）
+
+仓库里还有一套本地服务：SQLite 做数据源，`/admin` 是内容后台，`/` 是站点。
+零第三方依赖——`node:http` + `node:sqlite`。
+
+```bash
+npm run server     # 站点 http://localhost:4174/  后台 http://localhost:4174/admin
+npm run publish    # 库 → data/*.json → 重建静态站
+```
+
+后台改完点「发布到静态站」，会先导出 JSON 再跑一遍 `build.js`，所以后台改坏了数据也过不了构建期校验。
+口令在服务启动时打印，存在 `server/.admin-pass`（已 gitignore）；数据库 `server/data.sqlite` 同样不进仓库。
+
+静态站不受影响：`npm run check` 和 GitHub Pages 仍然只用 `data/*.json`，不依赖这个服务。
+
 ## 信息架构（0.9.3：8 个内容页，页内分区块）
 
 0.9.2 之前是「功能地图 → 6 个模块 → 25 个功能页」三层导航，加上首页 / 功能地图 / 完整工具站，

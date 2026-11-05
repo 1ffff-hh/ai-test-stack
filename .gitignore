@@ -22,3 +22,8 @@ HANDOFF.md
 Thumbs.db
 .idea/
 .vscode/
+
+# 本地全栈服务：数据库和后台口令不进仓库
+server/data.sqlite
+server/data.sqlite-*
+server/.admin-pass
