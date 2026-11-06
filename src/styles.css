@@ -2890,6 +2890,27 @@ a{color:#000!important;text-decoration:none!important}
 .homeChg .hcR{display:flex;gap:10px;align-items:baseline;font-size:var(--fs-2);color:var(--dim);padding:4px 0;border-bottom:1px solid var(--line)}
 .homeChg .hcR:last-child{border-bottom:none}
 .homeChg .hcD{flex:0 0 78px;font-family:var(--mono);font-size:var(--fs-1);color:var(--dim2)}
+/* ===================== v1.0 首页：收录索引 + 信任区 =====================
+   两个组件都服从发丝格语言：0 圆角、右/下边线拼网格、hover 才亮。
+   收录索引是「证明来得早」（Stripe/Linear 的 logo 带位置逻辑）：
+   数字主张之后立刻铺开全部名字，覆盖面自己说话。
+   信任区是对比站的转化引擎：每条承诺都能当场点开核对，不靠形容词。 */
+.band{grid-template-columns:repeat(5,1fr)}
+.idxStrip{display:flex;flex-wrap:wrap;gap:5px 6px;margin:16px 0 0;padding:12px 0 4px;border-top:1px solid var(--line)}
+.idxChip{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--dim2);border:1px solid var(--line);border-radius:0;padding:3px 9px;text-decoration:none;white-space:nowrap;transition:color var(--dur-1) var(--ease-out),border-color var(--dur-1) var(--ease-out)}
+.idxChip:hover{color:var(--act);border-color:var(--act);text-decoration:none}
+.tgrid{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+.tcard{display:flex;flex-direction:column;gap:7px;border:1px solid var(--line);border-left:none;border-top:none;border-radius:0;background:none;padding:20px 20px 18px;text-decoration:none;transition:background var(--dur-1) var(--ease-out)}
+.tcard:hover{background:rgba(255,255,255,.022);text-decoration:none}
+:root[data-theme="light"] .tcard:hover{background:rgba(16,20,26,.025)}
+.tcard .tk{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.16em;color:var(--act)}
+.tcard .tt{font-size:14px;font-weight:600;color:var(--ink);letter-spacing:-.2px;line-height:1.45}
+.tcard p{margin:0;font-size:12px;line-height:1.7;color:var(--dim);flex:1}
+.tcard .tgo{font-size:11.5px;color:var(--dim2);margin-top:auto;transition:color var(--dur-1) var(--ease-out)}
+.tcard:hover .tgo{color:var(--act)}
+@media (max-width:860px){.band{grid-template-columns:repeat(2,1fr)}
+.tgrid{grid-template-columns:1fr}
+.tcard{padding:16px 16px 14px}}
 @media (max-width:640px){.chRow .d{flex:none}
 .homeChg .hcR{flex-direction:column;gap:2px}}
 /* 页脚的对外出口：纠错 / 订阅 / 源码 */

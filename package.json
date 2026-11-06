@@ -1,6 +1,6 @@
 {
   "name": "ai-test-stack",
-  "version": "0.9.7",
+  "version": "1.0.0",
   "private": true,
   "description": "AI 工具选型 × 测试角色 × AI 冲击决策站：静态站 + Express/Prisma API + Vue 管理后台",
   "license": "MIT",

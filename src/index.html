@@ -124,7 +124,7 @@
       <div class="hero">
         <div class="hglow" aria-hidden="true"></div>
         <div class="heroCopy">
-          <div class="eyebrow">For test engineers · 数据可离线核</div>
+          <div class="eyebrow">For test engineers · <span id="hVer">v1.0</span> · 数据可离线核</div>
           <h1>别再逛清单了。<br><span class="q">三问，</span><em>当场出方案</em></h1>
           <p class="heroSub"><b>核过的实价</b> × 20 项能力 × 你的红线，现场把全部组合比完。</p>
           <div class="hRot" id="hRot" aria-live="polite">
@@ -162,18 +162,53 @@
         <a class="read" href="#plans"><b class="num" id="rdPlans">0</b><span>档套餐比价</span></a>
         <a class="read" href="#stacks"><b class="num" id="rdBundles">0</b><span>套现成组合</span></a>
         <a class="read" href="#tools?sec=capabilities"><b class="num" id="rdCaps">0</b><span>个能力维度</span></a>
+        <a class="read" href="#plans?sec=free"><b class="num" id="rdFree">0</b><span>条免费额度</span></a>
       </div>
+
+      <!-- 收录索引：全部工具名平铺（运行时从数据渲染）。覆盖面自己说话，不让你猜 -->
+      <div class="idxStrip" id="idxStrip" aria-label="已收录的工具清单"></div>
 
       <div class="sect">
         <div class="sHead"><h2>七页，各管一件事</h2><span>不用在二十几个入口里先挑一个</span></div>
         <div class="mods stagger homeMods" id="homeMods"></div>
       </div>
 
+      <!-- 信任区块：四条可验证的承诺。对比站卖的是可信度，主张必须能当场点开核对 -->
+      <div class="sect">
+        <div class="sHead"><h2>为什么敢让你照着买</h2><span>不靠你信我，靠你查我——四条都能点开验证</span></div>
+        <div class="tgrid stagger">
+          <a class="tcard" href="#data?sec=sources">
+            <b class="tk">◇ 出处</b>
+            <b class="tt">每个价格标核验日期和官网出处</b>
+            <p>点任何一条价格都能回到它来自的官方页面。你不用信我，自己核对。</p>
+            <span class="tgo">数据源与口径 →</span>
+          </a>
+          <a class="tcard" href="#data">
+            <b class="tk">⇩ 整包</b>
+            <b class="tt">数据可以整包拿走，离线也能开</b>
+            <p>JSON / CSV / Markdown 全量导出，整个站就是一个 HTML 文件——不是只给看不给拿。</p>
+            <span class="tgo">数据页与下载 →</span>
+          </a>
+          <a class="tcard" href="#feedback">
+            <b class="tk">⚑ 纠错</b>
+            <b class="tt">看到错的数据，半分钟提交纠错</b>
+            <p>错了不丢人，不改才丢人。每条纠错公开留痕，处理结果可查。</p>
+            <span class="tgo">提交纠错 →</span>
+          </a>
+          <a class="tcard" href="#data?sec=changelog">
+            <b class="tk">◷ 口径</b>
+            <b class="tt">巡检只报警，改数必须人工确认</b>
+            <p>脚本定期比对官网价格页，发现变动只进待办队列——价格永远不是自动改的。</p>
+            <span class="tgo">更新日志 →</span>
+          </a>
+        </div>
+      </div>
+
       <div class="homeChg" id="homeChg" hidden></div>
 
       <div class="hfoot">
         <a class="btn" href="#career?sec=persona">不确定从哪开始？做一次测试人自测 →</a>
-        <span class="htrust">◇ 标出处 · ◷ 留痕 · ◇ 不改代码 · <a href="#data?sec=sources">数据源与口径</a></span>
+        <span class="htrust">◇ 标出处 · ◷ 留痕 · ✂ 不卖排名 · <a href="#data?sec=sources">数据源与口径</a></span>
       </div>
     </section>
 

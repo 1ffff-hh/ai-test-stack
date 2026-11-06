@@ -925,10 +925,16 @@
         <span class="mgo">进入${esc(p.name)} →</span>
       </a>`).join('');
     // 读数条：数字全部来自数据文件，不做假数
-    [['rdTools', TOOLS.length], ['rdPlans', PLANS.length], ['rdBundles', BUNDLES.length], ['rdCaps', CAP_LIST.length]]
+    [['rdTools', TOOLS.length], ['rdPlans', PLANS.length], ['rdBundles', BUNDLES.length], ['rdCaps', CAP_LIST.length], ['rdFree', (FB.items || []).length]]
       .forEach(([id, n]) => { const el = document.getElementById(id); if (el) el.dataset.n = n; });
     const hv = $('#hVerify'); if (hv) hv.textContent = META.lastVerified || '—';
     const hc = $('#hCounts'); if (hc) hc.textContent = `${TOOLS.length} 工具 · ${PLANS.length} 档套餐 · ${BUNDLES.length} 套组合`;
+    // 版本徽章与页脚同源：都读 META.version，免得首页写 v1.0 页脚还是 0.9
+    const hVer = $('#hVer'); if (hVer) hVer.textContent = 'v' + (META.version || '—');
+    // 收录索引条：29 个名字平铺。覆盖面是最硬的社会证明，让它自己说话
+    const ix = $('#idxStrip');
+    if (ix) ix.innerHTML = TOOLS.map(t =>
+      `<a class="idxChip" href="#tools" title="看 ${esc(t.name)} 的档案与评分">${esc(t.name)}</a>`).join('');
     countUp();
     startHeroRot();
     diagHtml();
