@@ -48,7 +48,7 @@
     "admin:reset": "npm --workspace @ats/server run admin:reset"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
-    "playwright": "^1.64.0"
+    "concurrently": "^10.0.6",
+    "playwright": "^1.65.0"
   }
 }
